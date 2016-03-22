@@ -1,0 +1,42 @@
+---
+ - hosts: headnode
+   gather_facts: yes
+   tasks:
+
+   - name: get globus repo rpm
+     get_url: url=http://toolkit.globus.org/ftppub/globus-connect-server/globus-connect-server-repo-latest.noarch.rpm dest=/tmp/globus-repo.rpm
+
+   - name: get globus gpg key
+     rpm_key: state=present key=http://toolkit.globus.org/ftppub/globus-connect-server/RPM-GPG-KEY-Globus
+
+   - name: install globus repo
+     yum: name=/tmp/globus-repo.rpm state=present
+
+   - name: install globus-connect-server
+     yum: name=globus-connect-server state=present enablerepo=base
+
+   - name: test
+     shell: echo {{ ansible_hostname }}  > test1.tmp
+   
+ - hosts: headnode
+   gather_facts: yes
+   tasks:
+
+   - template: src=conf_files/globus-connect-server.conf dest=/etc/globus-connect-server.conf
+
+   - expect:
+       command: globus-connect-server-setup
+       responses:
+         (?i)Globus Username: "{{ globus_username }}"
+         (?i)Globus Password: "{{ globus_passwd }}"
+  
+   vars_prompt:
+    - name: globus_username
+      prompt: "Enter your Globus Online Username:"
+      private: no
+    - name: globus_passwd
+      prompt: "Enter your Globus Online Password:"
+      private: yes
+
+   vars:
+     globus_endpoint_name: "{{ globus_username }}#{{ ansible_hostname }}" 

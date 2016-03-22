@@ -1,0 +1,44 @@
+---
+#OHPC Build playbook Version I
+ - hosts: headnode
+   tasks: yum requirements
+   - name: install epel-release yum repo
+     yum: name={{ item }} state=latest
+     - with-items:
+       - epel-release
+       - wget 
+       - tcpdump
+       - whois 
+       - lsof 
+       - xinet
+       - vim 
+       - net-tools
+       - fail2ban 
+       - exportfs 
+   - name: get OpenHPC Repo #hardcoded version # :(
+     get-url: http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
+# MAKE SURE FIREWALL CONFIG WORKS HERE
+# AT THIS POINT THE BUILD HAS YOU DISABLE IT
+# goddamnit minimal 1511 doesn't even have firewalld
+#systemctl disable firewalld
+#systemctl stop firewalld
+# need to yum install ntpd?
+#systemctl enable ntpd.service
+   - name: install OpenHPC groups
+     yum: name={{ item }} state=latest
+     - with-items:
+       - @base
+       - @ohpc-base
+       - @ohp-warewulf
+       - @ohpc-slurm-server # might need to do firewalld config before this
+
+yum -y groupinstall base
+yum -y groupinstall ohpc-base
+yum -y groupinstall ohpc-warewulf
+yum -y groupinstall ohpc-slurm-server
+   - name: update
+     shell: "yum -y update --skip-broken"
+yum -y --installroot=$CHROOT groupinstall ohpc-slurm-client
+yum -y --installroot=$CHROOT install ntp
+yum -y --installroot=$CHROOT install kernel
+yum -y --installroot=$CHROOT install lmod-ohpc

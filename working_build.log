@@ -1,0 +1,409 @@
+# removing lines from here as I go; once relevant stuff is in the
+# playbook
+systemctl enable ntpd.service
+ntpq
+ntpq -p
+echo "server 0.pool.ntp.org" >> /etc/ntp.conf 
+echo "server 1.pool.ntp.org" >> /etc/ntp.conf 
+echo "server 2.pool.ntp.org" >> /etc/ntp.conf 
+echo "server 3.pool.ntp.org" >> /etc/ntp.conf 
+ntpq -p
+systemctl status ntpd.service
+systemctl start ntpd.service
+ntpq -p
+yum -y groupinstall ohpc-slurm-server
+ls /opt/ohpc/
+ls /opt/
+ls /opt/ohpc/admin/
+ip addr
+cat /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+systemctl restart sshd
+ip addr
+ifup enp9s0
+ping -c 3 www.xsede.org
+vim /etc/ssh/sshd_config 
+hostname
+adduser jecoulte
+adduser jeremy
+passwd jecoulte
+passwd jeremy
+su jecoulte
+su jecoulte -
+su - jecoulte 
+yum install lsof
+ls
+su - jecoulte 
+cp /home/jecoulte/export/home/jeremy/.ssh/authorized_keys /home/jeremy/.ssh/
+cp -p /home/jecoulte/export/home/jeremy/.ssh/authorized_keys /home/jeremy/.ssh/
+ls /home/jeremy/
+mkdir /home/jeremy/.ssh
+cp -p /home/jecoulte/export/home/jeremy/.ssh/authorized_keys /home/jeremy/.ssh/
+chmod 600 /home/jeremy/.ssh/authorized_keys 
+ll /home/jeremy/.ssh/
+chown jeremy:jeremy /home/jeremy/.ssh/authorized_keys 
+ll /home/jeremy/.ssh/
+ll /home/jeremy/
+ll -a /home/jeremy/
+chown jeremy:jeremy /home/jeremy/.ssh/
+ll -a /home/jeremy/
+cp /home/jecoulte/Notes_round3 /home/jeremy/Install_Notes_eric
+chown jeremy:jeremy /home/jeremy/Install_Notes_eric 
+exit
+last -n 10
+w
+tail /var/log/secure 
+tail -n 100 /var/log/secure 
+vi /etc/ssh/sshd_config 
+exit
+w
+whois 193.104.41.54
+yum install whois
+whois 193.104.41.54
+ip addr
+if up enp9s0
+ifup enp9s0
+exit
+last -n 10
+w
+ifup enp9s0
+ifconfig 
+mii-tool enp9s0
+ifconfig 
+ifup enp9s0
+ifconfig 
+vi /etc/networks
+vi /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+ifdown enp9s0
+ifup enp9s0
+ifconfig
+ifdown enp9s0
+vi /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+ifdown enp9s0
+ifup enp9s0
+ifconfig 
+ifup enp9s0
+ifconfig 
+vi /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+ifdown enp9s0
+ifup enp9s0
+vi /etc/warewulf/provision.conf 
+vi /etc/xinetd.d/tftp 
+vi /etc/httpd/conf.d/warewulf-httpd.conf 
+yum -y install vim
+systemctl restart xinetd
+systemctl start xinetd
+systemctl stop xinetd
+systemctl start xinetd
+systemctl start xinetd.service
+systemctl enable xinetd.service
+systemctl start xinet.d
+systemctl list-units --type=service
+systemctl list-units --type=service | grep xnit
+systemctl list-units --type=service | grep xinet
+systemctl list-units --type=all | grep xinet
+systemctl list-units --all | grep xinet
+yum install xinetd
+systemctl start xinet.d
+systemctl start xinetd
+systemctl restart xinetd
+systemctl enable mariadb.service
+systemctl restart mariadb
+systemctl enable httpd.service
+systemctl restart httpd
+export CHROOT=/opt/ohpc/admin/images/centos7.1
+wwmkchroot centos-7 $CHROOT
+yum update
+wwmkchroot centos-7 $CHROOT
+vi /usr/libexec/warewulf/wwmkchroot/centos-7.tmpl 
+wwmkchroot centos-7 $CHROOT
+vi /etc/resolv.conf 
+cp -p /etc/resolv.conf $CHROOT/etc/resolve.conf
+yum -y --installroot=$CHROOT groupinstall ohpc-slurm-client
+yum -y --installroot=$CHROOT install ntp
+yum -y --installroot=$CHROOT install kernel
+yum -y --installroot=$CHROOT install lmod-ohpc
+wwinit ssh_keys
+vi /etc/fstab 
+cat ~/.ssh/cluster.pub >> $CHROOT/root/.ssh/authorized_keys
+cat .ssh/cluster.pub 
+vi /etc/fstab 
+echo "10.1.1.1:/home/ /home nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
+cat $CHROOT/etc/fstab
+echo "10.1.1.1:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
+echo "10.1.1.1:/home/ /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> $CHROOT/etc/fstab
+vi $CHROOT/etc/fstab 
+vi /etc/hosts
+vi $CHROOT/etc/slurm/slurm.conf 
+vi /etc/slurm/slurm.conf
+vi $CHROOT/etc/slurm/slurm.conf 
+ifconfig
+vi /etc/hosts
+vi /etc/exports 
+yum -y install exportfs
+systemctl restart nfs
+systemctl start rpcbind
+systemctl restart nfs
+chroot $CHROOT systemctl enable ntpd
+vi $CHROOT/etc/ntp.conf 
+wwsh import /etc/passwd
+which wwsh
+vi /bin/wwsh 
+wwsh import /etc/passwd
+wwsh file import /etc/passwd
+wwsh file import /etc/group
+wwsh file import /etc/shadow
+wwsh file import /etc/slurm/slurm.conf
+wwsh file import /etc/munge/munge.key 
+export WW_CONF=/etc/warewulf/bootstrap.conf 
+echo "drivers += updates/kernel/" >> $WW_CONF 
+wwbootstrap `uname -r`
+wwvnfs -y --chroot $CHROOT
+ifconfig 
+echo "GATEWAYDEV=enp9s0" >/tmp/network.$$
+cat /tmp/network.19481 
+wwsh -y file import /tmp/network.19481 --name network
+wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+cat /etc/sysconfig/network
+vi /etc/xinetd.conf 
+vi /etc/dhcp/dhcpd.conf 
+systemctl restart dhcpd
+systemctl status dhcpd.service
+journalctl -xe
+systemctl status dhcpd.service
+systemctl restart dhcpd
+journalctl -xe
+vi /etc/dhcp/dhcpd.conf 
+systemctl restart dhcpd
+journalctl -xe
+yum -y install tcpdump
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.2 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r`
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.2 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r` comp00
+which wwnodescan
+vi /bin/wwnodescan 
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.2 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r` comp00
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.3 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r` comp01 comp02 comp03
+tail /var/log/messages
+systemctl restart sshd 
+tail /var/log/messages
+systemctl status sshd 
+systemctl start sshd.service 
+ps aux | grep apache
+cd /var/log/
+ls
+cd httpd/
+ls
+tail access_log
+tail error_log
+cd ..
+ls
+tail secure
+tail messages
+tail secure
+vi /etc/ssh/sshd_config 
+tail /var/log/messages
+vi /etc/ssh/sshd_config 
+tail /var/log/messages
+systemctl status sshd
+systemctl restart sshd.service
+systemctl status sshd
+tail /var/log/secure
+tail /var/log/messages
+tail /var/log/httpd/access_log
+systemctl status firewalld
+iptables -L
+lsmod | grep ip_tab
+systemctl status iptables 
+vi /etc/sysconfig/iptables-config 
+iptables -L
+iptables -A INPUT -s 10.1.1.0/24 -j ACCEPT 
+iptables -L
+tail /var/log/httpd/
+tail /var/log/httpd/access_log
+exit
+ssh 10.1.1.2
+exit
+pdsh -w comp00 uptime
+cd /opt/ohpc/admin/images/centos7.1/
+cd etc/
+ls
+cd ssh
+vim sshd_config 
+cd ..
+cd root/
+ls
+ls .ssh/
+cat .ssh/authorized_keys 
+ls -l
+ls -l .ssh/
+ls -la
+ssh comp00
+ssh 10.1.1.2
+cat /etc/host
+cat /etc/hosts
+uname -r
+pwd
+whoami
+cd 
+hostname
+cd /var/log/
+tail messages
+tail httpd/access_log
+tail httpd/error_log
+vi /usr/libexec/warewulf/cgi-bin/nodeconfig.pl 
+history | grep wwnodescan
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.3 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r`comp0 comp1 comp2
+wwnodescan --netdev=enp9s0 --ipaddr=10.1.1.3 --netmask=255.255.255.0 --vnfs=centos7.1 --bootstrap=`uname -r` comp0 comp1 comp2
+systemctl status httpd
+tail httpd/error_log
+vi /etc/httpd/conf/httpd.conf 
+vi /etc/httpd/conf.d/warewulf-httpd.conf 
+systemctl restart httpd
+tail messages
+tail httpd/access_log
+history | grep pdsh
+pdsh -w comp00 uptime
+pdsh -w comp0[0-2] uptime
+exit
+visudo 
+vi /etc/group
+write jeremy
+yum install fail2ban
+write jeremy
+passwd jeremy
+write jeremy
+w
+iptables -l
+write jeremy
+passwd jecoulte
+cat /etc/redhat-release 
+passwd jecoulte
+write jecoulte
+firewall-cmd --zone=public --list-all
+write jecoulte
+ps aux|grep iptables
+/sbin/chkconfig
+systemctl enable firewalld
+systemctl start firewalld
+systemctl status firewalld
+firewall-cmd --zone=public --list-all
+firewall-cmd --get-default-zone
+firewall-cmd --get-active-zones
+/sbin/ifconfig -a
+firewall-cmd --zone=public --list-all
+ps aux|grep -i ftp
+netstat -a|grep LIST
+telnet localhost 21
+ftp localhost
+netstat -tulpn
+netstat -tulpn|grep 21
+rpm -qa|grep -i ftp
+rpm -qi tftp-server
+rpm -qil tftp-server
+systemd -l status tftpd
+systemctl -l status tftpd
+systemctl -l status tftp
+firewall-cmd --zone=public --list-all
+firewall-cmd --get-services
+firewall-cmd --zone=public --remove-service=ftp
+firewall-cmd --zone=public --list-all
+firewall-cmd --add-rich-rule 'rule family="ipv4" interface="enp5s0" service name="ftp" deny'
+firewall-cmd --list-all
+/sbin/ifconfig -a
+firewall-cmd --zone=external --remove-port=21/tcp
+firewall-cmd --zone=external --remove-port=21/tcp --permanent
+firewall-cmd --list-all
+firewall-cmd --zone=external --remove-port=21/udp --permanent
+firewall-cmd --list-all
+firewall-cmd --zone=external --remove-port=21/udp
+firewall-cmd --zone=public --remove-port=21/udp
+firewall-cmd --zone=public --remove-port=21/udp --permanent
+firewall-cmd --zone=public --remove-port=21/tcp --permanent
+firewall-cmd --list-all
+systemctl -l status tftp
+systemctl disable tftp
+systemctl stop tftp
+netstat -tulpn|grep 21
+netstat -a|grep 21
+lsof
+lsof -i :21
+lsof -i :22
+lsof -i :21
+netstat -a|grep 21
+less /etc/xinetd.conf 
+less /etc/xinetd.d/tftp 
+vi /etc/xinetd.d/tftp 
+/sbin/ifconfig -a
+fg
+systemctl status xindet
+systemctl status xinetd
+systemctl restart xinetd
+systemctl status xinetd
+firewall-cmd --list-all
+iptables -l
+iptables -L
+write jeremy
+history 
+iptables -L
+netstat -l
+man netstat
+netstat -l -i eth1
+netstat -l -I eth1
+netstat -I eth1
+netstat -I eth0
+netstat -i
+netstat -I enp9s0
+netstat -I=enp9s0
+netstat -I=enp9s0 -l
+firewall-cmd --get-zones
+firewall-cmd --help
+firewall-cmd --list-interfaces
+firewall-cmd --list-all-zones
+firewall-cmd --help
+firewall-cmd --state
+ifconfig 
+firewall-cmd --zone=internal --change-interfaces=enp9s0
+firewall-cmd --zone=internal --change-interface=enp9s0
+firewall-cmd --list-all-zones
+firewall-cmd --get-active-zones
+vi /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+firewall-cmd --get-services
+firewall-cmd --zone=internal --add-service=tftp
+firewall-cmd --zone=internal --add-service=tftp --permanent
+firewall-cmd --zone=public --list
+firewall-cmd --zone=public --get
+firewall-cmd --zone=public --list-all
+firewall-cmd --zone=internal --list-all
+firewall-cmd --zone-public --remove--service
+firewall-cmd --zone=public --remove-service
+firewall-cmd --zone=public --remove-service=dhcpv6
+firewall-cmd --zone=public --remove-service=dhcpv6-client
+firewall-cmd --zone=public --list-all
+firewall-cmd --zone=public --list-ports
+firewall-cmd --zone=public --remove-service=dhcpv6-client --permanent
+systemctl restart networkd.service
+systemctl restart network.service
+ifconfig
+ping -c 2 travertine.uits.iu.edu
+cat /etc/ifconfig
+cat /etc/sysconfig/network-scripts/ifcfg-enp5s0 
+cat /etc/sysconfig/network-scripts/ifcfg-enp9s0 
+systemctl restart network
+journalctl -xn
+journalctl -xnl
+journalctl -xn -l
+dmesg | grep enp
+mii-tool enp9
+mii-tool enp9s0
+mii-tool enp5s0
+ethtool enp5s0
+lsof -i
+firewall-cmd --state
+firewall-cmd --list-all
+netstat -nl
+ssh rocks.uits.iu.edu
+cat /etc/sysconfig/network-scripts/ifcfg-enp5s0 
+ping -c 2 149.165.232.106
+ifup en5ps0
+ifup enp5s0
+/sbin/reboot 
+firewall-cmd --zone=internal --change-interfaces=enp9s0
