@@ -16,6 +16,7 @@
        - "net-tools"
        - "exportfs" 
        - "firewalld"
+       - "pciutils"
  
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
