@@ -51,11 +51,11 @@
    - name: restart dbus for firewalld :(
      service: name=dbus state=restarted
 
-   - name: reload network
-     service: name=network state=restarted
-
    - name: firewalld restart
      service: name=firewalld state=restarted
+
+   - name: reload network
+     service: name=network state=restarted
 
    - name: config ntp
      lineinfile: 
