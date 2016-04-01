@@ -31,6 +31,10 @@
        - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
        - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
        - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
+       - { line: 'PEERDNS=no', regex: '^PEERDNS=' }
+       - { line: 'DEFROUTE=no', regex: '^DEFROUTE=' }
+       - { line: 'PEERROUTES=no', regex: '^PEERROUTES=' }
+       - { line: 'IPV6INIT=no', regex: '^IPV6INIT=' }
 
    - name: make sure outside network comes up on boot
      lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
