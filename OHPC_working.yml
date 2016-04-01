@@ -35,9 +35,6 @@
    - name: make sure outside network comes up on boot
      lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
 
-   - name: restart network
-     service: name=network state=restarted
-
    - name: get OpenHPC Repo #hardcoded version # :(
      get_url: url=http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
 
@@ -51,10 +48,13 @@
    - name: add interfaces to external zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
 
+   - name: restart dbus for firewalld :(
+     service: name=dbus state=restarted
+
    - name: reload network
      service: name=network state=restarted
 
-   - name: firewalld reload
+   - name: firewalld restart
      service: name=firewalld state=restarted
 
    - name: config ntp
