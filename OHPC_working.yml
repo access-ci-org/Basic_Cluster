@@ -3,23 +3,80 @@
  - hosts: headnode
    tasks: 
 
-   - name: install necessary stuff
-     yum: name={{ item }} state=latest
-     with_items:
-       - "epel-release"
-       - "wget" 
-       - "tcpdump"
-       - "whois" 
-       - "lsof" 
-       - "xinetd"
-       - "vim" 
-       - "net-tools"
-       - "exportfs" 
-       - "firewalld"
-       - "pciutils"
+#   - name: install necessary stuff
+#     yum: name={{ item }} state=latest
+#     with_items:
+#       - "epel-release"
+#       - "wget" 
+#       - "tcpdump"
+#       - "whois" 
+#       - "lsof" 
+#       - "xinetd"
+#       - "vim" 
+#       - "net-tools"
+#       - "exportfs" 
+#       - "firewalld"
+#       - "pciutils"
+#       - "ntp"
  
-   - name: install fail2ban # separate b/c it's in epel
-     yum: name=fail2ban state=latest 
+#   - name: install fail2ban # separate b/c it's in epel
+#     yum: name=fail2ban state=latest 
 
-   - name: get OpenHPC Repo #hardcoded version # :(
-     get_url: url=http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
+#   - name: get OpenHPC Repo #hardcoded version # :(
+#     get_url: url=http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
+
+#   - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
+#   - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
+#   - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+ 
+#   - name: add interfaces to internal zone firewalld
+#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
+
+#   - name: add interfaces to external zone firewalld
+#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
+
+#   - name: reload network
+#     service: name=network state=restarted
+
+#   - name: firewalld reload
+#     service: name=firewalld state=restarted
+
+#   - name: config ntp
+#     lineinfile: 
+#       dest: /etc/ntp.conf    
+#       regexp: "{{ item.regex }}" 
+#       line: "{{ item.line }}" 
+#     with_items:
+#       - { regex: '^server 0', line: 'server 0.pool.ntp.org' }
+#       - { regex: '^server 1', line: 'server 1.pool.ntp.org' }
+#       - { regex: '^server 2', line: 'server 2.pool.ntp.org' }
+#       - { regex: '^server 3', line: 'server 3.pool.ntp.org' }
+
+#   - name: enable ntpd
+#     service: name=ntpd state=restarted
+
+#   - name: install OpenHPC base
+#     yum: name="@ohpc-base" state=present
+
+#   - name: install OpenHPC warewulf
+#     yum: name="@ohpc-warewulf" state=present
+
+#   - name: install OpenHPC base
+#     yum: name="@ohpc-slurm-server" state=present
+
+#   - name: add slurm user
+#     user: name=slurm state=present system=yes
+#
+#   - name: yum update
+#     yum: name=* state=latest update_cache=yes
+
+#   vars_prompt:
+#    - name: "public_interface"
+#      prompt: "Enter the public network interface name (default is enp0s3):"
+#      private: no
+#      default: "enp0s3"
+#    - name: "private_interface"
+#      prompt: "Enter the private network interface (default is enp0s8):"
+#      private: no
+#      default: "enp0s8"
+
