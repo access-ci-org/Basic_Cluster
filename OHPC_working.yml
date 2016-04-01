@@ -48,14 +48,17 @@
    - name: add interfaces to external zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
 
-   - name: restart dbus for firewalld :(
-     service: name=dbus state=restarted
+#   - name: restart dbus for firewalld :(
+#     service: name=dbus state=restarted
 
-   - name: firewalld restart
-     service: name=firewalld state=restarted
+#   - name: firewalld restart
+#     service: name=firewalld state=restarted
 
-   - name: reload network
-     service: name=network state=restarted
+#   - name: reload network
+#     service: name=network state=restarted
+
+   - name: nmcli reload since NM can't handle zones... 
+     command: nmcli con reload
 
    - name: config ntp
      lineinfile: 
