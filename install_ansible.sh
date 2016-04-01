@@ -1,4 +1,5 @@
 #!/bin/sh
+yum install python-devel python-setuptools python-setuptools-devel gcc 
 easy_install pip
 #pexpect has to be 3.3 because new 4.01 version only
 # works with python >= 2.7 :(
