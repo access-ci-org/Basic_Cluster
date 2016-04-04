@@ -106,6 +106,64 @@
 #   - name: restart httpdd
 #     service: name=httpd state=restarted
 
+#   - name: fix broken wwmkchroot file
+#     lineinfile: 
+#       dest: /usr/libexec/warewulf/wwmkchroot/centos-7.tmpl 
+#       regexp: "^YUM_MIRROR(.*)7.1.1503(.*)"
+#       line: 'YUM_MIRROR\g<1>7\g<2>'   # use \g<1> for backref followed by digit!
+#       backrefs: yes
+
+#   - name: make chroot
+#     command: wwmkchroot centos-7 "{{ chroot_loc }}"
+
+#   - name: copy resolve.conf into image
+#     copy: src=/etc/resolv.conf dest="{{ chroot_loc }}/etc/resolv.conf" #"
+
+#   - name: yum install into the image chroot
+#     command: yum -y --installroot={{ chroot_loc }} install ntp kernel lmod-ohpc 
+#" for vim
+
+#   - name: yum install slurm client into image
+#     command: yum -y --installroot={{ chroot_loc }} groupinstall ohpc-slurm-client
+#" for vim
+
+#   - name: cluster ssh keys
+#     command: wwinit ssh_keys
+#     args:
+#       chdir: /root/
+
+#   - name: copy ssh keys over
+#     copy: src=/root/.ssh/cluster.pub dest={{ chroot_loc }}/root/.ssh/authorized_keys
+
+#   - name: put NFS home mount info in image
+#     lineinfile: line="10.1.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ chroot_loc }}/etc/fstab state=present
+
+#   - name: put NFS opt mount info in image
+#     lineinfile: line="10.1.1.1:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ chroot_loc }}/etc/fstab state=present
+
+#   - name: slurm control machine
+#     lineinfile: regexp="^ControlMachine=\S+" line="ControlMachine=10.1.1.1" dest=/etc/slurm/slurm.conf 
+#   - name: exportfs home entry on headnode
+#     lineinfile: line="/home *(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
+
+#   - name: exportfs opt entry on headnode
+#     lineinfile: line="/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
+
+#   - name: exportfs reload
+#     command: exportfs -a
+
+#   - name: restart rpcbind
+#     service: name=rpcbind state=restarted enabled=yes
+ 
+#   - name: restart nfs-server
+#     service: name=nfs-server state=restarted enabled=yes
+
+#   - name: ntp on compute image enabled 
+#     command: chroot '{{ chroot_loc }}' systemctl enable ntpd
+
+#   - name: add headnode to compute ntp.conf
+#     lineinfile: line="server 10.1.1.1" dest={{ chroot_loc }}/etc/ntp.conf state=present
+
 #   vars_prompt:
 #    - name: "public_interface"
 #      prompt: "Enter the public network interface name (default is enp0s3):"
@@ -116,3 +174,5 @@
 #      private: no
 #      default: "enp0s8"
 
+   vars:
+     chroot_loc: "/opt/ohpc/admin/images/centos7.1"
