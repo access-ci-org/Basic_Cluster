@@ -67,8 +67,44 @@
 #   - name: add slurm user
 #     user: name=slurm state=present system=yes
 #
+#    - name: config warewulf interface
+#      lineinfile: dest=/etc/warewulf/provision.conf regexp="device =" line="device = {{ private_interface }} " 
+#"
+#    - name: enable tftp
+#      lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
+#
 #   - name: yum update
 #     yum: name=* state=latest update_cache=yes
+#
+#   - name: config warewulf http
+#     lineinfile: 
+#       dest: /etc/httpd/conf.d/warewulf-httpd.conf
+#       regexp: "{{ item.regex }}" 
+#       line: "{{ item.line }}" 
+#       state: "{{ item.state }}"
+#       backrefs: yes
+#     with_items:
+#       - { regex: '^(.*)cgi-bin>$', line: '\1cgi-bin> \n    Require all granted', state: present}
+#       - { regex: '(\s+)Allow from all', line: '\1Require all granted', state: present }
+#       - { regex: 'Order allow,deny', line: "", state: absent }
+     
+#    - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
+#      command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
+#
+#   - name: reload xinetd
+#     service: name=xinetd state=restarted
+ 
+#   - name: enable mariadb
+#     service: name=mariadb enabled=yes
+  
+#   - name: restart mariadb
+#     service: name=mariadb state=restarted
+
+#   - name: enable httpd
+#     service: name=httpd enabled=yes
+  
+#   - name: restart httpdd
+#     service: name=httpd state=restarted
 
 #   vars_prompt:
 #    - name: "public_interface"
