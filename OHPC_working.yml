@@ -67,9 +67,10 @@
 #   - name: add slurm user
 #     user: name=slurm state=present system=yes
 #
-#    - name: config warewulf interface
-#      lineinfile: dest=/etc/warewulf/provision.conf regexp="device =" line="device = {{ private_interface }} " 
-#"
+#   - name: config warewulf interface
+#     lineinfile: dest=/etc/warewulf/provision.conf regexp="device =" line="device = {{ private_interface }} " 
+##" for vim
+#
 #    - name: enable tftp
 #      lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
 #
@@ -88,8 +89,8 @@
 #       - { regex: '(\s+)Allow from all', line: '\1Require all granted', state: present }
 #       - { regex: 'Order allow,deny', line: "", state: absent }
      
-#    - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
-#      command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
+#   - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
+#     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
 #
 #   - name: reload xinetd
 #     service: name=xinetd state=restarted
@@ -121,11 +122,12 @@
 
 #   - name: yum install into the image chroot
 #     command: yum -y --installroot={{ chroot_loc }} install ntp kernel lmod-ohpc 
-#" for vim
+##" for vim
+#
 
 #   - name: yum install slurm client into image
 #     command: yum -y --installroot={{ chroot_loc }} groupinstall ohpc-slurm-client
-#" for vim
+##" for vim
 
 #   - name: cluster ssh keys
 #     command: wwinit ssh_keys
