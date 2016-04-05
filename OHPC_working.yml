@@ -167,15 +167,15 @@
 #     lineinfile: line="server 10.1.1.1" dest={{ chroot_loc }}/etc/ntp.conf state=present
 
    - name: fix the warewulf wwsh script... ARGH (line 29)
-     lineinefile: 
-       regexp: ""
-       insertbefore: ""
+     lineinfile: 
+       dest: /bin/wwsh
+       insertafter: '^\$ENV\{\"PATH\"\}'
        line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
 
    - name: fix the warewulf wwnodescan script... ARGH (line 96)
-     lineinefile: 
-       regexp: ""
-       insertbefore: ""
+     lineinfile: 
+       dest: /bin/wwnodescan
+       insertafter: '^\$ENV\{\"PATH\"\}'
        line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
 
 #   - name: wwimport file into image (passwd)
