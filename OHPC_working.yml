@@ -165,6 +165,28 @@
 
 #   - name: add headnode to compute ntp.conf
 #     lineinfile: line="server 10.1.1.1" dest={{ chroot_loc }}/etc/ntp.conf state=present
+   - name: fix the warewulf scripts... ARGH
+#
+#   - name: wwimport file into image (passwd)
+#     command: wwsh file import /etc/passwd
+
+#   - name: wwimport file into image (group)
+#     command: wwsh file import /etc/group
+
+#   - name: wwimport file into image (shadow)
+#     command: wwsh file import /etc/shadow
+
+#   - name: wwimport file into image (slurm)
+#     command: wwsh file import /etc/slurm/slurm.conf
+
+#   - name: wwimport file into image (munge)
+#     command: wwsh file import /etc/munge/munge.key
+
+#   - name: build bootstrap image
+#     command: wwbootstrap `uname -r`
+
+#   - name: build the vnfs 
+#     command: wwvnfs -y --chroot "{{ chroot }}"
 
 #   vars_prompt:
 #    - name: "public_interface"
@@ -176,5 +198,5 @@
 #      private: no
 #      default: "enp0s8"
 
-   vars:
-     chroot_loc: "/opt/ohpc/admin/images/centos7.1"
+#   vars:
+#     chroot_loc: "/opt/ohpc/admin/images/centos7.1"
