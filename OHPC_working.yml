@@ -165,8 +165,19 @@
 
 #   - name: add headnode to compute ntp.conf
 #     lineinfile: line="server 10.1.1.1" dest={{ chroot_loc }}/etc/ntp.conf state=present
-   - name: fix the warewulf scripts... ARGH
-#
+
+   - name: fix the warewulf wwsh script... ARGH (line 29)
+     lineinefile: 
+       regexp: ""
+       insertbefore: ""
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+
+   - name: fix the warewulf wwnodescan script... ARGH (line 96)
+     lineinefile: 
+       regexp: ""
+       insertbefore: ""
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+
 #   - name: wwimport file into image (passwd)
 #     command: wwsh file import /etc/passwd
 
