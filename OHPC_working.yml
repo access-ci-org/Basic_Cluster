@@ -3,18 +3,6 @@
  - hosts: headnode
    tasks: 
 
-   - name: set up internal NIC to static, ip  10.1.1.1, netmask 255.255.255.0, boot=on
-     lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
-     with_items:
-       - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
-       - { line: 'BOOTPROTO="static"', regex: '^BOOTPROTO=' }
-       - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
-       - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
-       - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
-
-   - name: restart network
-     service: name=network state=restarted
-
 
    - name: install necessary stuff
      yum: name={{ item }} state=latest
@@ -34,6 +22,21 @@
  
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
+
+   - name: set up internal NIC to static, ip  10.1.1.1, netmask 255.255.255.0, boot=on
+     lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
+     with_items:
+       - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
+       - { line: 'BOOTPROTO="static"', regex: '^BOOTPROTO=' }
+       - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
+       - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
+       - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
+
+   - name: make sure outside network comes up on boot
+     lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
+
+   - name: restart network
+     service: name=network state=restarted
 
    - name: get OpenHPC Repo #hardcoded version # :(
      get_url: url=http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
@@ -81,7 +84,7 @@
      user: name=slurm state=present system=yes
 
    - name: config warewulf interface
-     lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }} " 
+     lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }}" 
 #" for vim
 
    - name: enable tftp
