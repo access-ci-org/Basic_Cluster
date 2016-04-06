@@ -81,7 +81,7 @@
 #     user: name=slurm state=present system=yes
 #
 #   - name: config warewulf interface
-#     lineinfile: dest=/etc/warewulf/provision.conf regexp="device =" line="device = {{ private_interface }} " 
+#     lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }} " 
 ##" for vim
 #
 #    - name: enable tftp
@@ -228,15 +228,22 @@
 #   - name: restart dhcpd
 #     service: name=dhcpd state=restarted enabled=yes
 
-#   vars_prompt:
+   - name: wwnodescan THIS IS IT
+     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
+
+   vars_prompt:
 #    - name: "public_interface"
 #      prompt: "Enter the public network interface name (default is enp0s3):"
 #      private: no
 #      default: "enp0s3"
-#    - name: "private_interface"
-#      prompt: "Enter the private network interface (default is enp0s8):"
-#      private: no
-#      default: "enp0s8"
+    - name: "private_interface"
+      prompt: "Enter the private network interface (default is enp0s8):"
+      private: no
+      default: "enp0s8"
+    - name: "num_nodes"
+      prompt: "How many compute nodes do you have?"
+      private: no
+      default: 0
 
 #   vars:
 #     chroot_loc: "/opt/ohpc/admin/images/centos7.1"
