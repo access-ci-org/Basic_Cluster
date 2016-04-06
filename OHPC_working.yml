@@ -231,8 +231,8 @@
    - name: restart dhcpd
      service: name=dhcpd state=restarted enabled=yes
 
-   - name: wwnodescan THIS IS IT
-     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
+#   - name: wwnodescan THIS IS IT
+#     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
 
    vars_prompt:
     - name: "public_interface"
