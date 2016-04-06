@@ -3,6 +3,19 @@
  - hosts: headnode
    tasks: 
 
+#   - name: set up internal NIC to static, ip  10.1.1.1, netmask 255.255.255.0, boot=on
+#     lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
+#     with_items:
+#       - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
+#       - { line: 'BOOTPROTO="static"', regex: '^BOOTPROTO=' }
+#       - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
+#       - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
+#       - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
+
+#   - name: restart network
+#     service: name=network state=restarted
+
+
 #   - name: install necessary stuff
 #     yum: name={{ item }} state=latest
 #     with_items:
@@ -200,6 +213,20 @@
 
 #   - name: build the vnfs 
 #     command: wwvnfs -y --chroot "{{ chroot_loc }}/"
+
+#   - name: set up provisioning interface
+#     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
+##" for vim
+#   - name: add network file to import
+#     command: wwsh -y file import /tmp/network.ww --name network
+
+#   - name: set network file path
+#     command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
+#   - template: src=dhcpd.conf dest=/etc/dhcp/dhcpd.conf
+   
+#   - name: restart dhcpd
+#     service: name=dhcpd state=restarted enabled=yes
 
 #   vars_prompt:
 #    - name: "public_interface"
