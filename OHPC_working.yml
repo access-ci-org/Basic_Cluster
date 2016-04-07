@@ -27,7 +27,7 @@
      lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
      with_items:
        - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
-       - { line: 'BOOTPROTO="static"', regex: '^BOOTPROTO=' }
+       - { line: 'BOOTPROTO=static', regex: '^BOOTPROTO=' }
        - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
        - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
        - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
@@ -231,8 +231,8 @@
    - name: restart dhcpd
      service: name=dhcpd state=restarted enabled=yes
 
-#   - name: wwnodescan THIS IS IT
-#     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
+   - name: wwnodescan THIS IS IT
+     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
 
    vars_prompt:
     - name: "public_interface"
