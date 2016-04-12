@@ -244,6 +244,21 @@
    - name: wwnodescan THIS IS IT
      shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 comp{0..{{ num_nodes|int - 1 }}}
 
+   - name: start munge
+     service: name=munge state=restarted
+
+   - name: start slurmctld
+     service: name=slurmctld state=restarted
+
+   - name: start munge on compute nodes
+     shell: pdsh -w comp{0..{{ num_nodes|int - 1 }}} systemctl start munge
+
+   - name: start slurmd on compute nodes
+     shell: pdsh -w comp{0..{{ num_nodes|int - 1 }}} systemctl start slurmd
+
+   - name: update slurm status on nodes
+     command: scontrol update nodename=comp[0-{{ num_nodes|int - 1 }}] state=idle
+
    vars_prompt:
     - name: "public_interface"
       prompt: "Enter the public network interface name (default is enp0s3):"
