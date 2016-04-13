@@ -1,0 +1,26 @@
+
+---
+ - hosts: headnode
+   tasks: 
+
+
+   - name: start munge
+     service: name=munge state=restarted
+
+   - name: start slurmctld
+     service: name=slurmctld state=restarted
+
+   - name: start munge on compute nodes
+     shell: pdsh -w comp{0..{{ num_nodes|int - 1 }}} systemctl start munge
+
+   - name: start slurmd on compute nodes
+     shell: pdsh -w comp{0..{{ num_nodes|int - 1 }}} systemctl start slurmd
+
+   - name: update slurm status on nodes
+     command: scontrol update nodename=comp[0-{{ num_nodes|int - 1 }}] state=idle
+
+   vars_prompt:
+    - name: "num_nodes"
+      prompt: "How many compute nodes do you have?"
+      private: no
+      default: 0
