@@ -3,6 +3,11 @@
  - hosts: headnode
    tasks: 
 
+   - name: set files to provision
+     command: wwsh -y provision set "comp*" --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+
+   - name: tell nodes to get files
+     command: pdsh -w comp[0-{{ num_nodes|int - 1 }}] /warewulf/bin/wwgetfiles
 
    - name: start munge
      service: name=munge state=restarted
