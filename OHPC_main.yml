@@ -1,0 +1,3 @@
+---
+ - include: headnode.yml
+# - include: compute_nodes.yml #actually, might not need this...

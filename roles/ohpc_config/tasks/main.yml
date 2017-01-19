@@ -1,0 +1,75 @@
+---
+ - hosts: headnode
+   tasks: 
+
+   - name: config warewulf interface
+     lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }}" 
+#" for vim
+
+   - name: enable tftp
+     lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
+
+   - name: config warewulf http
+     lineinfile: 
+       dest: /etc/httpd/conf.d/warewulf-httpd.conf
+       regexp: "{{ item.regex }}" 
+       line: "{{ item.line }}" 
+       state: "{{ item.state }}"
+       backrefs: yes
+     with_items:
+       - { regex: '^(.*)cgi-bin>$', line: '\1cgi-bin> \n    Require all granted', state: present}
+       - { regex: '(\s+)Allow from all', line: '\1Require all granted', state: present }
+       - { regex: 'Order allow,deny', line: "", state: absent }
+     
+   - name: reload xinetd
+     service: name=xinetd state=restarted
+ 
+   - name: enable mariadb
+     service: name=mariadb enabled=yes
+  
+   - name: restart mariadb
+     service: name=mariadb state=restarted
+
+   - name: enable httpd
+     service: name=httpd enabled=yes
+  
+   - name: restart httpdd
+     service: name=httpd state=restarted
+
+#TODO: this breaks slurm; should just be hostname
+   - name: slurm control machine config
+     lineinfile: regexp="^ControlMachine=\S+" line="ControlMachine=10.1.1.1" dest=/etc/slurm/slurm.conf 
+
+   - name: exportfs home entry on headnode
+     lineinfile: line="/home *(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
+
+   - name: exportfs opt entry on headnode
+     lineinfile: line="/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
+
+   - name: exportfs reload
+     command: exportfs -a
+
+   - name: restart rpcbind
+     service: name=rpcbind state=restarted enabled=yes
+ 
+   - name: restart nfs-server
+     service: name=nfs-server state=restarted enabled=yes
+
+   - name: cluster ssh keys
+     command: wwinit ssh_keys
+     args:
+       chdir: /root/
+       creates: /etc/warewulf/vnfs/ssh/ssh_host_key.pub
+
+#need to copy these to localhost first!
+   - name: copy key back to management machine
+     synchronize:
+       mode: pull
+       use_ssh_args: yes
+       src: /root/.ssh/cluster.pub
+       dest: cluster_root.pub
+
+   - template: src=dhcpd.conf dest=/etc/dhcp/dhcpd.conf
+   
+   - name: restart dhcpd
+     service: name=dhcpd state=restarted enabled=yes

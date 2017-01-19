@@ -1,0 +1,18 @@
+---
+ - hosts: headnode
+   tasks: 
+
+   - name: install OpenHPC base
+     yum: name="@ohpc-base" state=present
+
+   - name: install OpenHPC warewulf
+     yum: name="@ohpc-warewulf" state=present
+
+   - name: install OpenHPC base
+     yum: name="@ohpc-slurm-server" state=present
+
+   - name: add slurm user
+     user: name=slurm state=present system=yes
+
+   - name: yum update
+     yum: name=* state=latest update_cache=yes
