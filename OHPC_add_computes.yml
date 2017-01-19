@@ -8,24 +8,24 @@
        regexp: "{{ item.regex }}"
        line: "{{ item.line }}"
      with_items:
-         - { regex: "^NodeName", line: 'NodeName={{ node_glob }}] Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 State=UNKNOWN'}
-         - { regex: "^PartitionName", line: 'PartitionName=normal Nodes={{ node_glob }}] Default=YES MaxTime=24:00:00 State=UP' }
+         - { regex: "^NodeName", line: 'NodeName={{ node_glob }} Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 State=UNKNOWN'}
+         - { regex: "^PartitionName", line: 'PartitionName=normal Nodes={{ node_glob }} Default=YES MaxTime=24:00:00 State=UP' }
 #add a line to fix the controller name!!!
  
-#   - name: sync files for import
-#     command: wwsh file sync
+   - name: sync files for import
+     command: wwsh file sync
 
-#   - name: test out node glob
-#     shell: echo "{{ private_interface }}" {{ node_glob_bash }} >> tmp.txt
+   - name: test out node glob
+     shell: echo "{{ private_interface }}" {{ node_glob_bash }} >> tmp.txt
 
-#   - name: add nodes with wwnodescan - BOOT NODES NOW IN ORDER
-#     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 {{ node_glob_bash }}
+   - name: add nodes with wwnodescan - BOOT NODES NOW IN ORDER
+     shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 {{ node_glob_bash }}
 
-#   - name: add compute nodes to inventory
-#     add_host: name={{ node_glob }} group="compute nodes"
+   - name: add compute nodes to inventory
+     add_host: name={{ node_glob }} group="compute nodes"
      
-#   - name: wait for compute nodes to boot
-#     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+   - name: wait for compute nodes to boot
+     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
 
    - name: set files to provision
      command: wwsh -y provision set {{ node_glob }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
