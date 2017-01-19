@@ -19,6 +19,10 @@
        - "firewalld"
        - "pciutils"
        - "ntp"
+       - "rsync"
+       - "bash-completion"
+       - "lua"  # testing; this could fix the lmod-ohpc issue?
+ #otherwise, do a yum update --skip-broken, yum update...
  
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
@@ -61,11 +65,11 @@
    - name: reload network
      service: name=network state=restarted
 
-   - name: reload NetworkManager
-     service: name=NetworkManager state=restarted
+   - name: disable and stop NetworkManager
+     service: name=NetworkManager state=stopped enabled=no
 
-   - name: nmcli reload since NM can't handle zones... 
-     command: nmcli con reload
+#   - name: nmcli reload since NM can't handle zones... 
+#     command: nmcli con reload
 
    - name: config ntp
      lineinfile: 
@@ -159,9 +163,25 @@
      command: wwinit ssh_keys
      args:
        chdir: /root/
+       creates: /etc/warewulf/vnfs/ssh/ssh_host_key.pub
+
+   - name: turn off requiretty for sudo
+     lineinfile:
+       dest: /etc/sudoers
+       regexp: "Defaults    requiretty"
+       line:  "Defaults    !requiretty"
+       state: present
+
+#need to copy these to localhost first!
+   - name: copy key back to management machine
+     synchronize:
+       mode: pull
+       use_ssh_args: yes
+       src: /root/.ssh/cluster.pub
+       dest: cluster_root.pub
 
    - name: copy ssh keys over
-     copy: src=/root/.ssh/cluster.pub dest={{ chroot_loc }}/root/.ssh/authorized_keys
+     copy: src=cluster_root.pub dest={{ chroot_loc }}/root/.ssh/authorized_keys
 
    - name: put NFS home mount info in image
      lineinfile: line="10.1.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ chroot_loc }}/etc/fstab state=present
@@ -169,8 +189,10 @@
    - name: put NFS opt mount info in image
      lineinfile: line="10.1.1.1:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ chroot_loc }}/etc/fstab state=present
 
-   - name: slurm control machine
+#TODO: this breaks slurm; should just be hostname
+   - name: slurm control machine config
      lineinfile: regexp="^ControlMachine=\S+" line="ControlMachine=10.1.1.1" dest=/etc/slurm/slurm.conf 
+
    - name: exportfs home entry on headnode
      lineinfile: line="/home *(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
 
