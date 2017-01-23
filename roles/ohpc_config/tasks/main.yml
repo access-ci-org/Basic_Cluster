@@ -67,7 +67,7 @@
        src: /root/.ssh/cluster.pub
        dest: cluster_root.pub
 
-   - template: src=dhcpd.conf dest=/etc/dhcp/dhcpd.conf
+   - template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
    
    - name: restart dhcpd
      service: name=dhcpd state=restarted enabled=yes
