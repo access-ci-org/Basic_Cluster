@@ -1,4 +1,5 @@
 ---
+  cluster_name: "ohpc-cluster"
   public_interface: "enp3s0"
   private_interface: "enp0s25"
   chroot_loc: "/opt/ohpc/admin/images/centos7.1"

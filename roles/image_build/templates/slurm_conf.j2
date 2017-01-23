@@ -9,7 +9,7 @@
 # See the slurm.conf man page for more information.
 #
 ClusterName={{ cluster_name }}
-{% for host in groups['submit_nodes'] %}
+{% for host in groups['headnode'] %}
 ControlMachine={{ hostvars[host]['inventory_hostname'] }}
 {% endfor %}
 #ControlAddr=
@@ -93,5 +93,5 @@ JobCompType=jobcomp/none
 #AccountingStorageUser=
 #
 # COMPUTE NODES
-NodeName=compute-[0-{{ number_of_nodes - 1 }}] Procs=10 State=UNKNOWN
-PartitionName=batch Nodes=compute-[0-{{ number_of_nodes - 1 }}] Default=YES MaxTime=INFINITE State=UP
+NodeName={{ node_prefix }}[0-{{ number_of_nodes - 1 }}] Procs=10 State=UNKNOWN
+PartitionName=batch Nodes={{ node_prefix }}-[0-{{ number_of_nodes - 1 }}] Default=YES MaxTime=INFINITE State=UP
