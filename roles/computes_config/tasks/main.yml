@@ -1,6 +1,4 @@
 ---
- - hosts: headnode
-   tasks: 
 
    - name: tell nodes to get files
      command: pdsh -w {{ node_glob }} /warewulf/bin/wwgetfiles

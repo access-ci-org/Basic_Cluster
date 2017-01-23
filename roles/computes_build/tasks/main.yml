@@ -1,8 +1,5 @@
 
 ---
- - hosts: headnode
-
-   tasks: 
 
 #   - name: sync files for import
 #     command: wwsh file sync

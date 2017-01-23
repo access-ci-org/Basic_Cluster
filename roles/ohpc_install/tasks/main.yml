@@ -1,6 +1,4 @@
 ---
- - hosts: headnode
-   tasks: 
 
    - name: install OpenHPC base
      yum: name="@ohpc-base" state=present

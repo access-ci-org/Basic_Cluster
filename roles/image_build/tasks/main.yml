@@ -1,8 +1,5 @@
 ---
 
- - hosts: headnode
-   tasks: 
-
    - name: fix broken wwmkchroot file
      lineinfile: 
        dest: /usr/libexec/warewulf/wwmkchroot/centos-7.tmpl 

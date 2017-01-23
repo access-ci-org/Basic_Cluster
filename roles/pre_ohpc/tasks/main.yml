@@ -1,6 +1,4 @@
 ---
- - hosts: headnode
-   tasks: 
 
    - name: install necessary stuff
      yum: name={{ item }} state=latest

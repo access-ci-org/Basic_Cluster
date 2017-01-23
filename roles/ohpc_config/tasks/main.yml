@@ -1,6 +1,4 @@
 ---
- - hosts: headnode
-   tasks: 
 
    - name: config warewulf interface
      lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }}" 
