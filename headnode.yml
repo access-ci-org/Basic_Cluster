@@ -6,5 +6,6 @@
    - {role: pre_ohpc, tags: pre_ohpc}
    - {role: ohpc_install, tags: ohpc_install}
    - {role: ohpc_config, tags: ohpc_config}
-   - {role: image_build, tags: ohpc_config}
+   - {role: image_build, tags: image_build}
    - {role: computes_build, tags: computes_build}
+   - {role: computes_config, tags: computes_config}
