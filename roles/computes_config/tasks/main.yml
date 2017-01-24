@@ -18,7 +18,7 @@
    - name: start slurmd on compute nodes
      shell: pdsh -w "{{ node_glob }}" systemctl start slurmd
 
-   - name: start slurmd on compute nodes
+   - name: enable slurmd on compute nodes
      shell: pdsh -w "{{ node_glob }}" systemctl enable slurmd
 
    - name: update slurm status on nodes
