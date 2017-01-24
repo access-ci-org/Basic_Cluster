@@ -7,17 +7,18 @@
 #   - name: test out node glob
 #     shell: echo "{{ private_interface }}" {{ node_glob_bash }} >> tmp.txt
 
-   - name: set files to provision
-     command: wwsh -y provision set {{ node_glob }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
-
-   - name: sync files for import
-     command: wwsh file sync
-
    - name: add nodes with wwnodescan - BOOT NODES NOW IN ORDER
      shell: wwnodescan --ip=10.1.1.2 --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap=`uname -r` --vnfs=centos7.1 {{ node_glob_bash }}
+
+   - name: set files to provision
+     command: wwsh -y provision set {{ node_glob }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
 
    - name: add compute nodes to inventory
      add_host: name={{ node_glob }} group="compute nodes"
      
    - name: wait for compute nodes to boot
      local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+
+   - name: sync files for import
+     command: wwsh file sync
+
