@@ -12,8 +12,14 @@
    - name: start munge on compute nodes
      shell: pdsh -w "{{ node_glob }}" systemctl start munge
 
+   - name: enable munge on compute nodes
+     shell: pdsh -w "{{ node_glob }}" systemctl enable munge
+
    - name: start slurmd on compute nodes
      shell: pdsh -w "{{ node_glob }}" systemctl start slurmd
+
+   - name: start slurmd on compute nodes
+     shell: pdsh -w "{{ node_glob }}" systemctl enable slurmd
 
    - name: update slurm status on nodes
      command: scontrol update nodename={{ node_glob }} state=idle
