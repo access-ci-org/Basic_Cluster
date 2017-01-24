@@ -6,11 +6,14 @@
    - name: install OpenHPC warewulf
      yum: name="@ohpc-warewulf" state=present
 
-   - name: install OpenHPC base
+   - name: install OpenHPC slurm server
      yum: name="@ohpc-slurm-server" state=present
+
+   - name: yum update
+     yum: name=* state=latest update_cache=yes
 
    - name: add slurm user
      user: name=slurm state=present system=yes
 
-   - name: yum update
-     yum: name=* state=latest update_cache=yes
+   - name: create slurm.conf
+     template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf

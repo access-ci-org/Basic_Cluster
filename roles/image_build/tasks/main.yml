@@ -81,9 +81,6 @@
    - name: set network file path
      command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
 
-   - name: create slurm.conf
-     template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf
-
    - name: add slurm.conf file to import
      command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
 
