@@ -61,6 +61,18 @@
    - name: add interfaces to internal zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
 
+   - name: add interface to internal zone firewall-cmd
+     firewalld:
+       zone: internal
+       interface: {{ private_interface }}
+       permanent: yes
+
+   - name: add interface to external zone firewall-cmd
+     firewalld:
+       zone: public
+       interface: {{ public_interface }}
+       permanent: yes
+
    - name: add interfaces to external zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
 
