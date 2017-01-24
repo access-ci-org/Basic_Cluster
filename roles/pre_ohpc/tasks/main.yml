@@ -1,5 +1,17 @@
 ---
 
+   - name: set hostname
+     hostname: "{{ inventory_hostname }}"
+
+   - name: set up /etc/hosts
+     template: src=hosts.j2 dest=/etc/hosts
+
+   - name: set up /etc/ssh/sshd_config
+     template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+
+   - name: restart sshd
+     service: name=sshd state=restarted
+
    - name: install necessary stuff
      yum: name={{ item }} state=latest
      with_items:
@@ -89,4 +101,5 @@
      service: name=ntpd state=restarted
 
    - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
-     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
+     command: ifup "{{ private_interface }}" 
+#     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
