@@ -1,9 +1,12 @@
 ---
-  cluster_name: "ohpc-cluster"
   public_interface: "enp3s0"
   private_interface: "enp0s25"
   chroot_loc: "/opt/ohpc/admin/images/centos7.1"
+
+#slurm variables
+  cluster_name: "ohpc-cluster"
   number_of_nodes: 1
+  compute_num_procs: 8
   node_prefix: "compute-"
   node_glob: "{{ node_prefix }}[0-{{ number_of_nodes|int - 1}}]"
   node_glob_bash: "{{ node_prefix }}{0..{{ number_of_nodes|int - 1}}}"
