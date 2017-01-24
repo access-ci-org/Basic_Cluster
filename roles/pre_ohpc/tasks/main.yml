@@ -62,20 +62,22 @@
 
    - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
-   - name: add interfaces to internal zone firewalld
+   - name: add interfaces to internal zone in ifcfg scripts
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
 
    - name: add interface to internal zone firewall-cmd
      firewalld:
        zone: internal
-       interface: {{ private_interface }}
+       interface: "{{ private_interface }}"
        permanent: yes
+       state: enabled
 
    - name: add interface to external zone firewall-cmd
      firewalld:
        zone: public
-       interface: {{ public_interface }}
+       interface: "{{ public_interface }}"
        permanent: yes
+       state: enabled
 
    - name: add interfaces to external zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
@@ -92,6 +94,7 @@
        service: slurm
        permanent: yes
        immediate: yes
+       state: enabled
 
    - name: reload network
      service: name=network state=restarted
