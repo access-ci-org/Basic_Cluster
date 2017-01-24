@@ -55,8 +55,12 @@
      lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
 
    - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
+
    - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
+
    - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+
+   - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
    - name: add interfaces to internal zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
@@ -81,6 +85,13 @@
 
    - name: firewalld restart
      service: name=firewalld state=restarted
+
+   - name: add slurm to internal zone firewall-cmd
+     firewalld:
+       zone: internal
+       service: slurm
+       permanent: yes
+       immediate: yes
 
    - name: reload network
      service: name=network state=restarted
