@@ -15,7 +15,8 @@
 
    - name: add compute nodes to inventory
      add_host: name={{ node_glob }} group="compute nodes"
-     
+
+#I don't think this is working...     
    - name: wait for compute nodes to boot
      local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
 
