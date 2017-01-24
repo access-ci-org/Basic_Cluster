@@ -1,16 +1,7 @@
 ---
 
    - name: set hostname
-     hostname: "{{ inventory_hostname }}"
-
-   - name: set up /etc/hosts
-     template: src=hosts.j2 dest=/etc/hosts
-
-   - name: set up /etc/ssh/sshd_config
-     template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
-
-   - name: restart sshd
-     service: name=sshd state=restarted
+     hostname: name={{ inventory_hostname }}
 
    - name: install necessary stuff
      yum: name={{ item }} state=latest
@@ -29,6 +20,8 @@
        - "ntp"
        - "rsync"
        - "bash-completion"
+       - "libselinux-python"
+       - "policycoreutils"
        - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
@@ -103,3 +96,18 @@
    - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
      command: ifup "{{ private_interface }}" 
 #     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
+
+   - name: set up /etc/hosts
+     template: src=hosts.j2 dest=/etc/hosts
+
+   - name: set up /etc/ssh/sshd_config
+     template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+
+   - name: restart sshd
+     service: name=sshd state=restarted
+
+   - name: selinux allow homedirs
+     seboolean: 
+       name: use_nfs_home_dirs
+       state: yes
+       persistent: yes
