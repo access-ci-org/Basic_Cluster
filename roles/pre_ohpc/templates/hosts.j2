@@ -1,5 +1,5 @@
-127.0.0.1 {{ inventory_hostname }} localhost
+127.0.0.1 localhost
 
 {% for host in groups['headnode'] %}
-10.0.0.1 {{ hostvars[host]['inventory_hostname'] }}  {{ hostvars[host]['inventory_hostname'] }}.local
+10.1.1.1 {{ hostvars[host]['inventory_hostname'] }}  {{ hostvars[host]['inventory_hostname'] }}.local
 {% endfor %}
