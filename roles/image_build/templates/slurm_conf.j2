@@ -93,5 +93,5 @@ JobCompType=jobcomp/none
 #AccountingStorageUser=
 #
 # COMPUTE NODES
-NodeName={{ node_prefix }}[0-{{ number_of_nodes - 1 }}] Procs=10 State=UNKNOWN
-PartitionName=batch Nodes={{ node_prefix }}-[0-{{ number_of_nodes - 1 }}] Default=YES MaxTime=INFINITE State=UP
+NodeName={{node_glob }} Procs=10 State=UNKNOWN
+PartitionName=batch Nodes={{ node_glob }} Default=YES MaxTime=INFINITE State=UP
