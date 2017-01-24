@@ -34,10 +34,6 @@
    - name: restart httpdd
      service: name=httpd state=restarted
 
-#TODO: this breaks slurm; should just be hostname
-   - name: slurm control machine config
-     lineinfile: regexp="^ControlMachine=\S+" line="ControlMachine=10.1.1.1" dest=/etc/slurm/slurm.conf 
-
    - name: exportfs home entry on headnode
      lineinfile: line="/home *(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
 
