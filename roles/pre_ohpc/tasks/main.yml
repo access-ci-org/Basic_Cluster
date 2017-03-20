@@ -21,6 +21,7 @@
        - "rsync"
        - "bash-completion"
        - "libselinux-python"
+       - "libsemanage-python"
        - "policycoreutils"
        - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
@@ -65,6 +66,12 @@
    - name: add interfaces to internal zone in ifcfg scripts
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
 
+   - name: restart dbus for firewalld :(
+     service: name=dbus state=restarted
+
+   - name: firewalld restart
+     service: name=firewalld state=restarted
+
    - name: add interface to internal zone firewall-cmd
      firewalld:
        zone: internal
@@ -81,12 +88,6 @@
 
    - name: add interfaces to external zone firewalld
      lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
-
-   - name: restart dbus for firewalld :(
-     service: name=dbus state=restarted
-
-   - name: firewalld restart
-     service: name=firewalld state=restarted
 
    - name: add slurm to internal zone firewall-cmd
      firewalld:
