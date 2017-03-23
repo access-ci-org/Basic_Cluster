@@ -1,0 +1,24 @@
+#DESC: A clone of Red Hat Enterprise Linux 7
+
+# The general RHEL include has all of the necessary functions, but requires
+# some basic variables specific to each chroot type to be defined.
+# with additional procedure to add packages from variable EXTEND_COMPUTE
+. include-rhel-xcbc
+
+
+
+# Define the location of the YUM repository
+# YUM_MIRROR="http://mirror.centos.org/centos-7/7/os/\$basearch/"
+YUM_MIRROR="http://mirror.centos.org/centos-7/7/os/\$basearch/"
+
+# Include the basic packages
+. base_packages
+
+# Additional packages to get closer to the definition of compute node I had in rocks.
+. extend_compute_packages
+
+
+ADDITIONALPACKAGES=( "$EXTEND_COMPUTE" )
+
+
+# vim:filetype=sh:syntax=sh:expandtab:ts=4:sw=4:

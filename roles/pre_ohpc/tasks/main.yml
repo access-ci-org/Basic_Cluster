@@ -1,7 +1,7 @@
 ---
 
-   - name: set hostname
-     hostname: name={{ inventory_hostname }}
+#   - name: set hostname
+#     hostname: name={{ inventory_hostname }}
 
    - name: install necessary stuff
      yum: name={{ item }} state=latest
@@ -17,121 +17,137 @@
        - "exportfs" 
        - "firewalld"
        - "pciutils"
-       - "ntp"
        - "rsync"
        - "bash-completion"
        - "libselinux-python"
+       - "libsemanage-python"
        - "policycoreutils"
        - "lua"  # testing; this could fix the lmod-ohpc issue?
+#       - "ntp"
  #otherwise, do a yum update --skip-broken, yum update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
-     get_url: url=http://build.openhpc.community/OpenHPC:/1.0/CentOS_7.1/OpenHPC:1.0.repo dest=/etc/yum.repos.d/
+     yum: name=https://github.com/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm state=present
  
-   - name: install fail2ban # separate b/c it's in epel
-     yum: name=fail2ban state=latest 
+#   - name: install fail2ban # separate b/c it's in epel
+#     yum: name=fail2ban state=latest 
 
-   - name: turn off requiretty for sudo
-     lineinfile:
-       dest: /etc/sudoers
-       regexp: "Defaults    requiretty"
-       line:  "Defaults    !requiretty"
-       state: present
+#this is only necessary for non-local ansible!
+#   - name: turn off requiretty for sudo
+#     lineinfile:
+#       dest: /etc/sudoers
+#       regexp: "Defaults    requiretty"
+#       line:  "Defaults    !requiretty"
+#       state: present
 
-   - name: set up internal NIC to static, ip  10.1.1.1, netmask 255.255.255.0, boot=on
-     lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
-     with_items:
-       - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
-       - { line: 'BOOTPROTO=static', regex: '^BOOTPROTO=' }
-       - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
-       - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
-       - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
-       - { line: 'PEERDNS=no', regex: '^PEERDNS=' }
-       - { line: 'DEFROUTE=no', regex: '^DEFROUTE=' }
-       - { line: 'PEERROUTES=no', regex: '^PEERROUTES=' }
-       - { line: 'IPV6INIT=no', regex: '^IPV6INIT=' }
-
-   - name: make sure outside network comes up on boot
-     lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
-
-   - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
-
-   - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
-
-   - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
-
+# Not in this case!
+#   - name: set up internal NIC to static, ip  10.1.1.1, netmask 255.255.255.0, boot=on
+#     lineinfile: line={{ item.line }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} state=present regexp={{ item.regex }}
+#     with_items:
+#       - { line: 'IPADDR=10.1.1.1', regex: '^IPADDR=' }
+#       - { line: 'BOOTPROTO=static', regex: '^BOOTPROTO=' }
+#       - { line: 'NETMASK=255.255.255.0', regex: '^NETMASK=' }
+#       - { line: 'GATEWAY=10.1.1.254', regex: '^GATEWAY=' }
+#       - { line: 'ONBOOT=yes', regex: '^ONBOOT=' }
+#       - { line: 'PEERDNS=no', regex: '^PEERDNS=' }
+#       - { line: 'DEFROUTE=no', regex: '^DEFROUTE=' }
+#       - { line: 'PEERROUTES=no', regex: '^PEERROUTES=' }
+#       - { line: 'IPV6INIT=no', regex: '^IPV6INIT=' }
+#
+#   - name: make sure outside network comes up on boot
+#     lineinfile: line='ONBOOT=yes' dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} state=present regexp='^ONBOOT='
+#
+#   - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
+#
+#   - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
+#
+#   - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+#
    - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
-   - name: add interfaces to internal zone in ifcfg scripts
-     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
-
-   - name: add interface to internal zone firewall-cmd
-     firewalld:
-       zone: internal
-       interface: "{{ private_interface }}"
-       permanent: yes
-       state: enabled
-
-   - name: add interface to external zone firewall-cmd
-     firewalld:
-       zone: public
-       interface: "{{ public_interface }}"
-       permanent: yes
-       state: enabled
-
-   - name: add interfaces to external zone firewalld
-     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
-
-   - name: restart dbus for firewalld :(
-     service: name=dbus state=restarted
-
+#   - name: add interfaces to internal zone in ifcfg scripts
+#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
+#
+#   - name: add interface to internal zone firewall-cmd
+#     firewalld:
+#       zone: internal
+#       interface: "{{ private_interface }}"
+#       permanent: yes
+#       state: enabled
+#
+#   - name: add interface to external zone firewall-cmd
+#     firewalld:
+#       zone: public
+#       interface: "{{ public_interface }}"
+#       permanent: yes
+#       state: enabled
+#
+#   - name: add interfaces to external zone firewalld
+#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
+#
+#   - name: restart dbus for firewalld :(
+#     service: name=dbus state=restarted
+#
    - name: firewalld restart
      service: name=firewalld state=restarted
-
-   - name: add slurm to internal zone firewall-cmd
+#
+   - name: add services to internal zone firewall-cmd
      firewalld:
        zone: internal
-       service: slurm
+       service: '{{ item }}'
        permanent: yes
        immediate: yes
        state: enabled
+     with_items:
+       - 'slurm'
+       - 'mdns'
+       - 'ipp-client'
+       - 'dhcpv6-client'
+       - 'ssh'
+       - 'nfs'
+       - 'mountd'
+       - 'rpc-bind'
+       - 'http'
+       - 'https'
+       - 'tftp'
+       - 'samba-client'
 
-   - name: reload network
-     service: name=network state=restarted
-
-   - name: disable and stop NetworkManager
-     service: name=NetworkManager state=stopped enabled=no
-
+#   - name: reload network
+#     service: name=network state=restarted
+#
+#   - name: disable and stop NetworkManager
+#     service: name=NetworkManager state=stopped enabled=no
+#
 #   - name: nmcli reload since NM can't handle zones... 
 #     command: nmcli con reload
 
-   - name: config ntp
-     lineinfile: 
-       dest: /etc/ntp.conf    
-       regexp: "{{ item.regex }}" 
-       line: "{{ item.line }}" 
-     with_items:
-       - { regex: '^server 0', line: 'server 0.pool.ntp.org' }
-       - { regex: '^server 1', line: 'server 1.pool.ntp.org' }
-       - { regex: '^server 2', line: 'server 2.pool.ntp.org' }
-       - { regex: '^server 3', line: 'server 3.pool.ntp.org' }
-
-   - name: enable ntpd
-     service: name=ntpd state=restarted
-
-   - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
-     command: ifup "{{ private_interface }}" 
-#     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
-
+#   - name: config ntp
+#     lineinfile: 
+#       dest: /etc/ntp.conf    
+#       regexp: "{{ item.regex }}" 
+#       line: "{{ item.line }}" 
+#     with_items:
+#       - { regex: '^server 0', line: 'server 0.pool.ntp.org' }
+#       - { regex: '^server 1', line: 'server 1.pool.ntp.org' }
+#       - { regex: '^server 2', line: 'server 2.pool.ntp.org' }
+#       - { regex: '^server 3', line: 'server 3.pool.ntp.org' }
+#
+#   - name: enable ntpd
+#     service: name=chronyd state=restarted enabled=yes
+#
+#   - name: ensure internal interface is up on 10.1.1.1 netmask 255.255.255.0
+#     command: ifup "{{ private_interface }}" 
+##     command: ifconfig "{{ private_interface }}" 10.1.1.1 netmask 255.255.255.0 up
+#
    - name: set up /etc/hosts
      template: src=hosts.j2 dest=/etc/hosts
-
-   - name: set up /etc/ssh/sshd_config
-     template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
-
-   - name: restart sshd
-     service: name=sshd state=restarted
-
+##
+#   - name: set up /etc/ssh/sshd_config
+#     template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+#
+#   - name: restart sshd
+#     service: name=sshd state=restarted
+#
    - name: selinux allow homedirs
      seboolean: 
        name: use_nfs_home_dirs

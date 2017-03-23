@@ -1,0 +1,89 @@
+---
+
+   - name: copy login_template.tmpl for wwmkchroot
+     copy: src=login-nodes.tmpl dest="{{ template_path }}{{ login_template }}.tmpl"
+
+   - name: copy login_packages for wwmkchroot
+     copy: src=login_packages dest="{{ template_path }}login_packages"
+
+   - name: make chroot
+     command: wwmkchroot "{{ login_template }}" "{{ login_chroot_loc }}"
+
+   - name: copy resolve.conf into image
+     copy: src=/etc/resolv.conf dest="{{ login_chroot_loc }}/etc/resolv.conf" #"
+
+   - name: yum install into the image chroot
+     command: yum -y --installroot={{ login_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
+#" for vim
+
+   - name: yum install slurm client into image
+     command: yum -y --installroot={{ login_chroot_loc }} groupinstall ohpc-slurm-client
+#" for vim
+#
+##FIREWALL STUFF - DON'T LEAVE COMMENTED OUT
+#   - template: src=firewalld.conf dest={{ login_chroot_loc }}/etc/firewalld/firewalld.conf
+#
+#   - template: src=zones/firewall_public.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/public.xml
+#
+#   - template: src=services/slurm.xml dest={{ login_chroot_loc }}/etc/firewalld/services/slurm.xml
+#
+#   - template: src=zones/firewall_internal.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/internal.xml
+ 
+   - name: copy ssh keys over
+     copy: src=cluster_root.pub dest={{ login_chroot_loc }}/root/.ssh/authorized_keys
+
+   - name: put NFS home mount info in image
+     lineinfile: line="10.2.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/export /share nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+
+   - name: chronyd on login image enabled 
+     command: chroot '{{ login_chroot_loc }}' systemctl enable chronyd
+
+   - name: add headnode to compute chrony.conf
+     lineinfile: line="server 10.2.1.1" dest={{ login_chroot_loc }}/etc/chrony.conf state=present
+
+   - name: wwimport file (gres.conf)
+     command: wwsh file import /etc/slurm/gres.conf
+
+   - name: wwimport file (passwd)
+     command: wwsh file import /etc/passwd
+
+   - name: wwimport file (group)
+     command: wwsh file import /etc/group
+
+   - name: wwimport file (shadow)
+     command: wwsh file import /etc/shadow
+
+   - name: wwimport file (slurm)
+     command: wwsh file import /etc/slurm/slurm.conf
+
+   - name: wwimport file (munge)
+     command: wwsh file import /etc/munge/munge.key
+
+   - name: build bootstrap image
+     shell: wwbootstrap {{ build_kernel_ver }}
+ 
+   - name: fix export of usr/include
+     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ login_chroot }}.conf state=present insertafter=EOF create=yes
+
+   - name: build the vnfs 
+     command: wwvnfs -y --chroot "{{ login_chroot_loc }}/"
+
+   - name: set up provisioning interface
+     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
+#" for vim
+#
+   - name: add network file to import
+     command: wwsh -y file import /tmp/network.ww --name network
+
+   - name: set network file path
+     command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
+   - name: add slurm.conf file to import
+     command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
+

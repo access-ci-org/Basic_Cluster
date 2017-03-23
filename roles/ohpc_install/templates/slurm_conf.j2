@@ -9,9 +9,7 @@
 # See the slurm.conf man page for more information.
 #
 ClusterName={{ cluster_name }}
-{% for host in groups['headnode'] %}
-ControlMachine={{ hostvars[host]['inventory_hostname'] }}
-{% endfor %}
+ControlMachine={{ inventory_hostname }}
 #ControlAddr=
 #BackupController=
 #BackupAddr=
@@ -83,15 +81,21 @@ JobCompType=jobcomp/none
 #JobCompLoc=
 #
 # ACCOUNTING
-#JobAcctGatherType=jobacct_gather/linux
-#JobAcctGatherFrequency=30
+JobAcctGatherType=jobacct_gather/linux
+JobAcctGatherFrequency=30
 #
-#AccountingStorageType=accounting_storage/slurmdbd
-#AccountingStorageHost=
-#AccountingStorageLoc=
+AccountingStorageType=accounting_storage/filetxt
+AccountingStorageHost=hpcphi
+AccountingStorageLoc=/var/log/slurmacct.log
+AccountingStorageEnforce=associations,limits
 #AccountingStoragePass=
 #AccountingStorageUser=
 #
+#GENERAL RESOURCE
+GresTypes={{ gres_types }}
+#
 # COMPUTE NODES
-NodeName={{node_glob }} Procs={{ compute_num_procs }} State=UNKNOWN
-PartitionName=batch Nodes={{ node_glob }} Default=YES MaxTime=INFINITE State=UP
+#NodeName={{ node_glob }} Procs={{ compute_num_procs }} State=UNKNOWN
+#
+# PARTITIONS
+#PartitionName=batch Nodes={{ node_glob }} Default=YES MaxTime=INFINITE State=UP
