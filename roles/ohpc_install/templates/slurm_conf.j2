@@ -99,3 +99,11 @@ GresTypes={{ gres_types }}
 #
 # PARTITIONS
 #PartitionName=batch Nodes={{ node_glob }} Default=YES MaxTime=INFINITE State=UP
+#
+#EXAMPLE CONFIGURATION
+#NodeName=compute-1-18 Sockets=2 CoresPerSocket=4 State=UNKNOWN
+#NodeName=gpu-compute-6-12 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
+# PARTITIONS
+#PartitionName=high Nodes=compute-1-[14-18] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
+#PartitionName=gpu  Nodes=gpu-compute-6-12 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
+#PartitionName=low  Nodes=compute-1-[14-18] Default=YES MaxTime=INFINITE State=UP 
