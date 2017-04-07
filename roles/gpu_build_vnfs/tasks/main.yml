@@ -1,0 +1,121 @@
+---
+
+   - name: copy gpu_template.tmpl for wwmkchroot
+     copy: src=gpu-nodes.tmpl dest="{{ template_path }}{{ gpu_template }}.tmpl"
+
+   - name: copy gpu_compute_packages for wwmkchroot
+     copy: src=gpu_compute_packages dest="{{ template_path }}gpu_compute_packages"
+
+   - name: make chroot
+     command: wwmkchroot "{{ gpu_template }}" "{{ gpu_chroot_loc }}"
+
+   - name: copy resolve.conf into image
+     copy: src=/etc/resolv.conf dest="{{ gpu_chroot_loc }}/etc/resolv.conf" #"
+
+   - name: yum install into the image chroot
+     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
+#" for vim
+
+   - name: yum install slurm client into image
+     command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
+#" for vim
+#
+   - name: mount necessary bits
+     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
+     with_items:
+      - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
+      - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
+      - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
+
+   - name: get nvidia driver installation runfile
+     copy: src={{ nvidia_driver_installer }} dest={{ gpu_chroot_loc }}/root/ mode=0700
+ 
+   - name: build nvidia kernel modules in the vnfs
+     shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
+     vars:
+       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
+     ignore_errors: yes
+
+   - name: unmount necessary bits
+     mount: path={{ item.path }} state=unmounted
+     with_items:
+      - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
+      - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
+      - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
+
+   - name: blacklist nouveau in modprobe
+     copy: src=blacklist_modprobe dest={{ gpu_chroot_loc }}/etc/modprobe.d/blacklist.conf
+
+   - name: blacklist nouveau in grub
+     copy: src=grub_default dest={{ gpu_chroot_loc }}/etc/default/grub
+
+   - name: create rebuild-grub service
+     copy: src=rebuild-grub.service dest={{ gpu_chroot_loc }}/etc/systemd/system/rebuild-grub.service
+ 
+   - name: enable rebuild-grub.service
+     command: chroot {{ gpu_chroot_loc }} systemctl enable rebuild-grub.service
+
+   - name: create service create-cuda-devices
+     copy: src=create-cuda-devices.service dest={{ gpu_chroot_loc }}/etc/systemd/system/create-cuda-devices.service
+
+   - name: enable create-cuda-devices
+     command: chroot {{ gpu_chroot_loc }} systemctl enable create-cuda-devices
+
+   - name: copy ssh keys over
+     copy: src=cluster_root.pub dest={{ gpu_chroot_loc }}/root/.ssh/authorized_keys
+
+   - name: put NFS home mount info in image
+     lineinfile: line="10.2.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+
+   - name: chronyd on compute image enabled 
+     command: chroot '{{ gpu_chroot_loc }}' systemctl enable chronyd
+
+   - name: add headnode to compute chrony.conf
+     lineinfile: line="server 10.2.1.1" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
+
+   - name: wwimport file (gres.conf)
+     command: wwsh file import /etc/slurm/gres.conf
+
+   - name: wwimport file (passwd)
+     command: wwsh file import /etc/passwd
+
+   - name: wwimport file (group)
+     command: wwsh file import /etc/group
+
+   - name: wwimport file (shadow)
+     command: wwsh file import /etc/shadow
+
+   - name: wwimport file (slurm)
+     command: wwsh file import /etc/slurm/slurm.conf
+
+   - name: wwimport file (munge)
+     command: wwsh file import /etc/munge/munge.key
+
+   - name: build bootstrap image
+     shell: wwbootstrap {{ build_kernel_ver }}
+
+   - name: fix export of usr/include
+     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf present=yes insertafter=EOF
+
+   - name: build the vnfs 
+     command: wwvnfs -y --chroot "{{ gpu_chroot_loc }}/"
+
+   - name: set up provisioning interface
+     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
+#" for vim
+#
+   - name: add network file to import
+     command: wwsh -y file import /tmp/network.ww --name network
+
+   - name: set network file path
+     command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
+   - name: add slurm.conf file to import
+     command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
+

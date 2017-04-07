@@ -1,11 +1,15 @@
-
 ---
  - hosts: headnode
    roles:
-   
+
    - {role: pre_ohpc, tags: pre_ohpc}
    - {role: ohpc_install, tags: ohpc_install}
    - {role: ohpc_config, tags: ohpc_config}
-   - {role: image_build, tags: image_build}
-   - {role: computes_build, tags: computes_build}
-   - {role: computes_config, tags: computes_config}
+   - {role: compute_build_vnfs, tags: compute_build_vnfs}
+   - {role: gpu_build_vnfs, tags: gpu_build_vnfs}
+   - {role: login_build_vnfs, tags: login_build_vnfs}
+   - {role: compute_build_nodes, tags: compute_build_nodes}
+   - {role: gpu_build_nodes, tags: gpu_build_nodes}
+   - {role: login_build_nodes, tags: login_build_nodes}
+   - {role: viz_build_nodes, tags: viz_build_nodes}
+   - {role: nodes_vivify, tags: nodes_vivify}

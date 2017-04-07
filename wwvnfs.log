@@ -1,0 +1,27 @@
+Using 'centos7.3-compute' as the VNFS name
+Using gzip command: '/usr/bin/pigz -9'
+Creating VNFS image from centos7.3-compute
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/btmp'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/chrony'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/lastlog'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/maillog'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/messages'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/munge'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/secure'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/spooler'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/tallylog'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/wtmp'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/log/yum.log'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/var/cache'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/src'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/lib/locale'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/include'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/share/man'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/share/doc'
+Finding all files to exclude at: '/opt/ohpc/admin/images/centos7.3-compute/usr/share/locale'
+Creating target chroot at: /var/tmp/wwvnfs.9bmnwDekPf0x324Y
+Building new chroot...
+Building and compressing the final image
+Cleaning temporary files
+VNFS 'centos7.3-compute' has been imported
+Done.

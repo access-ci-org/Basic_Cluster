@@ -1,0 +1,12 @@
+[Unit]
+Description=Create_cuda_devices
+#After=
+Before=slurmd.service
+#Requires=
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "/bin/nvidia-smi -c 1"
+
+[Install]
+WantedBy=multi-user.target

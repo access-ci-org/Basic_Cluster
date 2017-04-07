@@ -1,13 +1,50 @@
 ---
-  public_interface: "enp3s0"
-  private_interface: "enp0s25"
-  chroot_loc: "/opt/ohpc/admin/images/centos7.1"
+# Headnode Info
+  public_interface: "ens2f0"
+  private_interface: "ens2f1"
+  build_kernel_ver: '3.10.0-514.10.2.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
-#slurm variables
-  cluster_name: "ohpc-cluster"
-  number_of_nodes: 1
-  compute_num_procs: 8
-  node_prefix: "compute-"
-  node_glob: "{{ node_prefix }}[0-{{ number_of_nodes|int - 1}}]"
-  node_glob_bash: "{{ node_prefix }}{0..{{ number_of_nodes|int - 1}}}"
-  last_node: "{{ node_prefix }}{{ number_of_nodes|int - 1 }}"
+#slurm.conf variables
+  cluster_name: "divsci-hpcc"
+  gres_types: "gpu"
+
+#Node Config Vars - for stateful nodes
+  sda1: "mountpoint=/boot:dev=sda1:type=ext3:size=500"
+  sda2: "dev=sda2:type=swap:size=500"
+  sda3: "mountpoint=/:dev=sda3:type=ext3:size=fill"
+
+# GPU Node Vars
+  nvidia_driver_installer: "NVIDIA-Linux-x86_64-375.39.run"
+
+# WW Template Names for wwmkchroot
+  template_path: "/usr/libexec/warewulf/wwmkchroot/"
+  compute_template: "compute-nodes"
+  gpu_template: "gpu-nodes"  
+  login_template: "login-nodes"  
+
+# Chroot variables
+  compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"
+  compute_chroot: centos7.3-compute
+  gpu_chroot_loc: "/opt/ohpc/admin/images/{{ gpu_chroot }}"
+  gpu_chroot: centos7.3-gpu
+  login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
+  login_chroot: centos7.3-login 
+
+#Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
+# Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
+# There is a real difference between building from scratch, and using these for maintenance / node addition!
+  compute_nodes:
+   - { name: "compute-1-14", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:22:29", ip: "10.2.255.116"}
+   - { name: "compute-1-15", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:21:60", ip: "10.2.255.117"}
+   - { name: "compute-1-16", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:23:b1", ip: "10.2.255.118"}
+   - { name: "compute-1-17", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:0f:c2", ip: "10.2.255.119"}
+   - { name: "compute-1-18", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:22:08", ip: "10.2.255.120"}
+ 
+  login_nodes:
+   - { name: "compute-3-10", vnfs: '{{login_chroot}}', cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:21:ed", ip: "10.2.255.137"}
+ 
+  gpu_nodes:
+   - { name: "gpu-compute-6-12", vnfs: '{{gpu_chroot}}', gpus: 4, gpu_type: "gtx_TitanX", cpus: 16, sockets: 2, corespersocket: 8,  mac: "0c:c4:7a:6e:9d:6e", ip: "10.2.255.47"}
+ 
+  viz_nodes:
+   - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}

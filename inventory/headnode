@@ -1,2 +1,3 @@
 [headnode]
-ohpc_head ansible_host=192.168.0.3 ansible_connection=ssh ansible_user=builder ansible_become=true become_method=sudo
+#localhost ansible_connection=ssh
+master ansible_host=10.2.1.1 ansible_connection=ssh

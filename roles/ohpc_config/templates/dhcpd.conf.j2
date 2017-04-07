@@ -3,7 +3,8 @@
 #   see /usr/share/doc/dhcp*/dhcpd.conf.example
 #   see dhcpd.conf(5) man page
 #
-server-identifier frontend;
-subnet 10.1.1.0 netmask 255.255.255.0 {
-      range dynamic-bootp 10.1.1.2 10.1.1.253;
+server-identifier master;
+subnet 10.2.0.0 netmask 255.255.0.0 {
+      not authoritative;
+      option subnet-mask 255.255.0.0;
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Slurmctld</short>
+  <description> Slurmctld is the controller daemon for the Slurm 
+   scheduler, which communicates with slurmd on controlled nodes.
+  </description>
+  <port protocol="tcp" port="6817"/>
+  <port protocol="udp" port="6817"/>
+  <port protocol="tcp" port="6818"/>
+  <port protocol="udp" port="6818"/>
+  <port protocol="tcp" port="7321"/>
+  <port protocol="udp" port="7321"/>
+</service>

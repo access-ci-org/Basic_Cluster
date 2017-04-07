@@ -17,3 +17,23 @@
 
    - name: create slurm.conf
      template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf
+
+   - name: set the gres.conf on the master
+     copy: src=gres.conf dest=/etc/slurm/gres.conf
+
+   - template: src=include-rhel-xcbc.j2 dest="{{ xcbc_template_path }}"
+# silly vim."
+ 
+   - name: fix the warewulf wwsh script... ARGH (line 29)
+     lineinfile: 
+       dest: /bin/wwsh
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present
+
+   - name: fix the warewulf wwnodescan script... ARGH (line 96)
+     lineinfile: 
+       dest: /bin/wwnodescan
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present

@@ -1,0 +1,81 @@
+---
+
+#   - name: fix broken wwmkchroot file
+#     lineinfile: 
+#       dest: /usr/libexec/warewulf/wwmkchroot/centos-7.tmpl 
+#       regexp: "^YUM_MIRROR(.*)7.2.1511(.*)"
+#       line: 'YUM_MIRROR\g<1>7\g<2>'   # use \g<1> for backref followed by digit!
+#       backrefs: yes
+
+   - template: src=compute_template.j2 dest="{{ template_path }}{{ compute_template }}.tmpl"
+
+   - template: src=extend_compute_packages.j2 dest="{{ template_path }}extend_compute_packages"
+
+   - template: src=base_packages.j2 dest="{{ template_path }}base_packages"
+ 
+   - name: make chroot
+     command: wwmkchroot "{{ compute_template }}" "{{ compute_chroot_loc }}"
+
+   - name: copy resolve.conf into image
+     copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
+
+   - name: yum install into the image chroot
+     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2
+#" for vim
+
+   - name: yum install slurm client into image
+     command: yum -y --installroot={{ compute_chroot_loc }} groupinstall ohpc-slurm-client
+#" for vim
+
+   - name: copy ssh keys over
+     copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
+
+   - name: put NFS home mount info in image
+     lineinfile: line="10.2.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS opt mount info in image
+     lineinfile: line="10.2.1.1:/export /share nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: chronyd on compute image enabled 
+     command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd
+
+   - name: add headnode to compute chrony.conf
+     lineinfile: line="server 10.2.1.1" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
+
+   - name: wwimport file into image (passwd)
+     command: wwsh file import /etc/passwd
+
+   - name: wwimport file into image (group)
+     command: wwsh file import /etc/group
+
+   - name: wwimport file into image (shadow)
+     command: wwsh file import /etc/shadow
+
+   - name: wwimport file into image (slurm)
+     command: wwsh file import /etc/slurm/slurm.conf
+
+   - name: wwimport file into image (munge)
+     command: wwsh file import /etc/munge/munge.key
+
+   - name: build bootstrap image
+     shell: wwbootstrap {{ build_kernel_ver }}
+
+   - name: build the vnfs 
+     command: wwvnfs -y --chroot "{{ compute_chroot_loc }}/"
+
+   - name: set up provisioning interface
+     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
+#" for vim
+#
+   - name: add network file to import
+     command: wwsh -y file import /tmp/network.ww --name network
+
+   - name: set network file path
+     command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
+   - name: add slurm.conf file to import
+     command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
+

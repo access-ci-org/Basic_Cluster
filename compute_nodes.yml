@@ -1,6 +1,0 @@
-
----
- - hosts: compute_nodes
-   roles:
-   
-   - {role: computes_config, tags: computes_config}
