@@ -22,7 +22,7 @@
      copy: src=gres.conf dest=/etc/slurm/gres.conf
 
    - name: insert rhel-xcbc WW template
-     copy: src=include-rhel-xcbc.tmpl dest="{{ template_path }}include-rhel-xcbc.tmpl"
+     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
