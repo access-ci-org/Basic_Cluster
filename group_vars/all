@@ -15,6 +15,7 @@
 # Headnode Info
   public_interface: "enp3s0"
   private_interface: "internal"
+  headnode_private_ip: "10.0.0.1"
   build_kernel_ver: '3.10.0-327.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #slurm.conf variables
