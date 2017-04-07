@@ -21,8 +21,8 @@
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf
 
-   - template: src=include-rhel-xcbc.j2 dest="{{ xcbc_template_path }}"
-# silly vim."
+   - name: insert rhel-xcbc WW template
+     copy: src=include-rhel-xcbc.tmpl dest="{{ template_path }}include-rhel-xcbc.tmpl"
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
