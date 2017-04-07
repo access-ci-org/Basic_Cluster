@@ -1,12 +1,28 @@
 ---
+#OpenHPC release version
+  openhpc_release_rpm: "https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.aarch64.rpm"
+#Older version are located at:
+#/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
+#/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.sle12.aarch64.rpm
+#/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.sle12.x86_64.rpm
+#/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.aarch64.rpm
+#/openhpc/ohpc/releases/download/v1.2.1.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm
+#/openhpc/ohpc/releases/download/v1.2.GA/ohpc-release-centos7.2-1.2-1.aarch64.rpm
+#/openhpc/ohpc/releases/download/v1.2.GA/ohpc-release-centos7.2-1.2-1.x86_64.rpm
+#/openhpc/ohpc/releases/download/v1.1.GA/ohpc-release-centos7.2-1.1-1.x86_64.rpm
+#/openhpc/ohpc/releases/download/v1.0.1.GA/ohpc-release-1.0-1.x86_64.rpm
+#
 # Headnode Info
-  public_interface: "ens2f0"
-  private_interface: "ens2f1"
-  build_kernel_ver: '3.10.0-514.10.2.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  public_interface: "enp3s0"
+  private_interface: "internal"
+  build_kernel_ver: '3.10.0-327.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #slurm.conf variables
   cluster_name: "divsci-hpcc"
   gres_types: "gpu"
+
+#Stateful compute or not?
+  computes_stateful: false
 
 #Node Config Vars - for stateful nodes
   sda1: "mountpoint=/boot:dev=sda1:type=ext3:size=500"
@@ -30,16 +46,16 @@
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
   login_chroot: centos7.3-login 
 
+# Node Inventory method - automatic, or manual
+  node_inventory_auto: false
+
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
 # There is a real difference between building from scratch, and using these for maintenance / node addition!
+#
   compute_nodes:
-   - { name: "compute-1-14", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:22:29", ip: "10.2.255.116"}
-   - { name: "compute-1-15", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:21:60", ip: "10.2.255.117"}
-   - { name: "compute-1-16", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:23:b1", ip: "10.2.255.118"}
-   - { name: "compute-1-17", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:0f:c2", ip: "10.2.255.119"}
-   - { name: "compute-1-18", vnfs: '{{compute_chroot}}',  cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:22:08", ip: "10.2.255.120"}
- 
+   - { name: "compute-1", vnfs: '{{compute_chroot}}',  cpus: 1, sockets: 1, corespersocket: 1,  mac: "08:00:27:EC:E2:FF", ip: "10.0.1.254"}
+
   login_nodes:
    - { name: "compute-3-10", vnfs: '{{login_chroot}}', cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:21:ed", ip: "10.2.255.137"}
  
