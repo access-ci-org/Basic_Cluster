@@ -85,7 +85,7 @@ JobAcctGatherType=jobacct_gather/linux
 JobAcctGatherFrequency=30
 #
 AccountingStorageType=accounting_storage/filetxt
-AccountingStorageHost=hpcphi
+AccountingStorageHost={{ inventory_hostname }}
 AccountingStorageLoc=/var/log/slurmacct.log
 AccountingStorageEnforce=associations,limits
 #AccountingStoragePass=
@@ -94,13 +94,9 @@ AccountingStorageEnforce=associations,limits
 #GENERAL RESOURCE
 GresTypes={{ gres_types }}
 #
-# COMPUTE NODES
-#NodeName={{ node_glob }} Procs={{ compute_num_procs }} State=UNKNOWN
+#EXAMPLE CONFIGURATION - copy,comment out, and edit
 #
-# PARTITIONS
-#PartitionName=batch Nodes={{ node_glob }} Default=YES MaxTime=INFINITE State=UP
-#
-#EXAMPLE CONFIGURATION
+#COMPUTE NODES
 #NodeName=compute-1-18 Sockets=2 CoresPerSocket=4 State=UNKNOWN
 #NodeName=gpu-compute-6-12 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
 # PARTITIONS
