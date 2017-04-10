@@ -13,7 +13,7 @@
 #       msg: "Quick fail for test!"
 
    - name: add node to ww db
-     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
      with_items: "{{ compute_nodes }}"
 
    - name: set nodes bootloader
