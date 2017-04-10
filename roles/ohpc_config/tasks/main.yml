@@ -35,13 +35,13 @@
      service: name=httpd state=restarted
 
    - name: exportfs home entry on headnode
-     lineinfile: line="/home 10.2.0.0\16(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
+     lineinfile: line="/home 10.0.0.0\16(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
 
    - name: exportfs opt entry on headnode
-     lineinfile: line="/opt/ohpc/pub 10.2.0.0\16(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
+     lineinfile: line="/opt/ohpc/pub 10.0.0.0\16(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
 
    - name: exportfs software dir entry on headnode
-     lineinfile: line="/export 10.2.0.0\16(ro,no_subtree_check,fsid=12)" dest=/etc/exports state=present
+     lineinfile: line="/export 10.0.0.0\16(ro,no_subtree_check,fsid=12)" dest=/etc/exports state=present
 
    - name: exportfs reload
      command: exportfs -a
