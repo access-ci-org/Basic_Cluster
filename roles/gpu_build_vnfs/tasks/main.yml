@@ -20,8 +20,10 @@
      command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
 #" for vim
 #
+#     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
+# commented ^ out because ansible adds these entries to fstab!!!
    - name: mount necessary bits
-     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
+     command: mount -o rw,bind "{{ item.src }}" "{{ item.path }}"
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
@@ -36,8 +38,9 @@
        nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
      ignore_errors: yes
 
+#     mount: path={{ item.path }} state=unmounted
    - name: unmount necessary bits
-     mount: path={{ item.path }} state=unmounted
+     command: umount {{ item.path }}
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
