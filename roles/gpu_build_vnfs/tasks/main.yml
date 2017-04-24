@@ -35,6 +35,8 @@
    - name: build nvidia kernel modules in the vnfs
      shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
      vars:
+# need to do something like rpm -q kernel | tail -1 instead of uname -r !!!
+# from Fra: rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
        nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
      ignore_errors: yes
 
