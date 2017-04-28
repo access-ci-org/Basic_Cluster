@@ -81,11 +81,11 @@ Initial headnode setup
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
 
-1\. `git clone https://github.com/XSEDE/CRI\_XCBC/ `
+1\. `git clone https://github.com/XSEDE/CRI_XCBC/ `
 
   Get the actual playbooks.
 
-2\. `./OHPC\_Ansible/install\_ansible.sh `
+2\. `./OHPC\_Ansible/install_ansible.sh `
 
   This may fail due to frequently
  changing dependency requirements in python libraries. The script creates
@@ -94,12 +94,12 @@ editor of choice!
  the system python installation. The ansible source code is cloned into
  \$<span>HOME</span>/ansible\_env/ansible\_source.
 
-3\. `source \$<span>HOME</span>/ansible\_env/ansible/bin/activate `
+3\. `source \$<span>HOME</span>/ansible_env/ansible/bin/activate `
 
 Loads the ansible virtualenv into the current session.
 
 4\. `source
-\$<span>HOME</span>/ansible\_env/ansible\_source/hacking/env-setup `
+\$<span>HOME</span>/ansible\_env/ansible_source/hacking/env-setup `
 
 Loads the ansible environment variables into the current session.
 
@@ -167,21 +167,21 @@ ansible-playbook to exectute only tasks with the given name.
 0\. On the headnode, run ssh-keygen, followed by cat .ssh/id\_rsa.pub
 &gt;&gt; .ssh/authorized\_keys
 
-1\. `ansible-playbook -i inventory/headnode -t pre\_ohpc headnode.yml`
+1\. `ansible-playbook -i inventory/headnode -t pre_ohpc headnode.yml`
 
-2\. `ansible-playbook -i inventory/headnode -t ohpc\_install headnode.yml`
+2\. `ansible-playbook -i inventory/headnode -t ohpc_install headnode.yml`
 explain
 
-3\. `ansible-playbook -i inventory/headnode -t ohpc\_config headnode.yml`
+3\. `ansible-playbook -i inventory/headnode -t ohpc_config headnode.yml`
 explain
 
-4\. `ansible-playbook -i inventory/headnode -t compute\_build\_vnfs headnode.yml `
+4\. `ansible-playbook -i inventory/headnode -t compute_build_vnfs headnode.yml `
 - Now is the time to grab a cup of coffee
 
 5.5 Edit the compute inventory file!!! - wwnodescan will be an option
 soon!
 
-6\. `ansible-playbook -i inventory/headnode -t compute\_build\_nodes headnode.yml `
+6\. `ansible-playbook -i inventory/headnode -t compute_build_nodes headnode.yml `
 explain
 
 7\. Boot the compute nodes!
