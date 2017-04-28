@@ -81,22 +81,27 @@ Initial headnode setup
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
 
-1\. git clone https://github.com/ECoulter/OHPC\_Ansible Get the actual
-playbooks.
+1\. `git clone https://github.com/XSEDE/CRI\_XCBC/ `
 
-2\. ./OHPC\_Ansible/install\_ansible.sh This may fail due to frequently
-changing dependency requirements in python libraries. The script creates
-a python virtualenv named “ansible” in
-\$<span>HOME</span>/ansible\_env/ansible, in order to avoid polluting
-the system python installation. The ansible source code is cloned into
-\$<span>HOME</span>/ansible\_env/ansible\_source.
+  Get the actual playbooks.
 
-3\. source \$<span>HOME</span>/ansible\_env/ansible/bin/activate Loads
-the ansible virtualenv into the current session.
+2\. `./OHPC\_Ansible/install\_ansible.sh `
 
-4\. source
-\$<span>HOME</span>/ansible\_env/ansible\_source/hacking/env-setup Loads
-the ansible environment variables into the current session.
+  This may fail due to frequently
+ changing dependency requirements in python libraries. The script creates
+ a python virtualenv named “ansible” in
+ \$<span>HOME</span>/ansible\_env/ansible, in order to avoid polluting
+ the system python installation. The ansible source code is cloned into
+ \$<span>HOME</span>/ansible\_env/ansible\_source.
+
+3\. `source \$<span>HOME</span>/ansible\_env/ansible/bin/activate `
+
+Loads the ansible virtualenv into the current session.
+
+4\. `source
+\$<span>HOME</span>/ansible\_env/ansible\_source/hacking/env-setup `
+
+Loads the ansible environment variables into the current session.
 
 Defining Cluster Parameters
 ---------------------------
@@ -162,22 +167,22 @@ ansible-playbook to exectute only tasks with the given name.
 0\. On the headnode, run ssh-keygen, followed by cat .ssh/id\_rsa.pub
 &gt;&gt; .ssh/authorized\_keys
 
-1\. ansible-playbook -i inventory/headnode -t pre\_ohpc headnode.yml
+1\. `ansible-playbook -i inventory/headnode -t pre\_ohpc headnode.yml`
 
-2\. ansible-playbook -i inventory/headnode -t ohpc\_install headnode.yml
+2\. `ansible-playbook -i inventory/headnode -t ohpc\_install headnode.yml`
 explain
 
-3\. ansible-playbook -i inventory/headnode -t ohpc\_config headnode.yml
+3\. `ansible-playbook -i inventory/headnode -t ohpc\_config headnode.yml`
 explain
 
-4\. ansible-playbook -i inventory/headnode -t compute\_build\_vnfs
-headnode.yml - Now is the time to grab a cup of coffee
+4\. `ansible-playbook -i inventory/headnode -t compute\_build\_vnfs headnode.yml `
+- Now is the time to grab a cup of coffee
 
 5.5 Edit the compute inventory file!!! - wwnodescan will be an option
 soon!
 
-6\. ansible-playbook -i inventory/headnode -t compute\_build\_nodes
-headnode.yml explain
+6\. `ansible-playbook -i inventory/headnode -t compute\_build\_nodes headnode.yml `
+explain
 
 7\. Boot the compute nodes!
 
