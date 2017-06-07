@@ -164,6 +164,12 @@ sequence of steps to take. While it could be run all at once with
 step. Each step can be run with the ’-t’ flag, which asks
 ansible-playbook to exectute only tasks with the given name.
 
+When running these scripts, be sure to either cd to the playbook 
+directory (`cd ${HOME}/CRI_XCBC/`) or provide the complete path
+before each file - like
+`ansible-playbook -i ${HOME}/CRI_XCBC/inventory/headnode 
+-t pre_ohpc ${HOME}/CRI_XCBC/headnode.yml`.
+
 0\. On the headnode, run ssh-keygen, followed by cat .ssh/id\_rsa.pub
 &gt;&gt; .ssh/authorized\_keys
 
