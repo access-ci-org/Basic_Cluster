@@ -28,10 +28,15 @@ software and blah.
 Ansible is used in this toolkit to provide an idempotent, non-invasive method
 of managing the cluster headnode. Ideally, the admin installing the cluster
 will only have to customize a single file before running the included 
-playbooks.
+playbooks. This guide walks the user through the cluster build by actually
+running the ansible playbooks locally on the headnode, but this could
+be done from a different machine just as easily, with a few tweaks to the
+inventory file. We did not wish to force the reader to make changes
+to some local machine, and so elected to keep everything on the VMs built 
+specifically for this guide.
 
 All of the (intended) customizable variables exist in the '''group_vars/all'''
-file, which is described in more detail below.
+file, which is described in more detail below (Section 3: Defining Cluster Parameters)
 
 The installation process, at a high level, takes place in six phases:
 (ignoring hardware/VM setup)
@@ -40,7 +45,7 @@ The installation process, at a high level, takes place in six phases:
 3\. Defining cluster parameters
 4\. Configuration of the headnode via Ansible
 5\. Installation of the compute nodes
-6\. Testing the scheduler and scientific software.
+6\. Testing the scheduler 
 
 This guide in particular will walk through the steps of building an XCBC using
 VMs defined in VirtualBox, though this generalizes very well to a bare-metal
@@ -229,7 +234,7 @@ Separated by category, the full list of parameters is:
 -   ```build_kernel_ver: '3.10.0-327.el7.x86_64'```
     
     `uname -r` at build time - required for Warewulf to build bootstrap
-    images for the compute nodes.
+    images for the compute nodes. THIS SHOULD BE UPDATED AT RUN-TIME!
 
 #### slurm.conf variables
 These are added to the SLURM configuration file as needed
@@ -268,7 +273,7 @@ These are added to the SLURM configuration file as needed
 
     Contains the full name of
     the NVIDIA driver installer. This should be downloaded and placed
-    in CRI_XCBC/roles/gpu\_build\_vnfs/files/.
+    in `CRI_XCBC/roles/gpu\_build\_vnfs/files/`.
     COMMENTED OUT BY DEFAULT - ONLY NECESSARY FOR CLUSTERS WITH GPU
     NODES.
 
@@ -301,7 +306,7 @@ be wasted making unnecessary images.
 -   ```node_inventory_auto: true```
 
    Allows one to switch between ’manually’ adding compute node information
-   here (in group\_vars/all) or by running wwnodescan.
+   here (in `${HOME}/CRI_XCBC/group_vars/all`) or by running wwnodescan.
    The default is to use wwnodescan to automatically search for nodes in
    the 10.0.0.0/24 network. In some situations, such as migrating an 
    existing cluster to a new framework, one may already have a list of
@@ -337,8 +342,8 @@ be wasted making unnecessary images.
    parameters will be inserted into the slurm.conf. The gpu_type is completely custom, and is the
    string that users must request to run on these nodes in the default SLURM configuration.
 
-Running the Ansible Scripts
----------------------------
+Configuration of the Headnode via Ansible
+-----------------------------------------
 
 Examine the headnode.yml file - this contains the basic recipe for the
 sequence of steps to take. While it could be run all at once with
@@ -363,6 +368,9 @@ explain
 3\. `ansible-playbook -i inventory/headnode -t ohpc_config headnode.yml`
 explain
 
+Installation of the compute nodes
+---------------------------------
+
 4\. `ansible-playbook -i inventory/headnode -t compute_build_vnfs headnode.yml `
 - Now is the time to grab a cup of coffee
 
@@ -378,3 +386,6 @@ explain
 correctly \# - just a peril of a VM \# - forgot to run wwsh file sync
 after adding the new node. \# - slurmd didn’t start b/c of bad
 slurm.conf
+
+Testing the scheduler 
+---------------------
