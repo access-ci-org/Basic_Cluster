@@ -52,6 +52,9 @@
    - name: restart nfs-server
      service: name=nfs-server state=restarted enabled=yes
 
+   - name: initialize database
+     command: wwinit database
+
    - name: cluster ssh keys
      command: wwinit ssh_keys
      args:
