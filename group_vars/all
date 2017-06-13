@@ -42,8 +42,14 @@
 # Node Inventory method - automatic, or manual
   node_inventory_auto: true
 
+#Node naming variables - no need to change
   compute_node_prefix: "compute-"
   num_compute_nodes: 2
+  gpu_node_prefix: "gpu-compute-"
+  num_gpu_nodes: 0
+  login_node_prefix: "login-"
+  num_login_nodes: 0
+
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
 # There is a real difference between building from scratch, and using these for maintenance / node addition!
