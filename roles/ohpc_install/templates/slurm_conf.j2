@@ -92,14 +92,15 @@ AccountingStorageEnforce=associations,limits
 #AccountingStorageUser=
 #
 #GENERAL RESOURCE
-GresTypes={{ gres_types|default("") }}
+GresTypes={{ gres_types|default('""') }}
 #
 #EXAMPLE CONFIGURATION - copy,comment out, and edit
 #
 #COMPUTE NODES
-#NodeName=compute-1-18 Sockets=2 CoresPerSocket=4 State=UNKNOWN
-#NodeName=gpu-compute-6-12 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
+NodeName=compute-0 Sockets=1 CoresPerSocket=1 State=UNKNOWN
+NodeName=compute-1 Sockets=1 CoresPerSocket=1 State=UNKNOWN
+#NodeName=gpu-compute-1 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
 # PARTITIONS
-#PartitionName=high Nodes=compute-1-[14-18] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
-#PartitionName=gpu  Nodes=gpu-compute-6-12 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
-#PartitionName=low  Nodes=compute-1-[14-18] Default=YES MaxTime=INFINITE State=UP 
+#PartitionName=high Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
+#PartitionName=gpu  Nodes=gpu-compute-1 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
+PartitionName=low  Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP 
