@@ -74,13 +74,11 @@
      service: name=dhcpd state=restarted
 
    - name: update pxeconfig to force node to boot from pxe
-     command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
-     with_items: "{{ compute_nodes }}"
+     command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
      when: stateful_nodes == false and node_inventory_auto == true
  
    - name: update pxeconfig to let node boot from local disk
-     command: wwsh -y object modify -s bootlocal=EXIT -t node {{ item.name }}
-     with_items: "{{ compute_nodes }}"
+     command: wwsh -y object modify -s bootlocal=EXIT -t node {{ compute_node_glob}}
      when: stateful_nodes == true and node_inventory_auto == true
  
    - name: wwsh pxe update
