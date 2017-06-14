@@ -66,3 +66,9 @@
  
   viz_nodes:
    - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
+
+
+#automatic variables for internal use
+# Don't edit these!
+  compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+  node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
