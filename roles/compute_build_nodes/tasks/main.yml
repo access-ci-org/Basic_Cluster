@@ -88,7 +88,7 @@
      register: command_result
      failed_when: "'Building Pxelinux' not in command_result.stdout"
 
-   vars:
-    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
-    - node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+#   vars:
+#    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+#    - node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
 #    - last_node: "{{ node_prefix }}{{ num_nodes|int - 1 }}"
