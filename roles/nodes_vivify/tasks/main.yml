@@ -26,3 +26,4 @@
 
    - name: update pxeconfig to let node boot locally
      shell: wwsh -y object modify -s bootlocal=EXIT -t node $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ' ') 
+     when: stateful_nodes == true
