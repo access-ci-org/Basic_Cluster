@@ -20,10 +20,12 @@ for the XCRI team!
 XCBC Overview
 =============
 
-The XCBC project is blah. 
+The XCBC project is designed to provide the basic software necessary to create
+and HPC environment similar to that found on XSEDE resources, with open-source 
+software and a minimum of fuss. 
 
 We use the OpenHPC repositories (link) for setup of the cluster management
-software and blah.
+software and scheduler.
 
 Ansible is used in this toolkit to provide an idempotent, non-invasive method
 of managing the cluster headnode. Ideally, the admin installing the cluster
@@ -89,7 +91,7 @@ on Virtualbox configured with the internal DHCP server on.
 The default network is 192.168.56.0, but feel free to change this as you 
 prefer.
 
-1\. Configure the network interfaces on the
+1\.  Configure the network interfaces on the
 headnode. There are three: one for NAT, which provides connection to the 
 outside world, one for a host-only network,
 and one for the internal network, which connects to
@@ -102,11 +104,6 @@ Use the DHCP server provided by Virtualbox; you will find the ip address given t
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
 
-Configure the internal network interface to have address 10.0.0.1, netmask /24 and gateway 
-10.0.0.1 - the headnode will act as router for the compute nodes.
-
-/24 is important, so that Warewulf will see the compute nodes as existing on
-the same network as the headnode interface!!!
 
 For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
@@ -121,10 +118,22 @@ Building the Cluster
 Installation of the base OS on the headnode
 -------------------------------------------
 
-1\. Install CentOS 7.x minimal, on the headnode VM, and run ‘yum update‘ to get
-to the latest version. 
+1\. Install CentOS 7.x minimal, on the headnode VM, 
 
-Check the ip of your headnode on the host-only adapter via
+During installation, the default partition setup is fine.
+It helps to set up the three network interfaces at this point. 
+Don't touch the 'NAT' interface, other than to check the 'Always Connect' box under
+'Configure->General'. The same goes for the 'host-only' network.
+
+Configure the internal network interface to have address 10.0.0.1, netmask /24 and gateway 
+0.0.0.0 - the headnode will act as router for the compute nodes.
+
+/24 is important, so that Warewulf will see the compute nodes as existing on
+the same network as the headnode interface!!! Don't forget to also check the
+'Always Connect' box.
+
+
+2\. After installation, check the ip of your headnode on the host-only adapter via
 
       ip addr
 
@@ -173,7 +182,13 @@ editor of choice!
 This creates a directory named `CRI_XCBC` in your current directory, which
 contains the XCBC Ansible playbooks.
 
-2\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
+2\. On the headnode, from your ${HOME} directory, 
+run `ssh-keygen`, to create a local set of ssh keys, followed by 
+
+`cat .ssh/id_rsa.pub >> .ssh/authorized_keys`
+
+
+3\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
 
  The script creates a python virtualenv named “ansible” in
  ```${HOME}/ansible_env/ansible```, in order to avoid polluting
@@ -186,11 +201,11 @@ The next two steps prepare your shell for using the ansible playbooks,
 by source two files containing environment variables - one for a
 python virtualenv, and one for the local installation of ansible.
 
-3\. `source ${HOME}/ansible_env/ansible/bin/activate`
+4\. `source ${HOME}/ansible_env/ansible/bin/activate`
 
 Loads the ansible virtualenv into the current session.
 
-4\. `source ${HOME}/ansible_env/ansible_source/hacking/env-setup `
+5\. `source ${HOME}/ansible_env/ansible_source/hacking/env-setup `
 
 Loads the ansible environment variables into the current session.
 
@@ -298,7 +313,7 @@ These are added to the SLURM configuration file as needed
 
     Contains the full name of
     the NVIDIA driver installer. This should be downloaded and placed
-    in `CRI_XCBC/roles/gpu\_build\_vnfs/files/`.
+    in `CRI_XCBC/roles/gpu_build_vnfs/files/`.
     COMMENTED OUT BY DEFAULT - ONLY NECESSARY FOR CLUSTERS WITH GPU
     NODES.
 
@@ -381,9 +396,6 @@ directory (`cd ${HOME}/CRI_XCBC/`) or provide the complete path
 before each file - like
 `ansible-playbook -i ${HOME}/CRI_XCBC/inventory/headnode 
 -t pre_ohpc ${HOME}/CRI_XCBC/headnode.yml`.
-
-0\. On the headnode, run ssh-keygen, followed by cat .ssh/id\_rsa.pub
-&gt;&gt; .ssh/authorized\_keys
 
 1\. `ansible-playbook -i inventory/headnode -t pre_ohpc headnode.yml`
 This first role installs necessary dependencies for the OpenHPC rpms,
