@@ -1,5 +1,7 @@
 Simple playbooks to install OpenHPC version 1.0 using Ansible. 
 
+See the doc/README.md for a tutorial on using these scripts in a VirtualBox environment.
+
 The Ansible layout is fairly simple, using a series of roles for different parts of the installation process. 
 
 This will get you to the point of a working slurm installation across your cluster. It does not 
