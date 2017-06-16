@@ -108,6 +108,13 @@ Configure the internal network interface to have address 10.0.0.1, netmask /24 a
 /24 is important, so that Warewulf will see the compute nodes as existing on
 the same network as the headnode interface!!!
 
+For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
+the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
+interface, on the internal network. DO NOT INSTALL ANYTHING ON THESE VMs - The images 
+will be generated and pushed out from the headnode during this tutorial. Make sure they have 
+at least 2GB of RAM - otherwise the disk images built in this tutorial will be too large,
+and you will encounter mysterious errors.
+
 Building the Cluster
 ====================
 
@@ -236,6 +243,24 @@ Separated by category, the full list of parameters is:
     `uname -r` at build time - required for Warewulf to build bootstrap
     images for the compute nodes. THIS SHOULD BE UPDATED AT RUN-TIME!
 
+#### Private network parameters
+No changes are necessary in this section.
+These are the default parameters used for the private network that is
+used to communicate with/between the compute nodes. The compute_ip parameters
+define the range over which the dhcp server on the headnode will offer
+IP addresses.
+
+If you change the subnet here, make sure to do so consistently! The 
+network_mask (CIDR mask) and network_long_netmask must cover the same subnet,
+and the compute_ip limits must fall within the same subnet.
+
+-    ```private_network: "10.0.0.0"```
+-    ```private_network_mask: "24"```
+-    ```private_network_long_netmask: "255.255.255.0"```
+-    ```compute_ip_minimum: "10.0.0.2"```
+-    ```compute_ip_maximum: "10.0.0.255"```
+
+
 #### slurm.conf variables
 These are added to the SLURM configuration file as needed
 
@@ -361,31 +386,108 @@ before each file - like
 &gt;&gt; .ssh/authorized\_keys
 
 1\. `ansible-playbook -i inventory/headnode -t pre_ohpc headnode.yml`
+This first role installs necessary dependencies for the OpenHPC rpms,
+configures the firewall zones `internal` and `public`. This also installs
+fail2ban, configures the `/etc/hosts` file, and sets up the headnode
+as an ntp server for the cluster (this is IMPORTANT for SLURM functionality).
 
 2\. `ansible-playbook -i inventory/headnode -t ohpc_install headnode.yml`
-explain
+This second role installs several OpenHPC package groups, `base, warewulf
+and slurm server`, configures SLURM (and enables job accounting), creates
+a basic template for the compute nodes, and applies two fixes to the 
+wwsh and wwnodescan scripts.
 
 3\. `ansible-playbook -i inventory/headnode -t ohpc_config headnode.yml`
-explain
+This third role configures the headnode for several things. It sets the 
+interface that Warewulf uses, and sets up httpd to serve files to compute
+nodes. It configures xinetd for tftp (for PXE-booting the compute nodes),
+and mariadb for the internal Warewulf database. This also initializes the 
+NFS exports from the headnode to compute nodes, in `/etc/exports`. There are three
+main exports:
+- `/home` for user home directories
+- `/opt/ohpc/public` for OpenHPC documentation and packages
+- `/export' for custom software packages shared to compute nodes
 
 Installation of the compute nodes
 ---------------------------------
 
 4\. `ansible-playbook -i inventory/headnode -t compute_build_vnfs headnode.yml `
-- Now is the time to grab a cup of coffee
+This role builds an image for the compute nodes, by configuring a chroot environment
+in `/opt/ohpc/admin/images/centos-7.3-compute`, and adding a "VNFS" image to the Warewulf
+database. This will be used by the compute nodes to PXE boot.
+It takes a while to build the image - good time to take a break from your screen!
 
-5.5 Edit the compute inventory file!!! - wwnodescan will be an option
-soon!
+5\. `ansible-playbook -i inventory/headnode -t compute_build_nodes headnode.yml `
+This role does one of two things: if you are using the automatic inventory method, 
+it runs wwnodescan, with names based on the number of nodes you've defined in 
+`group_vars/all`, and waits for the nodes to boot. At this point, simply `Start` your 
+compute nodes in VirtualBox, without providing a boot medium, and watch to be sure
+they receive a DHCP response. Occasionally, they will fail to receive a response, but 
+will work fine if booted a second time. 
 
-6\. `ansible-playbook -i inventory/headnode -t compute_build_nodes headnode.yml `
-explain
+If you are using the 'manual' method of node entry, this role will enter the provided
+information (again, from `group_vars/all`) in the Warewulf database. At that point, you
+may boot your compute nodes any time after the role finishes running, and they should
+receive a PXE boot image from the headnode as in the automatic method.
 
-7\. Boot the compute nodes!
-
-\# slurmctld failed b/c: \# chrony was not started on the headnode
-correctly \# - just a peril of a VM \# - forgot to run wwsh file sync
-after adding the new node. \# - slurmd didn’t start b/c of bad
-slurm.conf
+6\. `ansible-playbook -i inventory/headnode -t nodes_vivify headnode.yml`
+This final role will "bring your nodes to life" by starting the necessary services 
+on the headnode and compute nodes, such as slurmctld (on the headnode), 
+slurmd (on the compute nodes), and munge (used by slurm on all nodes for 
+authentication).
 
 Testing the scheduler 
 ---------------------
+After confirming that both nodes have booted successfully (In the VirtualBox windows,
+you should see a basic login prompt for each), double-check that you are able to
+ssh into the machines as root. 
+
+Now, in order to test the scheduler, it is necessary to add a user, by running
+`useradd testuser` on the headnode.
+To make sure the new user will be enabled on the compute node, run
+`wwsh file sync` to update the passwd,group, and shadow files in the Warewulf
+database, followed by 
+`pdsh -w compute-[0-1] '/warewulf/transports/http/wwgetfiles'`
+to request that the compute nodes pull the files from the master. While they are automatically
+synced every 5 minutes, this will force an update immediately.
+
+Next, become the new user, via `su - testuser`.
+
+
+Open your text editor of choice, and create a (very) simple slurm batch file
+(named `slurm_ex.job` in this example), like:
+```
+#!/bin/sh
+#SBATCH -o nodes.out
+#SBATCH -N 2
+
+/bin/hostname
+srun -l /bin/hostname
+srun -l /bin/pwd
+```
+
+Submit this to the scheduler via
+`sbatch ./slurm_ex.job`
+
+You should receive a message like `Submitted batch job 2` and find an output
+file called `nodes.out` with the contents:
+```
+[testuser@headnode ~]$ cat nodes.out 
+compute-0
+0: compute-0
+1: compute-1
+0: /home/testuser
+1: /home/testuser
+```
+
+Otherwise, there should be useful debugging information in /var/log/slurmctld 
+on the headnode, or in /var/log/slurmd on the compute nodes. 
+
+Conclusion
+==========
+
+At this point, you have a basic working cluster with scheduler. The addition of scientific
+software and utilities available through XSEDE will be covered in this guide soon.
+
+Thanks for trying this out! Please get in touch with any problems, questions, or comments
+at help@xsede.org, with 'XCRI XCBC Tutorial" in the subject line.
