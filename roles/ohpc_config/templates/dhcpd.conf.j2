@@ -3,8 +3,10 @@
 #   see /usr/share/doc/dhcp*/dhcpd.conf.example
 #   see dhcpd.conf(5) man page
 #
-server-identifier master;
-subnet 10.0.0.0 netmask 255.255.0.0 {
+{% for host in groups['headnode'] %}
+server-identifier {{ hostvars[host]['ansible_host'] }}
+{% endfor %}
+subnet {{ private_network }} netmask {{ private_network_long_netmask }} {
       not authoritative;
-      option subnet-mask 255.255.0.0;
+      option subnet-mask {{ private_network_long_netmask }};
 }
