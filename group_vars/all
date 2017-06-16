@@ -8,6 +8,8 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
+  private_network: "10.0.0.0"
+  private_network_mask: "24"
   build_kernel_ver: '3.10.0-514.21.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #slurm.conf variables
