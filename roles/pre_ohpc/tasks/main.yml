@@ -115,3 +115,6 @@
        name: use_nfs_home_dirs
        state: yes
        persistent: yes
+
+   - name: create /export dir for software
+     file: path=/export state=directory owner=root group=root mode=0777
