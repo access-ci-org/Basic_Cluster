@@ -1,2 +1,2 @@
 [headnode]
-master ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
+headnode ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
