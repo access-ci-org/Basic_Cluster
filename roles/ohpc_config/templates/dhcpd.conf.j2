@@ -4,7 +4,7 @@
 #   see dhcpd.conf(5) man page
 #
 {% for host in groups['headnode'] %}
-server-identifier {{ hostvars[host]['ansible_host'] }}
+server-identifier {{ hostvars[host]['inventory_hostname'] }};
 {% endfor %}
 subnet {{ private_network }} netmask {{ private_network_long_netmask }} {
       not authoritative;
