@@ -2,7 +2,8 @@
 
 REPO_NAME="os-base"
 YUM_CONF="/root/yum-ww.conf"
-YUM_CMD="yum -c $CHROOTDIR/$YUM_CONF --tolerant --installroot $CHROOTDIR -y"
+YUM_CMD="yum --tolerant --installroot $CHROOTDIR -y"
+#YUM_CMD="yum -c $CHROOTDIR/$YUM_CONF --tolerant --installroot $CHROOTDIR -y"
 
 sanity_check() {
     if [ ! -x $WAREWULF_PREFIX/bin/cluster-env ]; then
