@@ -55,6 +55,15 @@
    - name: put NFS opt mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
+   - name: copy configure keys for cluster users sh
+     copy: src=cluster-env.sh dest="{{ login_chroot_loc }}/etc/profile.d/" mode=0644 #"
+
+   - name: copy configure keys for cluster users csh
+     copy: src=cluster-env.csh dest="{{ login_chroot_loc }}/etc/profile.d/" mode=0644 #"
+
+   - name: copy create keys for cluster users 
+     copy: src=cluster-env dest="{{ login_chroot_loc }}/usr/bin/" mode=0755 #"
+
    - name: chronyd on login image enabled 
      command: chroot '{{ login_chroot_loc }}' systemctl enable chronyd
 
