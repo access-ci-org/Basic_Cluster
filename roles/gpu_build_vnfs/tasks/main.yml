@@ -25,6 +25,16 @@
      command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
 #" for vim
 
+   - name: get the currently installed kernel
+     shell: chroot '{{ gpu_chroot_loc }}' rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
+     register: kernel_ver_output
+
+   - set_fact: 
+         kernel_ver: '{{ kernel_ver_output.stdout }}'
+
+   - name: yum install additional development tools
+     command: yum -y --installroot={{ gpu_chroot_loc }} group install "Development Tools"
+
 #" for vim
 #
 #     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
@@ -42,9 +52,7 @@
    - name: build nvidia kernel modules in the vnfs
      shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
      vars:
-# need to do something like rpm -q kernel | tail -1 instead of uname -r !!!
-# from Fra: rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
-       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
+       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k {{ kernel_ver }}   --silent"
      ignore_errors: yes
 
 #     mount: path={{ item.path }} state=unmounted
@@ -110,7 +118,14 @@
      command: wwsh file import /etc/munge/munge.key
 
    - name: build bootstrap image
-     shell: wwbootstrap {{ build_kernel_ver }}
+     shell: wwbootstrap --output=/tmp/gpu_'{{ kernel_ver }}'.wwbs  --chroot='{{ gpu_chroot_loc }}' '{{ kernel_ver }}' > /tmp/testlog
+
+#' for vim
+
+   - name: import bootstrap image
+     shell: wwsh bootstrap import /tmp/gpu_'{{ kernel_ver }}'.wwbs  --name=gpu_'{{ kernel_ver }}'
+
+#' for vim
 
    - name: fix export of usr/include
      lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf present=yes insertafter=EOF
