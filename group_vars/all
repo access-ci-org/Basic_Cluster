@@ -18,6 +18,8 @@
   compute_ip_maximum: "10.0.0.255"
 
 #slurm.conf variables
+  slurm_uid: 440
+  slurm_gid: 440
   cluster_name: "xcbc-example"
 #  gres_types: "gpu"
 
