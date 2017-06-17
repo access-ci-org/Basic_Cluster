@@ -24,6 +24,14 @@
    - name: yum install into the image chroot
      command: yum -y --installroot={{ login_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
 #" for vim
+
+   - name: get the currently installed kernel
+     shell: chroot '{{ login_chroot_loc }}' rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
+     register: kernel_ver_output
+
+   - set_fact: 
+         kernel_ver: '{{ kernel_ver_output.stdout }}'
+
 #" for vim
 #
 ##FIREWALL STUFF - DON'T LEAVE COMMENTED OUT
@@ -72,8 +80,15 @@
      command: wwsh file import /etc/munge/munge.key
 
    - name: build bootstrap image
-     shell: wwbootstrap {{ build_kernel_ver }}
- 
+     shell: wwbootstrap --output=/tmp/login_'{{ kernel_ver }}'.wwbs  --chroot='{{ login_chroot_loc }}' '{{ kernel_ver }}' > /tmp/testlog
+
+#' for vim
+
+   - name: import bootstrap image
+     shell: wwsh bootstrap import /tmp/login_'{{ kernel_ver }}'.wwbs  --name=login_'{{ kernel_ver }}'
+
+#' for vim
+
    - name: fix export of usr/include
      lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ login_chroot }}.conf state=present insertafter=EOF create=yes
 
