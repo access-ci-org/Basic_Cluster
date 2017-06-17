@@ -128,7 +128,7 @@
 #' for vim
 
    - name: fix export of usr/include
-     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf present=yes insertafter=EOF
+     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf state=present insertafter=EOF
 
    - name: build the vnfs 
      command: wwvnfs -y --chroot "{{ gpu_chroot_loc }}/"
