@@ -19,12 +19,19 @@
    - name: copy resolve.conf into image
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
+   - name: create slurm group
+     command: chroot '{{ compute_chroot_loc }}' groupadd -g '{{slurm_gid}}' slurm
+
+   - name: create slurm user
+     command: chroot '{{ compute_chroot_loc }}' useradd -u '{{slurm_uid}}' -g slurm -d /etc/slurm -M -r -s /sbin/nologin -c 'SLURM resource manager'  slurm
+
+   - name: yum install slurm client into image
+     command: yum -y --installroot={{ compute_chroot_loc }} groupinstall ohpc-slurm-client
+
    - name: yum install into the image chroot
      command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2
 #" for vim
 
-   - name: yum install slurm client into image
-     command: yum -y --installroot={{ compute_chroot_loc }} groupinstall ohpc-slurm-client
 #" for vim
 
    - name: copy ssh keys over
