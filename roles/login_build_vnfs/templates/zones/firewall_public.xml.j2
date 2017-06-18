@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>Public</short>
+  <description>For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.</description>
+  <interface name="{{ login_public_interface }}"/>
+  <service name="dhcpv6-client"/>
+  <rule family="ipv4">
+    <source address="{{ scope_public_network }}"/>
+    <service name="http"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="{{ scope_public_network }}"/>
+    <service name="ssh"/>
+    <accept/>
+  </rule>
+  <rule family="ipv4">
+    <source address="{{ scope_public_network }}"/>
+    <service name="https"/>
+    <accept/>
+  </rule>
+</zone>
+

@@ -17,6 +17,9 @@
   compute_ip_minimum: "10.0.0.2"
   compute_ip_maximum: "10.0.0.255"
 
+#Public Network Info
+  scope_public_network: "192.168.0.0/24"
+
 #slurm.conf variables
   slurm_uid: 440
   slurm_gid: 440

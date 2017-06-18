@@ -34,14 +34,15 @@
 
 #" for vim
 #
-##FIREWALL STUFF - DON'T LEAVE COMMENTED OUT
-#   - template: src=firewalld.conf dest={{ login_chroot_loc }}/etc/firewalld/firewalld.conf
-#
-#   - template: src=zones/firewall_public.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/public.xml
-#
+##FIREWALL STUFF 
+   - template: src=firewalld.conf dest={{ login_chroot_loc }}/etc/firewalld/firewalld.conf
+
+   - template: src=zones/firewall_public.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/public.xml
+
+   - template: src=zones/firewall_trusted.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/trusted.xml
+
 #   - template: src=services/slurm.xml dest={{ login_chroot_loc }}/etc/firewalld/services/slurm.xml
 #
-#   - template: src=zones/firewall_internal.xml.j2 dest={{ login_chroot_loc }}/etc/firewalld/zones/internal.xml
  
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ login_chroot_loc }}/root/.ssh/authorized_keys
