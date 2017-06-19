@@ -9,6 +9,9 @@
    - name: install OpenHPC slurm server
      yum: name="@ohpc-slurm-server" state=present
 
+   - name: install OHPC Ganglia
+     yum: name="ohpc-ganglia" state=present
+
    - name: yum update
      yum: name=* state=latest update_cache=yes
 
