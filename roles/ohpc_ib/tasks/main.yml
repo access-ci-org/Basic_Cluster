@@ -1,0 +1,13 @@
+---
+
+ - name: install openHPC IB drivers
+   command: yum -y groupinstall "InfiniBand Support"
+
+ - name: install infinipath-psm
+   yum: name={{ item }} state=latest
+   with_items:
+     - "infinipath-psm"
+     - "infiniband-diags" 
+
+ - name: start rdma
+   service: name="rdma" state=started enabled=true
