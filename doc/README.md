@@ -402,6 +402,9 @@ This first role installs necessary dependencies for the OpenHPC rpms,
 configures the firewall zones `internal` and `public`. This also installs
 fail2ban, configures the `/etc/hosts` file, and sets up the headnode
 as an ntp server for the cluster (this is IMPORTANT for SLURM functionality).
+This also configures ssh to disallow password authentication - if you 
+don't want this, edit the template in
+`roles/pre_ohpc/templates/sshd_config.j2`
 
 2\. `ansible-playbook -i inventory/headnode -t ohpc_install headnode.yml`
 This second role installs several OpenHPC package groups, `base, warewulf
