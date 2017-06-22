@@ -24,6 +24,18 @@
    - name: update slurm status on nodes
      shell: scontrol update nodename=$(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') state=IDLE
 
+   - name: start gmond
+     service: name=gmond state=restarted enabled=yes
+
+   - name: start gmetad
+     service: name=gmetad state=restarted enabled=yes
+
+   - name: start gmond on compute nodes
+     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl start gmond
+
+   - name: start gmond on compute nodes
+     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable gmond
+
    - name: update pxeconfig to let node boot locally
      shell: wwsh -y object modify -s bootlocal=EXIT -t node $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ' ') 
      when: stateful_nodes == true
