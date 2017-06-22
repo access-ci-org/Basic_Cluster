@@ -59,7 +59,7 @@
          insertafter: "^#######"
          state: present
        with_items: "{{ gpu_nodes }}"
-     when: node_inventory_auto: false
+     when: node_inventory_auto == false
 
    - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
      shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ gpu_chroot }} {{ gpu_glob_bash }} 
