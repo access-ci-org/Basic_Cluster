@@ -19,46 +19,76 @@
    - name: copy resolve.conf into image
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
-   - name: yum install into the image chroot
-     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2
-#" for vim
+#create slurm, ganglia, chrony with correct UIDs
+   - name: system user uid tasks
+     include: sys_user_tasks.yml
+     with_items: 
+      - "slurm"
+      - "ganglia"
+      - "chrony"
 
+#   - fail:
+
+   - name: yum install into the image chroot
+     command: yum -y --installroot={{ compute_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
+#" for vim
    - name: yum install slurm client into image
      command: yum -y --installroot={{ compute_chroot_loc }} groupinstall ohpc-slurm-client
 #" for vim
+   - name: yum install ohpc IB drivers
+     command: yum -y --installroot={{ compute_chroot_loc }} groupinstall "Infiniband Support"
+ 
+   - name: enable rdma
+     command: chroot "{{ compute_chroot_loc }}" systemctl enable rdma
 
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
 
+   - name: create software, scratch, data directories
+     file: name={{ item }} state=directory
+     with_items:
+      - "/software"
+      - "/data"
+      - "/scratch"
+
    - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+   - name: put NFS scratch mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+   - name: put NFS software mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS data mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd
 
    - name: add headnode to compute chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
+#"
+   - name: pull root passwd from shadow into compute vnfs
+     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ compute_chroot_loc }}/etc/shadow
 
-   - name: wwimport file into image (passwd)
+   - name: wwsh import file into image (passwd)
      command: wwsh file import /etc/passwd
 
-   - name: wwimport file into image (group)
+   - name: wwsh import file into image (group)
      command: wwsh file import /etc/group
 
-   - name: wwimport file into image (shadow)
+   - name: wwsh import file into image (shadow)
      command: wwsh file import /etc/shadow
 
-   - name: wwimport file into image (slurm)
+   - name: wwsh import file into image (slurm)
      command: wwsh file import /etc/slurm/slurm.conf
 
-   - name: wwimport file into image (munge)
+   - name: wwsh import file into image (munge)
      command: wwsh file import /etc/munge/munge.key
+
+   - name: gmond template
+     template: src=gmond.conf.j2 dest="{{ compute_chroot_loc }}/etc/ganglia/gmond.conf"
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
@@ -75,7 +105,3 @@
 
    - name: set network file path
      command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
-
-   - name: add slurm.conf file to import
-     command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
-
