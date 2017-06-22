@@ -5,20 +5,26 @@
 # curl -s https://github.com/openhpc/ohpc/releases/ | grep rpm | grep -v sle | grep -v strong  | sed 's/.*="\(.*\)".*".*".*/\1/'
 #
 # Headnode Info
-  public_interface: "enp0s3" # NIC that allows access to the public internet
-  private_interface: "enp0s9" #NIC that allows access to compute nodes
-  headnode_private_ip: "10.0.0.1"
+  public_interface: "enp11s0f0" # NIC that allows access to the public internet
+  private_interface: "enp11s0f1" #NIC that allows access to compute nodes
+  headnode_private_ip: "172.29.2.1"
   build_kernel_ver: '3.10.0-514.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  hnas_private_ip: "172.29.1.250"
+
+#login node info
+  login_public_interface: "eth0"
+  login_private_interface: "eth1"
 
 #Private network Info
-  private_network: "10.0.0.0"  
-  private_network_mask: "24"
-  private_network_long_netmask: "255.255.255.0"
-  compute_ip_minimum: "10.0.0.2"
-  compute_ip_maximum: "10.0.0.255"
+  private_network: "172.29.0.0"  
+  private_network_mask: "22"
+  private_network_long_netmask: "255.255.252.0"
+  compute_ip_minimum: "172.29.2.10"
+  compute_ip_maximum: "172.29.2.255"
+  login_ip_minimum: "172.29.2.2"
 
 #slurm.conf variables
-  cluster_name: "xcbc-example"
+  cluster_name: "campanile"
 #  gres_types: "gpu"
 
 #Stateful compute or not?
@@ -55,7 +61,7 @@
   gpu_node_prefix: "gpu-compute-"
   num_gpu_nodes: 0
   login_node_prefix: "login-"
-  num_login_nodes: 0
+  num_login_nodes: 1
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
@@ -79,3 +85,4 @@
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+  login_node_glob_bash: "{{ login_node_prefix }}{0..{{ num_login_nodes|int - 1}}}"
