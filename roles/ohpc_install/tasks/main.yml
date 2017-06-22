@@ -29,6 +29,13 @@
 
    - name: insert rhel-xcbc WW template
      copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
+
+   - name: provide ganglia gridname
+     lineinfile:
+       dest: /etc/ganglia/gmetad.conf
+       line: "gridname {{ cluster_name }}"
+       state: present
+       insertafter: EOF   # this may result in duplicate lines ...
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
