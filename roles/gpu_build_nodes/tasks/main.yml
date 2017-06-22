@@ -4,73 +4,71 @@
 #     debug:
 #       var: item.mac
 #     with_items: "{{ gpu_nodes }}"
+   - block:
+     - name: add node to ww db
+       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+       with_items: "{{ gpu_nodes }}"
 
-   - name: add node to ww db
-     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
-     with_items: "{{ gpu_nodes }}"
+     - name: blacklist nouveau on first boot
+       command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node {{ item.name }}
+       with_items: "{{ gpu_nodes }}"
 
-   - name: blacklist nouveau on first boot
-     command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
+     - name: set nodes bootloader
+       command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
+       with_items: "{{ gpu_nodes }}"
 
-   - name: set nodes bootloader
-     command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
+     - name: set nodes partitions
+       command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
+       with_items: "{{ gpu_nodes }}"
 
-   - name: set nodes partitions
-     command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
+     - name: format partitions
+       command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
+       with_items: "{{ gpu_nodes }}"
 
-   - name: format partitions
-     command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
+     - name: define filesystems
+       command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
+       with_items: "{{ gpu_nodes }}"
+#"   for vim
+    
+     - name: remove node from slurm.conf if it exists already # to avoid duplication!
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         regexp: "^NodeName={{ item.name }}"
+         state: absent
+       with_items: "{{ gpu_nodes }}"
 
-   - name: define filesystems
-     command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
-#" for vim
-  
-   - name: remove node from slurm.conf if it exists already # to avoid duplication!
-     lineinfile:
-       dest: /etc/slurm/slurm.conf
-       regexp: "^NodeName={{ item.name }}"
-       state: absent
-     with_items: "{{ gpu_nodes }}"
+     - name: add node to slurm.conf
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         line: "NodeName={{ item.name }} Gres=gpu:{{ item.gpu_type }}:{{ item.gpus }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
+         insertbefore: "^# PARTITIONS"
+         state: present
+       with_items: "{{ gpu_nodes }}"
 
-   - name: add node to slurm.conf
-     lineinfile:
-       dest: /etc/slurm/slurm.conf
-       line: "NodeName={{ item.name }} Gres=gpu:{{ item.gpu_type }}:{{ item.gpus }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
-       insertbefore: "^# PARTITIONS"
-       state: present
-     with_items: "{{ gpu_nodes }}"
+     - name: remove node from gres.conf if it exists already # to avoid duplication!
+       lineinfile:
+         dest: /etc/slurm/gres.conf
+         regexp: "^NodeName={{ item.name }}"
+         state: absent
+       with_items: "{{ gpu_nodes }}"
 
-   - name: remove node from gres.conf if it exists already # to avoid duplication!
-     lineinfile:
-       dest: /etc/slurm/gres.conf
-       regexp: "^NodeName={{ item.name }}"
-       state: absent
-     with_items: "{{ gpu_nodes }}"
+     - name: add node info to slurm/gres.conf
+       lineinfile:
+         dest: /etc/slurm/gres.conf
+         line: "NodeName={{ item.name }} Name=gpu Type={{ item.gpu_type }} File=/dev/nvidia[0-{{ item.gpus - 1 }}]"
+         insertafter: "^#######"
+         state: present
+       with_items: "{{ gpu_nodes }}"
+     when: node_inventory_auto: false
 
-   - name: add node info to slurm/gres.conf
-     lineinfile:
-       dest: /etc/slurm/gres.conf
-       line: "NodeName={{ item.name }} Name=gpu Type={{ item.gpu_type }} File=/dev/nvidia[0-{{ item.gpus - 1 }}]"
-       insertafter: "^#######"
-       state: present
-     with_items: "{{ gpu_nodes }}"
+   - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ gpu_chroot }} {{ gpu_glob_bash }} 
+     when: node_inventory_auto == true
 
    - name: set files to provision
      command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf,gres.conf
-     with_items: "{{ gpu_nodes }}"
+     when: node_inventory_auto == true
 
-   - name: restart dhcp
-     service: name=dhcpd state=restarted
- 
-   - name: update pxeconfig to let node boot from pxe
-     command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
-     with_items: "{{ gpu_nodes }}"
- 
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
