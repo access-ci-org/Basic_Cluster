@@ -47,9 +47,7 @@ udp_send_channel {
                        # this, the metrics may appear to come from any
                        # interface and the DNS names associated with
                        # those IPs will be used to create the RRDs.
-{% for host in groups['headnode'] %}
-  host = {{ hostvars[host]['inventory_hostname'] }}
-{% endfor %}
+  host = {{ headnode_private_ip }}
   port = 8649
   ttl = 1
 }
