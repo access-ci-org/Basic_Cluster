@@ -22,7 +22,7 @@
 
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ compute_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
+     command: yum -y --installroot={{ gpu_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
      #command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel glibc-devel glibc-headers kernel-devel kernel-headers dkms
 #" for vim
 
@@ -93,16 +93,16 @@
       - "/scratch"
 
    - name: put NFS home mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS scratch mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS software mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS data mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
 #   - name: put NFS home mount info in image
 #     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
@@ -124,7 +124,7 @@
      command: wwsh file import /etc/slurm/gres.conf
 
    - name: pull root passwd from shadow into compute vnfs
-     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ compute_chroot_loc }}/etc/shadow
+     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ gpu_chroot_loc }}/etc/shadow
 
    - name: wwsh import file (passwd)
      command: wwsh file import /etc/passwd
@@ -142,7 +142,7 @@
      command: wwsh file import /etc/munge/munge.key
 
    - name: gmond template
-     template: src=gmond.conf.j2 dest="{{ compute_chroot_loc }}/etc/ganglia/gmond.conf"
+     template: src=gmond.conf.j2 dest="{{ gpu_chroot_loc }}/etc/ganglia/gmond.conf"
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
