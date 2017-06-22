@@ -30,6 +30,9 @@
    - name: insert rhel-xcbc WW template
      copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
 
+   - name: install sync-users script
+     copy: src=sync-users dest="/usr/bin/"
+
    - name: provide ganglia gridname
      lineinfile:
        dest: /etc/ganglia/gmetad.conf
