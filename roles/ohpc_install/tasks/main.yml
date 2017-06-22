@@ -36,6 +36,9 @@
        line: "gridname {{ cluster_name }}"
        state: present
        insertafter: EOF   # this may result in duplicate lines ...
+
+   - name: provide gmond conf file
+     template: src=gmond.conf.j2 dest=/etc/ganglia/gmond.conf
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
