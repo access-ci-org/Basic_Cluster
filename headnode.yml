@@ -5,6 +5,7 @@
    - {role: pre_ohpc, tags: pre_ohpc}
    - {role: ohpc_install, tags: ohpc_install}
    - {role: ohpc_config, tags: ohpc_config}
+   - {role: ohpc_ib, tags: ohpc_ib}
    - {role: compute_build_vnfs, tags: compute_build_vnfs}
    - {role: gpu_build_vnfs, tags: gpu_build_vnfs}
    - {role: login_build_vnfs, tags: login_build_vnfs}
