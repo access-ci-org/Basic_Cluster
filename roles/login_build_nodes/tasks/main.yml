@@ -48,7 +48,7 @@
      when: node_inventory_auto == true
 
    - name: set files to provision
-     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,gres.conf
+     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,gres.conf,ifcfg-eth0
      with_items: "{{ login_nodes }}"
 
    - name: restart dhcp

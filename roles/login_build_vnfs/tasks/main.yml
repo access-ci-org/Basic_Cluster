@@ -104,6 +104,9 @@
    - name: wwsh import file (munge)
      command: wwsh file import /etc/munge/munge.key
 
+   - name: import ifcfg-eth0 for public internet
+     command: wwsh file import /root/CRI_XCBC/roles/login_build_vnfs/files/ifcfg-eth0 -D /etc/sysconfig/network-scripts/ifcfg-enp11s0f0
+
    - name: gmond template
      template: src=gmond.conf.j2 dest="{{ compute_chroot_loc }}/etc/ganglia/gmond.conf"
 
