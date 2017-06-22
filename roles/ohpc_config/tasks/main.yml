@@ -31,26 +31,26 @@
    - name: enable httpd
      service: name=httpd enabled=yes
   
-   - name: restart httpdd
+   - name: restart httpd
      service: name=httpd state=restarted
 
-   - name: exportfs home entry on headnode
-     lineinfile: line="/home {{ private_network }}/{{ private_network_mask }}(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
-
-   - name: exportfs opt entry on headnode
-     lineinfile: line="/opt/ohpc/pub {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
-
-   - name: exportfs software dir entry on headnode
-     lineinfile: line="/export {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=12)" dest=/etc/exports state=present
-
-   - name: exportfs reload
-     command: exportfs -a
-
-   - name: restart rpcbind
-     service: name=rpcbind state=restarted enabled=yes
- 
-   - name: restart nfs-server
-     service: name=nfs-server state=restarted enabled=yes
+#   - name: exportfs home entry on headnode
+#     lineinfile: line="/home {{ private_network }}/{{ private_network_mask }}(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
+#
+#   - name: exportfs opt entry on headnode
+#     lineinfile: line="/opt/ohpc/pub {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
+#
+#   - name: exportfs software dir entry on headnode
+#     lineinfile: line="/export {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=12)" dest=/etc/exports state=present
+#
+#   - name: exportfs reload
+#     command: exportfs -a
+#
+#   - name: restart rpcbind
+#     service: name=rpcbind state=restarted enabled=yes
+# 
+#   - name: restart nfs-server
+#     service: name=nfs-server state=restarted enabled=yes
 
    - name: initialize database
      command: wwinit database
@@ -69,7 +69,8 @@
        src: /root/.ssh/cluster.pub
        dest: cluster_root.pub
 
-   - template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
+   - name: dhcpd conf template
+     template: src=dhcpd.conf.j2 dest=/etc/warewulf/dhcpd-template.conf
    
    - name: restart dhcpd
      service: name=dhcpd state=restarted enabled=yes
