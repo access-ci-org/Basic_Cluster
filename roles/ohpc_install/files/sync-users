@@ -2,22 +2,18 @@
 
 scp login-0:/tmp/new_users* /tmp/ 2>&1 > /dev/null
 
-if [[ -f /tmp/new_users_all.txt ]] 
-then
-
 while read -r user
 do
+username=$(echo $user | cut -f 1 -d':')
   if [[ -z $(getent passwd $username) ]]
   then
-    username=$(echo $user | cut -f 1 -d':')
     echo "Inserting new user: $username into passwd"
 #  getent passwd $username > /dev/null || echo $user >> /etc/passwd
     echo $user >> /etc/passwd
   fi
-done < <(paste /tmp/new_users*)
+done < <(paste -d'\n' /tmp/new_users* 2> /dev/null)
 
 rm /tmp/new_users*
 
 wwsh file sync
 
-fi
