@@ -24,7 +24,7 @@
   login_ip_minimum: "172.29.2.2"
 
 #slurm.conf variables
-  cluster_name: "campanile"
+  cluster_name: "Campanile"
 #  gres_types: "gpu"
 
 #Stateful compute or not?
