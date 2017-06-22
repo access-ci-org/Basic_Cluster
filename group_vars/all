@@ -36,7 +36,7 @@
   sda3: "mountpoint=/:dev=sda3:type=ext3:size=fill"
 
 # GPU Node Vars
-#  nvidia_driver_installer: "NVIDIA-Linux-x86_64-375.39.run"
+  nvidia_driver_installer: "cuda_7.0.28_linux.run"
 
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
