@@ -1,0 +1,32 @@
+---
+
+   - set_fact:
+       user_name: "{{ item }}"
+
+   - name: get {{ user_name }} uid
+     getent: database=passwd key={{ user_name }} split=':'
+  
+   - name: print system users UID
+     debug:
+       var: getent_passwd[user_name][1]
+
+   - name: check if {{ user_name }} exists in vnfs
+     command: chroot '{{ compute_chroot_loc }}' grep {{ user_name }} /etc/passwd
+     register: user_exists
+     ignore_errors: yes
+
+   - name: check if {{ user_name }} group exists in vnfs
+     command: chroot '{{ compute_chroot_loc }}' grep {{ user_name }} /etc/group
+     register: group_exists
+     ignore_errors: yes
+
+#   - name: create {{ user_name }} in vnfs
+#     shell: echo "chroot '{{ compute_chroot_loc }}' useradd {{ user_name }} -u {{ getent_passwd[user_name][1] }}" >> /tmp/testout.txt
+
+   - name: create {{ user_name }} group in vnfs
+     command: chroot '{{ compute_chroot_loc }}' groupadd {{ user_name }} -g {{ getent_passwd[user_name][2] }}
+     when: not group_exists.stdout
+
+   - name: create {{ user_name }} in vnfs
+     command: chroot '{{ compute_chroot_loc }}' useradd {{ user_name }} -u {{ getent_passwd[user_name][1] }} -g {{ user_name }}
+     when: not user_exists.stdout
