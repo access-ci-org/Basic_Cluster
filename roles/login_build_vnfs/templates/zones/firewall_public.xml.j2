@@ -5,17 +5,17 @@
   <interface name="{{ login_public_interface }}"/>
   <service name="dhcpv6-client"/>
   <rule family="ipv4">
-    <source address="{{ scope_public_network }}"/>
+    <source address="129.64.0.0/16"/>
     <service name="http"/>
     <accept/>
   </rule>
   <rule family="ipv4">
-    <source address="{{ scope_public_network }}"/>
+    <source address="129.64.0.0/16"/>
     <service name="ssh"/>
     <accept/>
   </rule>
   <rule family="ipv4">
-    <source address="{{ scope_public_network }}"/>
+    <source address="129.64.0.0/16"/>
     <service name="https"/>
     <accept/>
   </rule>

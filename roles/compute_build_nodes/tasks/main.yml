@@ -12,81 +12,67 @@
 #   - fail:
 #       msg: "Quick fail for test!"
 
-   - block:
-     - name: add node to ww db
-       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
-       with_items: "{{ compute_nodes }}"
-  
-     - name: set nodes bootloader
-       command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-  
-     - name: set nodes partitions
-       command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-  
-     - name: format partitions
-       command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-  
-     - name: define filesystems
-       command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-       when: stateful_nodes == true
-  #" for vim
+   - name: add node to ww db
+     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+     with_items: "{{ compute_nodes }}"
 
-     - name: set files to provision
-       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
-       with_items: "{{ compute_nodes }}"
+   - name: set nodes bootloader
+     command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
+     with_items: "{{ compute_nodes }}"
 
-     - name: remove node from slurm.conf if it exists already # to avoid duplication!
-       lineinfile:
-         dest: /etc/slurm/slurm.conf
-         regexp: "^NodeName={{ item.name }}"
-         state: absent
-       with_items: "{{ compute_nodes }}"
-  
-     - name: add node to slurm.conf
-       lineinfile:
-         dest: /etc/slurm/slurm.conf
-         line: "NodeName={{ item.name }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
-         insertbefore: "^# PARTITIONS"
-         state: present
-       with_items: "{{ compute_nodes }}"
-  
-     when: node_inventory_auto == false
+   - name: set nodes partitions
+     command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
+     with_items: "{{ compute_nodes }}"
 
-   - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
-     when: node_inventory_auto == true
+   - name: format partitions
+     command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
+     with_items: "{{ compute_nodes }}"
+
+   - name: define filesystems
+     command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
+     with_items: "{{ compute_nodes }}"
+#" for vim
+  
+   - name: remove node from slurm.conf if it exists already # to avoid duplication!
+     lineinfile:
+       dest: /etc/slurm/slurm.conf
+       regexp: "^NodeName={{ item.name }}"
+       state: absent
+     with_items: "{{ compute_nodes }}"
+
+   - name: add node to slurm.conf
+     lineinfile:
+       dest: /etc/slurm/slurm.conf
+       line: "NodeName={{ item.name }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
+       insertbefore: "^# PARTITIONS"
+       state: present
+     with_items: "{{ compute_nodes }}"
+
+   - name: get the currently installed kernel
+     shell: chroot '{{ compute_chroot_loc }}' rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
+     register: kernel_ver_output
+
+   - set_fact: 
+         kernel_ver: '{{ kernel_ver_output.stdout }}'
+
 
    - name: set files to provision
-     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
-     when: node_inventory_auto == true
+     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap=compute_'{{ kernel_ver }}'  --files=munge.key,slurm.conf,dynamic_hosts,network,slurm.conf,auto.home,auto.master,auto.share,create-groups.sh,create-users.sh,populate-groups.sh,sync-users.sh
+     with_items: "{{ compute_nodes }}"
 
-#   - name: add compute nodes to ansible inventory for wait
-#     add_host: name={{ node_glob }} group="compute nodes"
-    
-#   - name: wait for compute nodes to boot
-#     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+#' for vim
 
    - name: restart dhcp
      service: name=dhcpd state=restarted
 
-   - name: update pxeconfig to force node to boot from pxe
-     command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
-     when: stateful_nodes == false and node_inventory_auto == true
- 
-   - name: update pxeconfig to let node boot from local disk
-     command: wwsh -y object modify -s bootlocal=EXIT -t node {{ compute_node_glob}}
-     when: stateful_nodes == true and node_inventory_auto == true
+   - name: update pxeconfig to let node boot from pxe
+     command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
+     with_items: "{{ compute_nodes }}"
  
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
      failed_when: "'Building Pxelinux' not in command_result.stdout"
 
-#   vars:
-#    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
-#    - node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
-#    - last_node: "{{ node_prefix }}{{ num_nodes|int - 1 }}"
+   - name: wwsh file sync
+     command: wwsh file sync

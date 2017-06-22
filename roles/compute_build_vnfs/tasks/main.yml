@@ -44,20 +44,34 @@
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
 
-   - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+#  I revert to use autofs because ITS will not provide the netapp volume for home folders 
+#   - name: put NFS home mount info in image
+#     lineinfile: line="10.2.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="10.2.1.1:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+#   I am useing the old server nas-0-3
+#   - name: put NFS opt mount info in image
+#     lineinfile: line="10.2.1.1:/export /share nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: copy files for syncing users
+     copy: src=/etc/create-cluster-users dest="{{ compute_chroot_loc }}/etc/"  mode=0700 
+
+   - name: copy sync task to cron.d
+     copy: src=syncusers dest="{{ compute_chroot_loc }}/etc/cron.d/"   mode=0400  #"
+
+   - name: create initial users
+     command: chroot '{{ compute_chroot_loc }}' /etc/create-cluster-users/sync-users.sh 
+
+   - name: autofs on compute image enabled 
+     command: chroot '{{ compute_chroot_loc }}' systemctl enable autofs
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd
 
    - name: add headnode to compute chrony.conf
-     lineinfile: line="server {{ headnode_private_ip }}" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
+     lineinfile: line="server 10.2.1.1" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
 
    - name: wwimport file into image (passwd)
      command: wwsh file import /etc/passwd
@@ -68,11 +82,32 @@
    - name: wwimport file into image (shadow)
      command: wwsh file import /etc/shadow
 
+   - name: wwimport file into image (auto.master)
+     command: wwsh file import /etc/auto.master
+
+   - name: wwimport file into image (auto.home)
+     command: wwsh file import /etc/auto.home
+
+   - name: wwimport file into image (auto.share)
+     command: wwsh file import /etc/auto.share
+
    - name: wwimport file into image (slurm)
      command: wwsh file import /etc/slurm/slurm.conf
 
    - name: wwimport file into image (munge)
      command: wwsh file import /etc/munge/munge.key
+
+   - name: wwimport file into image (create-groups)
+     command: wwsh file import /etc/create-cluster-users/create-groups.sh --name create-groups.sh
+
+   - name: wwimport file into image (create-users)
+     command: wwsh file import /etc/create-cluster-users/create-users.sh --name create-users.sh
+
+   - name: wwimport file into image (populate-groups)
+     command: wwsh file import /etc/create-cluster-users/populate-groups.sh --name populate-groups.sh
+
+   - name: wwimport file into image (sync-users)
+     command: wwsh file import /etc/create-cluster-users/sync-users.sh --name sync-users.sh
 
 #   - name: print kernel version
 #     debug:
@@ -86,6 +121,10 @@
    - name: import bootstrap image
      shell: wwsh bootstrap import /tmp/compute_'{{ kernel_ver }}'.wwbs  --name=compute_'{{ kernel_ver }}'
 
+#' for vim
+#
+#   - fail:
+#        msg: "Quick fail for test!"
 
    - name: build the vnfs 
      command: wwvnfs -y --chroot "{{ compute_chroot_loc }}/"

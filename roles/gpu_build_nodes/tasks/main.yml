@@ -60,9 +60,18 @@
        state: present
      with_items: "{{ gpu_nodes }}"
 
+   - name: get the currently installed kernel
+     shell: chroot '{{ gpu_chroot_loc }}' rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
+     register: kernel_ver_output
+
+   - set_fact: 
+         kernel_ver: '{{ kernel_ver_output.stdout }}'
+
    - name: set files to provision
-     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf,gres.conf
+     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap=gpu_'{{ kernel_ver }}' --files=munge.key,slurm.conf,dynamic_hosts,network,gres.conf,auto.home,auto.master,auto.share,create-groups.sh,create-users.sh,populate-groups.sh,sync-users.sh
      with_items: "{{ gpu_nodes }}"
+
+#'
 
    - name: restart dhcp
      service: name=dhcpd state=restarted

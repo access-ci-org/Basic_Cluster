@@ -37,14 +37,15 @@
 
 #" for vim
 #
-#     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
-# commented ^ out because ansible adds these entries to fstab!!!
    - name: mount necessary bits
-     command: mount -o rw,bind "{{ item.src }}" "{{ item.path }}"
+     command: mount -o bind {{ item.src }} {{ item.path }} 
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
       - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
+
+#   - fail:
+#          msg: "Quick fail for test!"           
 
    - name: get nvidia driver installation runfile
      copy: src={{ nvidia_driver_installer }} dest={{ gpu_chroot_loc }}/root/ mode=0700
@@ -55,13 +56,15 @@
        nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k {{ kernel_ver }}   --silent"
      ignore_errors: yes
 
-#     mount: path={{ item.path }} state=unmounted
    - name: unmount necessary bits
      command: umount {{ item.path }}
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
       - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
+
+#   - fail:
+#          msg: "Quick fail for test!"           
 
    - name: blacklist nouveau in modprobe
      copy: src=blacklist_modprobe dest={{ gpu_chroot_loc }}/etc/modprobe.d/blacklist.conf
@@ -84,20 +87,34 @@
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ gpu_chroot_loc }}/root/.ssh/authorized_keys
 
-   - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+#  I revert to use autofs because ITS will not provide the netapp volume for home folders 
+#   - name: put NFS home mount info in image
+#     lineinfile: line="10.2.1.1:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="10.2.1.1:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+#   I am useing the old server nas-0-3
+#   - name: put NFS opt mount info in image
+#     lineinfile: line="10.2.1.1:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+
+   - name: copy files for syncing users
+     copy: src=/etc/create-cluster-users dest="{{ gpu_chroot_loc }}/etc/" mode=0700  #"
+
+   - name: copy sync task to cron.d
+     copy: src=syncusers dest="{{ gpu_chroot_loc }}/etc/cron.d/" mode=0400 #"
+
+   - name: create initial users
+     command: chroot '{{ gpu_chroot_loc }}' /etc/create-cluster-users/sync-users.sh 
+
+   - name: autofs on compute image enabled 
+     command: chroot '{{ gpu_chroot_loc }}' systemctl enable autofs
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ gpu_chroot_loc }}' systemctl enable chronyd
 
    - name: add headnode to compute chrony.conf
-     lineinfile: line="server {{ headnode_private_ip }}" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
+     lineinfile: line="server 10.2.1.1" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
 
    - name: wwimport file (gres.conf)
      command: wwsh file import /etc/slurm/gres.conf
@@ -111,12 +128,33 @@
    - name: wwimport file (shadow)
      command: wwsh file import /etc/shadow
 
+   - name: wwimport file into image (auto.master)
+     command: wwsh file import /etc/auto.master
+
+   - name: wwimport file into image (auto.home)
+     command: wwsh file import /etc/auto.home
+
+   - name: wwimport file into image (auto.share)
+     command: wwsh file import /etc/auto.share
+ 
    - name: wwimport file (slurm)
      command: wwsh file import /etc/slurm/slurm.conf
 
    - name: wwimport file (munge)
      command: wwsh file import /etc/munge/munge.key
 
+   - name: wwimport file into image (create-groups)
+     command: wwsh file import /etc/create-cluster-users/create-groups.sh --name create-groups.sh
+
+   - name: wwimport file into image (create-users)
+     command: wwsh file import /etc/create-cluster-users/create-users.sh --name create-users.sh
+
+   - name: wwimport file into image (populate-groups)
+     command: wwsh file import /etc/create-cluster-users/populate-groups.sh --name populate-groups.sh
+
+   - name: wwimport file into image (sync users)
+     command: wwsh file import /etc/create-cluster-users/sync-users.sh --name sync-users.sh
+   
    - name: build bootstrap image
      shell: wwbootstrap --output=/tmp/gpu_'{{ kernel_ver }}'.wwbs  --chroot='{{ gpu_chroot_loc }}' '{{ kernel_ver }}' > /tmp/testlog
 

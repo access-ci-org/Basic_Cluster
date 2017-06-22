@@ -26,7 +26,7 @@
  gtk-doc  gtk2-devel  gtk2-engines  gvfs  hamcrest  hsqldb  httpd  httpd-tools \
  jakarta-commons-discovery  jakarta-commons-httpclient  jakarta-commons-io  jakarta-commons-lang  jakarta-commons-logging  jakarta-commons-net  jakarta-oro  java-1.6.0-openjdk-javadoc \
  java_cup  jdepend  jdom  jna  jsch  jss  junit4  jzlib \
- keyutils-libs-devel  krb5-devel  libICE-devel  libIDL-devel  libSM-devel  libXcomposite-devel  libXcursor-devel  libXdamage-devel \
+ keyutils-libs-devel  krb5-devel  krb5-workstation libICE-devel  libIDL-devel  libSM-devel  libXcomposite-devel  libXcursor-devel  libXdamage-devel \
  libXext-devel  libXfixes-devel  libXft-devel  libXi-devel  libXp-devel  libXres  libXt-devel  libXxf86vm-devel \
  libart_lgpl  libart_lgpl-devel  libatasmart  libbonobo  libbonoboui  libbonoboui-devel  libcanberra  libcanberra-gtk2 \
  libcdio  libcgroup  libcom_err-devel  libcroco-devel  liberation-fonts-common  liberation-sans-fonts  libexif  libexif-devel \
