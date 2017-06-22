@@ -57,18 +57,13 @@
      when: node_inventory_auto == false
 
    - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }} 
      when: node_inventory_auto == true
 
    - name: set files to provision
      command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
      when: node_inventory_auto == true
-
-#   - name: add compute nodes to ansible inventory for wait
-#     add_host: name={{ node_glob }} group="compute nodes"
-    
-#   - name: wait for compute nodes to boot
-#     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+#     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
 
    - name: restart dhcp
      service: name=dhcpd state=restarted
