@@ -141,6 +141,9 @@
    - name: wwsh import file (munge)
      command: wwsh file import /etc/munge/munge.key
 
+   - name: gmond template
+     template: src=gmond.conf.j2 dest="{{ compute_chroot_loc }}/etc/ganglia/gmond.conf"
+
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
 
