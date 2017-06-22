@@ -1,0 +1,20 @@
+---
+
+ - hosts: headnode
+   tasks:
+
+   - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ next_ip }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ new_nodelist }} 
+
+   - name: set files to provision
+     command: wwsh -y provision set {{ new_nodelist }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
+     when: node_inventory_auto == true
+
+   - name: wwsh pxe update
+     command: wwsh -v pxe update
+     register: command_result
+     failed_when: "'Building Pxelinux' not in command_result.stdout"
+
+   vars:
+    - new_nodelist: "compute-[5-10]"
+    - next_ip: "172.29.2.15"
