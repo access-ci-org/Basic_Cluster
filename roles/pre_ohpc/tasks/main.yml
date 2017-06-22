@@ -23,7 +23,7 @@
        - "libselinux-python"
        - "libsemanage-python"
        - "policycoreutils"
-       - "lua"  # testing; this could fix the lmod-ohpc issue?
+#       - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
@@ -87,18 +87,18 @@
        - 'ipp-client'
        - 'dhcpv6-client'
        - 'ssh'
-       - 'nfs'
-       - 'mountd'
-       - 'rpc-bind'
+#       - 'nfs'
+#       - 'mountd'
+#       - 'rpc-bind'
        - 'http'
        - 'https'
        - 'tftp'
-       - 'samba-client'
+#       - 'samba-client'
 
    - name: firewalld restart
      service: name=firewalld state=restarted
  
-   - name: enable and restart ntpd
+   - name: enable and restart chronyd
      service: name=chronyd state=restarted enabled=yes
  
    - name: set up /etc/hosts
@@ -110,11 +110,35 @@
    - name: restart sshd
      service: name=sshd state=restarted
 
-   - name: selinux allow homedirs
-     seboolean: 
-       name: use_nfs_home_dirs
-       state: yes
-       persistent: yes
+   - name: create slurm,ganglia,chrony groups
+     group:
+       name: "{{ item.name }}"
+       gid: "{{ item.gid }}"
+       state: present
+     with_items:
+       - { name: "slurm", uid: 800, gid: 800, home: "/etc/slurm" }
+       - { name: "chrony", uid: 801, gid: 801,  home: "/var/lib/chrony"}
+       - { name: "ganglia", uid: 802, gid: 802, home: "/var/lib/ganglia"}
 
-   - name: create /export dir for software
-     file: path=/export state=directory owner=root group=root mode=0777
+   - name: create slurm,ganglia,chrony users
+     user: 
+       name: "{{ item.name }}"
+       uid: "{{ item.uid }}"
+       group: "{{ item.name }}"
+       state: present
+       shell: /sbin/nologin
+       createhome: no
+       home: "{{ item.home }}"
+     with_items:
+       - { name: "slurm", uid: 800, gid: 800, home: "/etc/slurm" }
+       - { name: "chrony", uid: 801, gid: 801,  home: "/var/lib/chrony"}
+       - { name: "ganglia", uid: 802, gid: 802, home: "/var/lib/ganglia"}
+ 
+#   - name: selinux allow homedirs
+#     seboolean: 
+#       name: use_nfs_home_dirs
+#       state: yes
+#       persistent: yes
+
+#   - name: create /export dir for software
+#     file: path=/export state=directory owner=root group=root mode=0777
