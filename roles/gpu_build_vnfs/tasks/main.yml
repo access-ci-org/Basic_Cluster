@@ -12,17 +12,33 @@
    - name: copy resolve.conf into image
      copy: src=/etc/resolv.conf dest="{{ gpu_chroot_loc }}/etc/resolv.conf" #"
 
+#create slurm, ganglia, chrony with correct UIDs
+   - name: system user uid tasks
+     include: sys_user_tasks.yml
+     with_items: 
+      - "slurm"
+      - "ganglia"
+      - "chrony"
+
+
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
+     command: yum -y --installroot={{ compute_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
+     #command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel glibc-devel glibc-headers kernel-devel kernel-headers dkms
 #" for vim
 
    - name: yum install slurm client into image
      command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
 #" for vim
 #
+   - name: yum install ohpc IB drivers
+     command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall "Infiniband Support"
+ 
+   - name: enable rdma
+     command: chroot "{{ gpu_chroot_loc }}" systemctl enable rdma
+#
 #     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
 # commented ^ out because ansible adds these entries to fstab!!!
-   - name: mount necessary bits
+   - name: mount necessary bits in chroot
      command: mount -o rw,bind "{{ item.src }}" "{{ item.path }}"
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
@@ -41,7 +57,7 @@
      ignore_errors: yes
 
 #     mount: path={{ item.path }} state=unmounted
-   - name: unmount necessary bits
+   - name: unmount necessary bits from chroot
      command: umount {{ item.path }}
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
@@ -51,14 +67,14 @@
    - name: blacklist nouveau in modprobe
      copy: src=blacklist_modprobe dest={{ gpu_chroot_loc }}/etc/modprobe.d/blacklist.conf
 
-   - name: blacklist nouveau in grub
-     copy: src=grub_default dest={{ gpu_chroot_loc }}/etc/default/grub
+#   - name: blacklist nouveau in grub
+#     copy: src=grub_default dest={{ gpu_chroot_loc }}/etc/default/grub
 
-   - name: create rebuild-grub service
-     copy: src=rebuild-grub.service dest={{ gpu_chroot_loc }}/etc/systemd/system/rebuild-grub.service
+#   - name: create rebuild-grub service
+#     copy: src=rebuild-grub.service dest={{ gpu_chroot_loc }}/etc/systemd/system/rebuild-grub.service
  
-   - name: enable rebuild-grub.service
-     command: chroot {{ gpu_chroot_loc }} systemctl enable rebuild-grub.service
+#   - name: enable rebuild-grub.service
+#     command: chroot {{ gpu_chroot_loc }} systemctl enable rebuild-grub.service
 
    - name: create service create-cuda-devices
      copy: src=create-cuda-devices.service dest={{ gpu_chroot_loc }}/etc/systemd/system/create-cuda-devices.service
@@ -69,44 +85,64 @@
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ gpu_chroot_loc }}/root/.ssh/authorized_keys
 
+   - name: create software, scratch, data directories
+     file: name={{ item }} state=directory
+     with_items:
+      - "/software"
+      - "/data"
+      - "/scratch"
+
    - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+   - name: put NFS scratch mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
-   - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+   - name: put NFS software mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: put NFS data mount info in image
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+#   - name: put NFS home mount info in image
+#     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+#
+#   - name: put NFS opt mount info in image
+#     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+#
+#   - name: put NFS opt mount info in image
+#     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ gpu_chroot_loc }}' systemctl enable chronyd
 
    - name: add headnode to compute chrony.conf
-     lineinfile: line="server {{ headnode_private_ip }}" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
+     lineinfile: line="server {{ headnode_private_ip }}" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present 
+#" for vim
 
-   - name: wwimport file (gres.conf)
+   - name: wwsh import file (gres.conf)
      command: wwsh file import /etc/slurm/gres.conf
 
-   - name: wwimport file (passwd)
+   - name: pull root passwd from shadow into compute vnfs
+     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ compute_chroot_loc }}/etc/shadow
+
+   - name: wwsh import file (passwd)
      command: wwsh file import /etc/passwd
 
-   - name: wwimport file (group)
+   - name: wwsh import file (group)
      command: wwsh file import /etc/group
 
-   - name: wwimport file (shadow)
+   - name: wwsh import file (shadow)
      command: wwsh file import /etc/shadow
 
-   - name: wwimport file (slurm)
+   - name: wwsh import file (slurm)
      command: wwsh file import /etc/slurm/slurm.conf
 
-   - name: wwimport file (munge)
+   - name: wwsh import file (munge)
      command: wwsh file import /etc/munge/munge.key
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
-
-   - name: fix export of usr/include
-     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf present=yes insertafter=EOF
 
    - name: build the vnfs 
      command: wwvnfs -y --chroot "{{ gpu_chroot_loc }}/"
@@ -120,7 +156,4 @@
 
    - name: set network file path
      command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
-
-   - name: add slurm.conf file to import
-     command: wwsh -y file import /etc/slurm/slurm.conf --name slurm.conf
 
