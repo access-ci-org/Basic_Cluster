@@ -29,10 +29,21 @@
      command: yum -y --installroot={{ login_chroot_loc }} groupinstall ohpc-slurm-client
 
    - name: yum install ohpc IB drivers
-     command: yum -y --installroot={{ compute_chroot_loc }} groupinstall "Infiniband Support"
- 
+     command: yum -y --installroot={{ login_chroot_loc }} groupinstall "Infiniband Support"
+
+# STEPS FOR AD AUTH
+# yum install realmd sssd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python -y 
+#   - name: install AD auth dependencies
+#     command: yum -y --installroot={{ login_chroot_loc }} install realmd sssd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python 
+
    - name: enable rdma
-     command: chroot "{{ compute_chroot_loc }}" systemctl enable rdma
+     command: chroot "{{ login_chroot_loc }}" systemctl enable rdma
+
+   - name: cluster-env.sh template
+     file: src=cluster-env.sh dest={{ login_chroot_loc }}/etc/profile.d/cluster-env.sh
+
+   - name: cluster-env template
+     file: src=cluster-env dest={{ login_chroot_loc }}/usr/bin/cluster-env mode=0755
 
 #" for vim
 #
@@ -66,25 +77,25 @@
       - "/scratch"
 
    - name: put NFS home mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterhome /home nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS scratch mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterscratch /scratch nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS software mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clustersoftware /software nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS data mount info in image
-     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ hnas_private_ip }}:/Clusterdata /data nfs rw,suid,dev,exec,nouser,sync 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on login image enabled 
      command: chroot '{{ login_chroot_loc }}' systemctl enable chronyd
 
-   - name: add headnode to compute chrony.conf
+   - name: add headnode to login chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ login_chroot_loc }}/etc/chrony.conf state=present
 
-   - name: pull root passwd from shadow into compute vnfs
-     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ compute_chroot_loc }}/etc/shadow
+   - name: pull root passwd from shadow into login vnfs
+     shell: sed -i "s-^root.*-$(grep root /etc/shadow)-" {{ login_chroot_loc }}/etc/shadow
 
    - name: wwimport file (gres.conf)
      command: wwsh file import /etc/slurm/gres.conf
@@ -108,7 +119,7 @@
      command: wwsh file import /root/CRI_XCBC/roles/login_build_vnfs/files/ifcfg-eth0 -D /etc/sysconfig/network-scripts/ifcfg-eth0
 
    - name: gmond template
-     template: src=gmond.conf.j2 dest="{{ compute_chroot_loc }}/etc/ganglia/gmond.conf"
+     template: src=gmond.conf.j2 dest="{{ login_chroot_loc }}/etc/ganglia/gmond.conf"
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
