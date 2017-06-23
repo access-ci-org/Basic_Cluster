@@ -33,17 +33,26 @@
 
 # STEPS FOR AD AUTH
 # yum install realmd sssd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python -y 
-#   - name: install AD auth dependencies
-#     command: yum -y --installroot={{ login_chroot_loc }} install realmd sssd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools krb5-workstation openldap-clients policycoreutils-python 
+   - name: install AD auth dependencies
+     command: yum -y --installroot={{ login_chroot_loc }} install sssd oddjob oddjob-mkhomedir realmd adcli samba-common-tools 
+
+   - name: install xsede repo
+     yum_repository: name="xsede" description="XSEDE yum repo" baseurl="http://cb-repo.iu.xsede.org/xsederepo/centos7/"
+
+   - name: install researcher needs
+     command: yum -y --installroot={{ login_chroot_loc }} install perl-GD openmpi lammps-common lammps-openmpi lammps-doc gcc-gfortran
 
    - name: enable rdma
      command: chroot "{{ login_chroot_loc }}" systemctl enable rdma
 
+#   - name: copy sssd.conf
+#     copy: src=sssd.conf dest={{ login_chroot_loc }}/etc/sssd/ 
+
    - name: cluster-env.sh template
-     file: src=cluster-env.sh dest={{ login_chroot_loc }}/etc/profile.d/cluster-env.sh
+     copy: src=cluster-env.sh dest={{ login_chroot_loc }}/etc/profile.d/ 
 
    - name: cluster-env template
-     file: src=cluster-env dest={{ login_chroot_loc }}/usr/bin/cluster-env mode=0755
+     copy: src=cluster-env dest={{ login_chroot_loc }}/usr/bin/ mode=0755 
 
 #" for vim
 #
