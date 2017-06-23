@@ -22,6 +22,7 @@
   compute_ip_minimum: "172.29.2.10"
   compute_ip_maximum: "172.29.2.255"
   login_ip_minimum: "172.29.2.2"
+  gpu_ip_minimum: "172.29.2.100"
 
 #slurm.conf variables
   cluster_name: "Campanile"
@@ -59,7 +60,7 @@
   compute_node_prefix: "compute-"
   num_compute_nodes: 2
   gpu_node_prefix: "gpu-compute-"
-  num_gpu_nodes: 0
+  num_gpu_nodes: 1
   login_node_prefix: "login-"
   num_login_nodes: 1
 
@@ -86,3 +87,4 @@
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
   login_node_glob_bash: "{{ login_node_prefix }}{0..{{ num_login_nodes|int - 1}}}"
+  gpu_glob_bash: "{{ gpu_node_prefix }}{0..{{ num_gpu_nodes|int - 1}}}"
