@@ -62,8 +62,11 @@
      when: node_inventory_auto == false
 
    - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ gpu_chroot }} {{ gpu_glob_bash }} 
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ gpu_ip_minimum }} --netdev={{ private_interface }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ gpu_chroot }} {{ gpu_glob_bash }} 
      when: node_inventory_auto == true
+
+   - name: blacklist nouveau on first boot
+     command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node {{ gpu_glob_bash }}
 
    - name: set files to provision
      command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf,gres.conf
