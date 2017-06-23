@@ -20,7 +20,6 @@
       - "ganglia"
       - "chrony"
 
-
    - name: yum install into the image chroot
      command: yum -y --installroot={{ gpu_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
      #command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel glibc-devel glibc-headers kernel-devel kernel-headers dkms
