@@ -26,5 +26,7 @@ if [ ! -f "$HOME/.ssh/config" -a ! -f "$HOME/.ssh/cluster" ]; then
     echo "   IdentityFile ~/.ssh/cluster" >> $HOME/.ssh/config
     echo "   StrictHostKeyChecking=no" >> $HOME/.ssh/config
     chmod 0600 $HOME/.ssh/config
+    
+    echo $(getent passwd $_UID) >> /tmp/new_users.${_UID}
 fi
 
