@@ -21,7 +21,7 @@
       - "chrony"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ gpu_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
+     command: yum -y --nogpgcheck --installroot={{ gpu_chroot_loc }} install kernel ganglia-gmond-ohpc chrony infinipath-psm infiniband-diags
      #command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel glibc-devel glibc-headers kernel-devel kernel-headers dkms
 #" for vim
 
@@ -52,7 +52,8 @@
      vars:
 # need to do something like rpm -q kernel | tail -1 instead of uname -r !!!
 # from Fra: rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
-       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
+       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} --driver --toolkit --samples -k /usr/src/kernels/3.10.0-514.el7.x86_64 --silent"
+       #nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1` --silent"
      ignore_errors: yes
 
 #     mount: path={{ item.path }} state=unmounted
@@ -62,6 +63,8 @@
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
       - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
+
+   - fail:
 
    - name: blacklist nouveau in modprobe
      copy: src=blacklist_modprobe dest={{ gpu_chroot_loc }}/etc/modprobe.d/blacklist.conf
