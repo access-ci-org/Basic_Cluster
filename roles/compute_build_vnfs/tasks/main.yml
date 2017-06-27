@@ -38,6 +38,12 @@
    - name: yum install ohpc IB drivers
      command: yum -y --installroot={{ compute_chroot_loc }} groupinstall "Infiniband Support"
  
+   - name: install xsede repo
+     yum_repository: name="xsede" description="XSEDE yum repo" baseurl="http://cb-repo.iu.xsede.org/xsederepo/centos7/" gpgcheck=no
+
+   - name: install researcher needs
+     command: yum -y --installroot={{ compute_chroot_loc }} install perl-GD openmpi lammps lammps-common lammps-openmpi lammps-doc gcc-gfortran
+
    - name: enable rdma
      command: chroot "{{ compute_chroot_loc }}" systemctl enable rdma
 
