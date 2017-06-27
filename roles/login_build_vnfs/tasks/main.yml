@@ -37,10 +37,10 @@
      command: yum -y --installroot={{ login_chroot_loc }} install sssd oddjob oddjob-mkhomedir realmd adcli samba-common-tools 
 
    - name: install xsede repo
-     yum_repository: name="xsede" description="XSEDE yum repo" baseurl="http://cb-repo.iu.xsede.org/xsederepo/centos7/"
+     yum_repository: name="xsede" description="XSEDE yum repo" baseurl="http://cb-repo.iu.xsede.org/xsederepo/centos7/" gpgcheck=no
 
    - name: install researcher needs
-     command: yum -y --installroot={{ login_chroot_loc }} install perl-GD openmpi lammps-common lammps-openmpi lammps-doc gcc-gfortran
+     command: yum -y --installroot={{ login_chroot_loc }} install perl-GD openmpi lammps lammps-common lammps-openmpi lammps-doc gcc-gfortran
 
    - name: enable rdma
      command: chroot "{{ login_chroot_loc }}" systemctl enable rdma
