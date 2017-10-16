@@ -20,7 +20,7 @@
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2
+     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2 freeipmi ipmitool
 #" for vim
 
    - name: yum install slurm client into image
