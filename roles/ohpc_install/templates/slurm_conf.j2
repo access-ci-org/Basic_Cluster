@@ -8,8 +8,8 @@
 #
 # See the slurm.conf man page for more information.
 #
-ClusterName={{ cluster_name }}
-ControlMachine={{ inventory_hostname }}
+ClusterName=headnode
+ControlMachine=headnode
 #ControlAddr=
 #BackupController=
 #BackupAddr=
@@ -61,8 +61,9 @@ SchedulerType=sched/backfill
 #SchedulerAuth=
 #SchedulerPort=
 #SchedulerRootFilter=
-SelectType=select/linear
-FastSchedule=1
+SelectType=select/cons_res
+SelectTypeParameters=CR_CPU
+FastSchedule=0
 #PriorityType=priority/multifactor
 #PriorityDecayHalfLife=14-0
 #PriorityUsageResetPeriod=14-0
@@ -80,27 +81,36 @@ SlurmdLogFile=/var/log/slurmd.log
 JobCompType=jobcomp/none
 #JobCompLoc=
 #
+#POWER MANAGEMENT
+#
+SuspendTime=300
+SuspendRate=10
+ResumeRate=10
+ResumeTimeout=300
+SuspendProgram=/usr/local/sbin/slurm_suspend.sh
+ResumeProgram=/usr/local/sbin/slurm_resume.sh
+#
 # ACCOUNTING
 JobAcctGatherType=jobacct_gather/linux
 JobAcctGatherFrequency=30
 #
 AccountingStorageType=accounting_storage/filetxt
-AccountingStorageHost={{ inventory_hostname }}
+AccountingStorageHost=headnode
 AccountingStorageLoc=/var/log/slurmacct.log
-AccountingStorageEnforce=associations,limits
+#AccountingStorageEnforce=associations,limits
 #AccountingStoragePass=
 #AccountingStorageUser=
 #
 #GENERAL RESOURCE
-GresTypes={{ gres_types|default('""') }}
+GresTypes=""
 #
 #EXAMPLE CONFIGURATION - copy,comment out, and edit
 #
 #COMPUTE NODES
-NodeName=compute-0 Sockets=1 CoresPerSocket=1 State=UNKNOWN
-NodeName=compute-1 Sockets=1 CoresPerSocket=1 State=UNKNOWN
+NodeName=compute-[0-9] Sockets=2 CoresPerSocket=14 State=IDLE
+SuspendExcNodes=compute-[0-5]
 #NodeName=gpu-compute-1 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
 # PARTITIONS
 #PartitionName=high Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
 #PartitionName=gpu  Nodes=gpu-compute-1 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
-PartitionName=low  Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP 
+PartitionName=low  Nodes=compute-[0-9] Default=YES MaxTime=INFINITE State=UP 
