@@ -2,5 +2,5 @@
 ::1 localhost
 
 {% for host in groups['headnode'] %}
-{{ hostvars[host]['ansible_host'] }} {{ hostvars[host]['inventory_hostname'] }}  {{ hostvars[host]['inventory_hostname'] }}.local
+{{ headnode_private_ip }} {{ hostvars[host]['inventory_hostname'] }}  {{ hostvars[host]['inventory_hostname'] }}.local
 {% endfor %}
