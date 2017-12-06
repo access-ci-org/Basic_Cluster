@@ -23,7 +23,7 @@
        - "libselinux-python"
        - "libsemanage-python"
        - "policycoreutils"
-       - "lua"  # testing; this could fix the lmod-ohpc issue?
+#       - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
@@ -98,9 +98,6 @@
    - name: firewalld restart
      service: name=firewalld state=restarted
  
-   - name: enable and restart ntpd
-     service: name=chronyd state=restarted enabled=yes
- 
    - name: set up /etc/hosts
      template: src=hosts.j2 dest=/etc/hosts
 
@@ -118,3 +115,15 @@
 
    - name: create /export dir for software
      file: path=/export state=directory owner=root group=root mode=0777
+
+   - name: open up chrony across private network
+     lineinfile:
+       path: /etc/chrony.conf
+       regexp: '^#allow 192'
+       line: "allow all {{ private_network }}/24"
+       state: present
+       
+ 
+   - name: enable and restart chrony
+     service: name=chronyd state=restarted enabled=yes
+

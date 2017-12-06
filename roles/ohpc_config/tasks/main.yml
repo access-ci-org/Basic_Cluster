@@ -63,11 +63,10 @@
 
 #need to copy these to localhost first!
    - name: copy key back to management machine
-     synchronize:
-       mode: pull
-       use_ssh_args: yes
+     fetch:
        src: /root/.ssh/cluster.pub
-       dest: cluster_root.pub
+       dest: ./cluster_root.pub
+       flat: yes
 
    - template: src=dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf
    

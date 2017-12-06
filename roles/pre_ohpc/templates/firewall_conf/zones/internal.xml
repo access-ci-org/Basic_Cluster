@@ -7,6 +7,7 @@
   <service name="dhcpv6-client"/>
   <service name="ssh"/>
   <service name="nfs"/>
+  <service name="ntp"/>
   <service name="mountd"/>
   <service name="rpc-bind"/>
   <service name="http"/>
