@@ -20,14 +20,17 @@
      - name: set nodes bootloader
        command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: set nodes partitions
        command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: format partitions
        command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: define filesystems
        command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
