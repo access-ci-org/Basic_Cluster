@@ -41,7 +41,7 @@
      lineinfile: line="/opt/ohpc/pub {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=11)" dest=/etc/exports state=present
 
    - name: exportfs software dir entry on headnode
-     lineinfile: line="/export {{ private_network }}/{{ private_network_mask }}(ro,no_subtree_check,fsid=12)" dest=/etc/exports state=present
+     lineinfile: line="/export {{ private_network }}/{{ private_network_mask }}(rw,no_subtree_check,fsid=12)" dest=/etc/exports state=present
 
    - name: exportfs reload
      command: exportfs -a
