@@ -48,8 +48,11 @@
 
    - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
-#   - name: add interfaces to internal zone in ifcfg scripts
-#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ private_interface }} regexp=^ZONE= line=ZONE=internal
+   - name: add private interface to internal zone via nmcli
+     command: nmcli connection modify {{ private_interface }} connection.zone internal
+
+   - name: add public interface to public zone via nmcli
+     command: nmcli connection modify {{ public_interface }} connection.zone public
 
 #   - name: restart dbus for firewalld :(
 #     service: name=dbus state=restarted
@@ -57,46 +60,47 @@
    - name: firewalld restart # to load new slurm service
      service: name=firewalld state=restarted
 
-   - name: add interface to internal zone firewall-cmd
-     firewalld:
-       zone: internal
-       interface: "{{ private_interface }}"
-       permanent: yes
-       state: enabled
-
-   - name: add interface to external zone firewall-cmd
-     firewalld:
-       zone: public
-       interface: "{{ public_interface }}"
-       permanent: yes
-       state: enabled
-
-#   - name: add interfaces to external zone firewalld
-#     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
-
-   - name: add services to internal zone firewall-cmd
-     firewalld:
-       zone: internal
-       service: '{{ item }}'
-       permanent: yes
-       immediate: yes
-       state: enabled
-     with_items:
-       - 'slurm'
-       - 'mdns'
-       - 'ipp-client'
-       - 'dhcpv6-client'
-       - 'ssh'
-       - 'nfs'
-       - 'mountd'
-       - 'rpc-bind'
-       - 'http'
-       - 'https'
-       - 'tftp'
-       - 'samba-client'
-
-   - name: firewalld restart
-     service: name=firewalld state=restarted
+## This section seems to be redundant 
+##   - name: add interface to internal zone firewall-cmd
+##     firewalld:
+##       zone: internal
+##       interface: "{{ private_interface }}"
+##       permanent: yes
+##       state: enabled
+##
+##   - name: add interface to external zone firewall-cmd
+##     firewalld:
+##       zone: public
+##       interface: "{{ public_interface }}"
+##       permanent: yes
+##       state: enabled
+##
+###   - name: add interfaces to external zone firewalld
+###     lineinfile: dest=/etc/sysconfig/network-scripts/ifcfg-{{ public_interface }} regexp=^ZONE= line=ZONE=public
+##
+##   - name: add services to internal zone firewall-cmd
+##     firewalld:
+##       zone: internal
+##       service: '{{ item }}'
+##       permanent: yes
+##       immediate: yes
+##       state: enabled
+##     with_items:
+##       - 'slurm'
+##       - 'mdns'
+##       - 'ipp-client'
+##       - 'dhcpv6-client'
+##       - 'ssh'
+##       - 'nfs'
+##       - 'mountd'
+##       - 'rpc-bind'
+##       - 'http'
+##       - 'https'
+##       - 'tftp'
+##       - 'samba-client'
+##
+##   - name: firewalld restart
+##     service: name=firewalld state=restarted
  
    - name: set up /etc/hosts
      template: src=hosts.j2 dest=/etc/hosts
