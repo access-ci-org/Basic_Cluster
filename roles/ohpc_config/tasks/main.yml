@@ -7,17 +7,18 @@
    - name: enable tftp
      lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
 
-   - name: config warewulf http
-     lineinfile: 
-       dest: /etc/httpd/conf.d/warewulf-httpd.conf
-       regexp: "{{ item.regex }}" 
-       line: "{{ item.line }}" 
-       state: "{{ item.state }}"
-       backrefs: yes
-     with_items:
-       - { regex: '^(.*)cgi-bin>$', line: '\1cgi-bin> \n    Require all granted', state: present}
-       - { regex: '(\s+)Allow from all', line: '\1Require all granted', state: present }
-       - { regex: 'Order allow,deny', line: "", state: absent }
+#No need for this in OHPC-1.3.3
+#   - name: config warewulf http
+#     lineinfile: 
+#       dest: /etc/httpd/conf.d/warewulf-httpd.conf
+#       regexp: "{{ item.regex }}" 
+#       line: "{{ item.line }}" 
+#       state: "{{ item.state }}"
+#       backrefs: yes
+#     with_items:
+#       - { regex: '^(.*)cgi-bin>$', line: '\1cgi-bin> \n    Require all granted', state: present}
+#       - { regex: '(\s+)Allow from all', line: '\1Require all granted', state: present }
+#       - { regex: 'Order allow,deny', line: "", state: absent }
      
    - name: reload xinetd
      service: name=xinetd state=restarted
