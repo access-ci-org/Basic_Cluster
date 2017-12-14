@@ -8,7 +8,7 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
-  build_kernel_ver: '3.10.0-514.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  build_kernel_ver: '3.10.0-693.11.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Private network Info
   private_network: "10.0.0.0"  
