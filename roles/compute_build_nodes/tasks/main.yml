@@ -90,7 +90,7 @@
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
-     failed_when: "'Building Pxelinux' not in command_result.stdout"
+     failed_when: "'Building iPXE' not in command_result.stdout or 'Building Pxelinux' not in command_result.stdout"
 
 #   vars:
 #    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
