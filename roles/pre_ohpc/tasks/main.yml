@@ -1,7 +1,9 @@
 ---
 
-#   - name: set hostname
-#     hostname: name={{ inventory_hostname }}
+#   - name: check hostname
+   - fail: 
+       msg: "Hostname in inventory/headnode doesn't match local hostname! Please fix and run again."
+     when: inventory_hostname != ansible_hostname 
 
    - name: install necessary stuff
      yum: name={{ item }} state=latest
