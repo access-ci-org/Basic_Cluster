@@ -6,6 +6,23 @@
 #       regexp: "^YUM_MIRROR(.*)7.2.1511(.*)"
 #       line: 'YUM_MIRROR\g<1>7\g<2>'   # use \g<1> for backref followed by digit!
 #       backrefs: yes
+#
+   - name: check current kernel version
+     shell: uname -r | sed "s/.$(uname -m)//"
+     register: running_kernel_version
+
+   - name: check most recent installed kernel version
+     shell: yum list installed | grep 'kernel\.' | tail -n 1 | awk '{print $2}'
+     register: installed_kernel_version
+
+   - fail:
+       msg: "Most recently installed kernel is not currently loaded version! Consider rebooting before building the vnfs"
+     when: running_kernel_version.stdout != installed_kernel_version.stdout
+
+   - fail:
+       msg: "Loaded kernel does not match the build_kernel_ver in group_vars/all"
+     when: running_kernel_version.stdout not in build_kernel_ver
+
 
    - template: src=compute_template.j2 dest="{{ template_path }}{{ compute_template }}.tmpl"
 

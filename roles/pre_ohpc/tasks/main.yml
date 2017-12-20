@@ -5,6 +5,10 @@
        msg: "Hostname in inventory/headnode doesn't match local hostname! Please fix and run again."
      when: inventory_hostname != ansible_hostname 
 
+   - fail: 
+       msg: "Kernel version mismatch between loaded kernel and group-vars/all! Please fix and run again."
+     when: build_kernel_ver != ansible_kernel
+
    - name: install necessary stuff
      yum: name={{ item }} state=latest
      with_items:
