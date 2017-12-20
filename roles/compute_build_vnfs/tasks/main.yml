@@ -23,6 +23,10 @@
        msg: "Loaded kernel does not match the build_kernel_ver in group_vars/all"
      when: running_kernel_version.stdout not in build_kernel_ver
 
+   - name: remove old vnfs if it exists
+     file: 
+       path: "{{ compute_chroot_loc }}"
+       state: absent
 
    - template: src=compute_template.j2 dest="{{ template_path }}{{ compute_template }}.tmpl"
 
