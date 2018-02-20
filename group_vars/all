@@ -7,15 +7,15 @@
 # Headnode Info
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
-  headnode_private_ip: "10.0.0.1"
+  headnode_private_ip: "10.1.1.1"
   build_kernel_ver: '3.10.0-693.11.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Private network Info
-  private_network: "10.0.0.0"  
+  private_network: "10.1.1.0"  
   private_network_mask: "24"
   private_network_long_netmask: "255.255.255.0"
-  compute_ip_minimum: "10.0.0.2"
-  compute_ip_maximum: "10.0.0.255"
+  compute_ip_minimum: "10.1.1.2"
+  compute_ip_maximum: "10.1.1.255"
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
@@ -74,6 +74,12 @@
   viz_nodes:
    - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
 
+#Slurm Accounting Variables - little need to change these
+  slurm_acct_db: "slurmdb"
+  slurmdb_storage_port: "7031"
+  slurmdb_port: "1234"
+  slurmdb_sql_pass: "password" #could force this to be a hash... 
+  slurmdb_sql_user: slurm
 
 #automatic variables for internal use
 # Don't edit these!
