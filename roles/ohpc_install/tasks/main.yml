@@ -73,7 +73,11 @@
        enabled: yes
 
    - name: load sacctmgr config
+<<<<<<< HEAD
      command: sacctmgr -i load /etc/slurm/sacctmgr-heirarchy.cfg
+=======
+     command: sacctmgr load /etc/slurm/sacctmgr-heirarchy.cfg
+>>>>>>> f4d8ee8bb7ef25a08b3b5e26701fd854e01ed97f
 
    - name: start and enable slurmctld
      service: 
