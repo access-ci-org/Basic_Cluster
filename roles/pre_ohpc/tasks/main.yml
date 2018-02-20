@@ -12,6 +12,7 @@
    - name: install necessary stuff
      yum: name={{ item }} state=latest
      with_items:
+       - "MySQL-python"
        - "epel-release"
        - "wget" 
        - "tcpdump"
