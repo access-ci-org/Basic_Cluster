@@ -21,6 +21,9 @@
    - name: create slurmdbd.conf
      template: src=slurmdbd_conf.j2 dest=/etc/slurm/slurmdbd.conf
 
+   - name: put the sacctmgr config in /etc/slurm
+     copy: src=xcbc-example.cfg dest=/etc/slurm/sacctmgr-heirarchy.cfg
+
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf
 
@@ -47,18 +50,34 @@
  
    - name: initialize slurmdb databases
      mysql_db:
-       name: "{{ slurm_acct_loc }}"
+       name: "{{ slurm_acct_db }}"
        state: present
 
-   - name: create db user
+   - name: create slurmdb user
      mysql_user:
-       name: "{{ slurmdbd_user }}"
-       password: "{{ slurmddb_pass }}"
-       priv: "{{ slurm_acct_loc }}.*:ALL"
+       name: "{{ slurmdb_sql_user }}"
+       password: "{{ slurmdb_sql_pass }}"
+       priv: "{{ slurm_acct_db }}.*:ALL"
        state: present
+
+   - name: start and enable munge
+     service: 
+       name: munge
+       state: started
+       enabled: yes
 
    - name: start and enable slurmdbd
      service: 
        name: slurmdbd
        state: started
        enabled: yes
+
+   - name: load sacctmgr config
+     command: sacctmgr -i load /etc/slurm/sacctmgr-heirarchy.cfg
+
+   - name: start and enable slurmctld
+     service: 
+       name: slurmctld
+       state: started
+       enabled: yes
+
