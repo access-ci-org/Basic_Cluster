@@ -13,11 +13,14 @@
      copy: src=/etc/resolv.conf dest="{{ gpu_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
+     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms gcc
 #" for vim
 
    - name: yum install slurm client into image
      command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
+
+   - name: create export dir
+     file: path="{{ gpu_chroot_loc }}/export" state=directory
 #" for vim
 #
 #     mount: src={{ item.src }} path={{ item.path }} opts=bind state=mounted fstype=none
@@ -27,25 +30,45 @@
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
+      - { src: /export/,  path: "{{ gpu_chroot_loc }}/export/"  }
       - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
 
-   - name: get nvidia driver installation runfile
-     copy: src={{ nvidia_driver_installer }} dest={{ gpu_chroot_loc }}/root/ mode=0700
+   - name: get kernel version
+     shell: chroot "{{ gpu_chroot_loc }}" rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
+     register: kernel_ver
+
+   - name: create build dir
+     file: path="{{ gpu_chroot_loc }}/root/nvidia_build/" state=directory
+
+   - name: get nvidia installation files
+     copy: src={{ item }} dest={{ gpu_chroot_loc }}/root/nvidia_build mode=0700
+     with_items:
+      - "{{ nvidia_driver_installer }}"
+      - "{{ cuda_toolkit_installer }}"
+      - "{{ cuda_samples_installer }}"
  
    - name: build nvidia kernel modules in the vnfs
      shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
      vars:
-# need to do something like rpm -q kernel | tail -1 instead of uname -r !!!
-# from Fra: rpm -q --qf '%{version}-%{release}.%{arch}\n' kernel | tail -1
-       nvidia_kernel_build_cmd: "/root/{{ nvidia_driver_installer }} -k `chroot {{ gpu_chroot_loc }} uname -r` --silent"
-     ignore_errors: yes
+       nvidia_kernel_build_cmd: "/root/nvidia_build/{{ nvidia_driver_installer }} -k {{ kernel_ver.stdout }} --kernel-install-path=/lib/modules/{{ kernel_ver.stdout }}/kernel/drivers/video -z -s -X"
+
+   - name: build cuda toolkit
+     shell: chroot {{ gpu_chroot_loc }} {{ cuda_toolkit_build_cmd }}
+     vars:
+       cuda_toolkit_build_cmd: "/root/nvidia_build/{{ cuda_toolkit_installer }} --noprompt --prefix=/export/cuda"
+
+   - name: build cuda samples
+     shell: chroot {{ gpu_chroot_loc }} {{ cuda_samples_build_cmd }}
+     vars:
+       cuda_samples_build_cmd: "/root/nvidia_build/{{ cuda_samples_installer }} --noprompt --prefix=/export/cuda/samples --cudaprefix=/export/cuda"
 
 #     mount: path={{ item.path }} state=unmounted
    - name: unmount necessary bits
-     command: umount {{ item.path }}
+     command: umount -l {{ item.path }}
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
+      - { src: /export/,  path: "{{ gpu_chroot_loc }}/export/"  }
       - { src: /var/run/utmp, path: "{{ gpu_chroot_loc }}/var/run/utmp" }
 
    - name: blacklist nouveau in modprobe
@@ -105,11 +128,11 @@
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
 
-   - name: fix export of usr/include
-     lineinfile: line="hybridize=''" dest=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf present=yes insertafter=EOF
-
    - name: build the vnfs 
      command: wwvnfs -y --chroot "{{ gpu_chroot_loc }}/"
+
+   - name: fix export of usr/include
+     lineinfile: line="hybridize=''" path=/etc/warewulf/vnfs/{{ gpu_chroot }}.conf state=present insertafter=EOF
 
    - name: set up provisioning interface
      lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
