@@ -16,6 +16,7 @@
   private_network_long_netmask: "255.255.255.0"
   compute_ip_minimum: "10.1.1.2"
   compute_ip_maximum: "10.1.1.255"
+  gpu_ip_minimum: "10.1.1.128" #This could be more clever, like compute_ip_minimum + num_nodes...
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
@@ -57,7 +58,7 @@
   compute_node_prefix: "compute-"
   num_compute_nodes: 2
   gpu_node_prefix: "gpu-compute-"
-  num_gpu_nodes: 0
+  num_gpu_nodes: 1
   login_node_prefix: "login-"
   num_login_nodes: 0
 
@@ -88,4 +89,6 @@
 #automatic variables for internal use
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+  gpu_node_glob: "{{ gpu_node_prefix }}[0-{{ num_gpu_nodes|int - 1}}]"
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+  gpu_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
