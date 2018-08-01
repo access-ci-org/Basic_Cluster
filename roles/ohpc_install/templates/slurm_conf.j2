@@ -30,7 +30,7 @@ SlurmdPidFile=/var/run/slurmd.pid
 ProctrackType=proctrack/pgid
 #PluginDir=
 #FirstJobId=
-ReturnToService=1
+ReturnToService=2
 #MaxJobCount=
 #PlugStackConfig=
 #PropagatePrioProcess=
@@ -61,8 +61,9 @@ SchedulerType=sched/backfill
 #SchedulerAuth=
 #SchedulerPort=
 #SchedulerRootFilter=
-SelectType=select/linear
-FastSchedule=1
+SelectType=select/cons_res
+SelectTypeParameters=CR_CPU
+FastSchedule=0
 #PriorityType=priority/multifactor
 #PriorityDecayHalfLife=14-0
 #PriorityUsageResetPeriod=14-0
@@ -84,10 +85,13 @@ JobCompType=jobcomp/none
 JobAcctGatherType=jobacct_gather/linux
 JobAcctGatherFrequency=30
 #
-AccountingStorageType=accounting_storage/filetxt
+AccountingStorageType=accounting_storage/slurmdbd
 AccountingStorageHost={{ inventory_hostname }}
-AccountingStorageLoc=/var/log/slurmacct.log
+#AccountingStorageLoc=/var/log/slurmacct.log
+AccountingStorageLoc={{ slurm_acct_db }}
+AcctGatherNodeFreq=30
 AccountingStorageEnforce=associations,limits
+AccountingStoragePort={{ slurmdb_storage_port }}
 #AccountingStoragePass=
 #AccountingStorageUser=
 #
@@ -103,4 +107,4 @@ NodeName=compute-1 Sockets=1 CoresPerSocket=1 State=UNKNOWN
 # PARTITIONS
 #PartitionName=high Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
 #PartitionName=gpu  Nodes=gpu-compute-1 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
-PartitionName=low  Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP 
+PartitionName=low  Nodes=compute-[0-1] Default=YES MaxTime=2-00:00:00 State=UP 

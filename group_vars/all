@@ -7,15 +7,16 @@
 # Headnode Info
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
-  headnode_private_ip: "10.0.0.1"
-  build_kernel_ver: '3.10.0-514.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  headnode_private_ip: "10.1.1.1"
+  build_kernel_ver: '3.10.0-693.11.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Private network Info
-  private_network: "10.0.0.0"  
+  private_network: "10.1.1.0"  
   private_network_mask: "24"
   private_network_long_netmask: "255.255.255.0"
-  compute_ip_minimum: "10.0.0.2"
-  compute_ip_maximum: "10.0.0.255"
+  compute_ip_minimum: "10.1.1.2"
+  compute_ip_maximum: "10.1.1.255"
+  gpu_ip_minimum: "10.1.1.128" #This could be more clever, like compute_ip_minimum + num_nodes...
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
@@ -30,7 +31,11 @@
   sda3: "mountpoint=/:dev=sda3:type=ext3:size=fill"
 
 # GPU Node Vars
-#  nvidia_driver_installer: "NVIDIA-Linux-x86_64-375.39.run"
+# download the nvidia cuda installer, and run with only --extract=$path_to_CRI_XCBC/roles/gpu_build_vnfs/files to get these three installers
+  nvidia_driver_installer: "NVIDIA-Linux-x86_64-387.26.run"
+  cuda_toolkit_installer: "cuda-linux.9.1.85-23083092.run"
+  cuda_samples_installer: "cuda-samples.9.1.85-23083092-linux.run"
+
 
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
@@ -53,7 +58,7 @@
   compute_node_prefix: "compute-"
   num_compute_nodes: 2
   gpu_node_prefix: "gpu-compute-"
-  num_gpu_nodes: 0
+  num_gpu_nodes: 1
   login_node_prefix: "login-"
   num_login_nodes: 0
 
@@ -74,8 +79,16 @@
   viz_nodes:
    - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
 
+#Slurm Accounting Variables - little need to change these
+  slurm_acct_db: "slurmdb"
+  slurmdb_storage_port: "7031"
+  slurmdb_port: "1234"
+  slurmdb_sql_pass: "password" #could force this to be a hash... 
+  slurmdb_sql_user: slurm
 
 #automatic variables for internal use
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+  gpu_node_glob: "{{ gpu_node_prefix }}[0-{{ num_gpu_nodes|int - 1}}]"
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+  gpu_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"

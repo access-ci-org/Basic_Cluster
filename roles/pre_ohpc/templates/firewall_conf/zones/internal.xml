@@ -13,5 +13,6 @@
   <service name="http"/>
   <service name="https"/>
   <service name="tftp"/>
+  <service name="slurm"/>
   <service name="samba-client"/>
 </zone>

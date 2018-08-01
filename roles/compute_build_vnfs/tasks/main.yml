@@ -6,6 +6,27 @@
 #       regexp: "^YUM_MIRROR(.*)7.2.1511(.*)"
 #       line: 'YUM_MIRROR\g<1>7\g<2>'   # use \g<1> for backref followed by digit!
 #       backrefs: yes
+#
+   - name: check current kernel version
+     shell: uname -r | sed "s/.$(uname -m)//"
+     register: running_kernel_version
+
+   - name: check most recent installed kernel version
+     shell: yum list installed | grep 'kernel\.' | tail -n 1 | awk '{print $2}'
+     register: installed_kernel_version
+
+   - fail:
+       msg: "Most recently installed kernel is not currently loaded version! Consider rebooting before building the vnfs"
+     when: running_kernel_version.stdout != installed_kernel_version.stdout
+
+   - fail:
+       msg: "Loaded kernel does not match the build_kernel_ver in group_vars/all"
+     when: running_kernel_version.stdout not in build_kernel_ver
+
+   - name: remove old vnfs if it exists
+     file: 
+       path: "{{ compute_chroot_loc }}"
+       state: absent
 
    - template: src=compute_template.j2 dest="{{ template_path }}{{ compute_template }}.tmpl"
 
@@ -30,6 +51,9 @@
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
 
+   - name: copy slurm.conf over
+     copy: src=/etc/slurm/slurm.conf dest={{ compute_chroot_loc }}/etc/slurm/slurm.conf
+
    - name: put NFS home mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
@@ -37,7 +61,7 @@
      lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ headnode_private_ip }}:/export /export nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd

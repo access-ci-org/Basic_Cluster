@@ -20,14 +20,17 @@
      - name: set nodes bootloader
        command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: set nodes partitions
        command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: format partitions
        command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
   
      - name: define filesystems
        command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
@@ -36,7 +39,7 @@
   #" for vim
 
      - name: set files to provision
-       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
+       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
        with_items: "{{ compute_nodes }}"
 
      - name: remove node from slurm.conf if it exists already # to avoid duplication!
@@ -61,8 +64,11 @@
      when: node_inventory_auto == true
 
    - name: set files to provision
-     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
+     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
      when: node_inventory_auto == true
+
+   - name: sync files #also generates dynamic hosts on headnode!
+     command: wwsh file sync
 
 #   - name: add compute nodes to ansible inventory for wait
 #     add_host: name={{ node_glob }} group="compute nodes"
@@ -71,7 +77,7 @@
 #     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
 
    - name: restart dhcp
-     service: name=dhcpd state=restarted
+     service: name=dhcpd state=restarted enabled=yes
 
    - name: update pxeconfig to force node to boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
@@ -84,7 +90,7 @@
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
-     failed_when: "'Building Pxelinux' not in command_result.stdout"
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"
 
 #   vars:
 #    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"

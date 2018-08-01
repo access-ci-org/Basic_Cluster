@@ -1,5 +1,5 @@
 #!/bin/sh
-yum install epel-release
+yum -y install epel-release
 yum -y install python-devel python-setuptools python-setuptools-devel gcc libffi-devel openssl-devel
 easy_install pip
 pip install virtualenv
