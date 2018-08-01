@@ -166,11 +166,20 @@ firewall zone.
       nmcli connection modify $internal-nic connection.zone internal
       nmcli connection modify $public-nic connection.zone public
 
+You may also need to ensure that the connections will autoconnect on reboot:
+      nmcli con modify enp0s3 connection.autoconnect=yes
+(replace enp0s3 with each of your interfaces! The host-only and internal network 
+interfaces are the most likely to have this turned off by default.)
+
 
 Installation of the XCBC Tools and Dependencies
 -----------------------------------------------
 
+#####Please note - this is meant to be run as the root user!
+
 0\. ```yum install git vim bash-completion```
+
+
 Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
