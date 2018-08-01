@@ -167,18 +167,35 @@ firewall zone.
       nmcli connection modify $public-nic connection.zone public
 
 You may also need to ensure that the connections will autoconnect on reboot:
-      nmcli con modify enp0s3 connection.autoconnect=yes
+
+      nmcli con modify $internal-nic connection.autoconnect=yes
+      nmcli con modify $public-nic connection.autoconnect=yes
+
 (replace enp0s3 with each of your interfaces! The host-only and internal network 
 interfaces are the most likely to have this turned off by default.)
 
+Connecting to your headnode
+---------------------------
+
+Instead of using the VirtualBox terminal, it's often much simpler to ssh in to the headnode
+from your native local terminal - which allows for copy-pasting, window history, etc. 
+
+Check the address of the host-only network using the ```ip addr``` command on the
+headnode - usually in the ```192.168.56.0\24``` by default.
+
+From your host machine, open a terminal emulator, and you should be able to ssh in as 
+root (using the password you set during install - running ```ssh-copy-id root@$headnode_ip```
+is also quite useful, if you're on a Linux host machine.).
+
+Follow the guide below from your local terminal, rather than the VirtualBox terminal.
+(primarily for ease of use)
 
 Installation of the XCBC Tools and Dependencies
 -----------------------------------------------
 
-#####Please note - this is meant to be run as the root user!
+####Please note - this is meant to be run as the root user!
 
 0\. ```yum install git vim bash-completion```
-
 
 Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
