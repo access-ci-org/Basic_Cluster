@@ -408,6 +408,20 @@ be wasted making unnecessary images.
    parameters will be inserted into the slurm.conf. The gpu_type is completely custom, and is the
    string that users must request to run on these nodes in the default SLURM configuration.
 
+Ansible Inventory
+-----------------
+
+Note the inventory file in
+```CRI_XCBC/inventory```:
+```
+[headnode]
+headnode ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
+```
+
+Make sure that the hostname of your headnode matches the entry on that line! Either
+edit the inventory file, or change the hostname via:
+```hostnamectl set-hostname headnode```.
+
 Configuration of the Headnode via Ansible
 -----------------------------------------
 
