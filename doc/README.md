@@ -362,11 +362,11 @@ Do not worry! If you don't have GPU or login nodes, space and time will not
 be wasted making unnecessary images.
 
 -   ```compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"```
--   ```compute_chroot: centos7.3-compute```
+-   ```compute_chroot: centos7-compute```
 -   ```gpu_chroot_loc: "/opt/ohpc/admin/images/{{ gpu_chroot }}"```
--   ```gpu_chroot: centos7.3-gpu```
+-   ```gpu_chroot: centos7-gpu```
 -   ```login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"```
--   ```login_chroot: centos7.3-login```
+-   ```login_chroot: centos7-login```
 
 #### Node Inventory Method
 -   ```node_inventory_auto: true```
