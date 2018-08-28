@@ -1,0 +1,17 @@
+[headnode]
+ohpc	ansible_connection=local
+
+[headnode:vars]
+sshgroup=headnode
+
+[ood]
+ood1
+
+[ood:vars]
+sshgroup=ood
+
+[compute]
+c1
+
+[compute:vars]
+sshgroup=compute
