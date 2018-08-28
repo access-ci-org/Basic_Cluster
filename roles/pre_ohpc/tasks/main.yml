@@ -1,9 +1,9 @@
 ---
 
 #   - name: check hostname
-   - fail: 
-       msg: "Hostname in inventory/headnode doesn't match local hostname! Please fix and run again."
-     when: inventory_hostname != ansible_hostname 
+#   - fail:
+#       msg: "Hostname in inventory/headnode doesn't match local hostname! Please fix and run again."
+#     when: inventory_hostname != ansible_hostname
 
    - fail: 
        msg: "Kernel version mismatch between loaded kernel and group-vars/all! Please fix and run again."
@@ -54,6 +54,9 @@
    - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
 
    - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+
+   - name: modify the name of the network profile name
+     command: nmcli con mod 'System {{ private_interface }}' connection.id '{{ private_interface }}'
 
    - name: add private interface to internal zone via nmcli
      command: nmcli connection modify {{ private_interface }} connection.zone internal
