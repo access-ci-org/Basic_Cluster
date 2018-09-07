@@ -1,5 +1,9 @@
 ---
 
+   - name: Waiting for the compute node to bootup
+     pause:
+       seconds: 150
+
    - name: create cluster using sacctmgr
      shell: sacctmgr create cluster {{ cluster_name }} -i
 
