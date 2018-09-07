@@ -5,7 +5,10 @@
 #       msg: "Hostname in inventory/headnode doesn't match local hostname! Please fix and run again."
 #     when: inventory_hostname != ansible_hostname
 
-   - fail: 
+#   - name: yum update
+#     yum: name=* state=latest update_cache=yes
+
+   - fail:
        msg: "Kernel version mismatch between loaded kernel and group-vars/all! Please fix and run again."
      when: build_kernel_ver != ansible_kernel
 
@@ -55,6 +58,9 @@
 
    - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
 
+     #   - name: modify the name of the network profile name
+     #command: nmcli con mod 'eth0' connection.id '{{ public_interface }}'
+
    - name: modify the name of the network profile name
      command: nmcli con mod 'System {{ private_interface }}' connection.id '{{ private_interface }}'
 
@@ -67,8 +73,9 @@
 #   - name: restart dbus for firewalld :(
 #     service: name=dbus state=restarted
 
+# Changing it temporarily to stop
    - name: firewalld restart # to load new slurm service
-     service: name=firewalld state=restarted
+     service: name=firewalld state=stopped
 
 ## This section seems to be redundant 
 ##   - name: add interface to internal zone firewall-cmd
