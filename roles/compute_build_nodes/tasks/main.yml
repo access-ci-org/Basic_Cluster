@@ -63,6 +63,10 @@
      shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
      when: node_inventory_auto == true
 
+#   - name: Waiting for the compute node to bootup
+#     pause:
+#       seconds: 180
+
    - name: set files to provision
      command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
      when: node_inventory_auto == true
