@@ -7,8 +7,8 @@
        - "ohpc-warewulf"
        - "ohpc-slurm-server"
 
-   - name: yum update
-     yum: name=* state=latest update_cache=yes
+#   - name: yum update
+#     yum: name=* state=latest update_cache=yes
 
    - name: add slurm user
      user: name=slurm state=present system=yes
