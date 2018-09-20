@@ -6,7 +6,7 @@
 #
 # Headnode Info
   public_interface: "enp0s3" # NIC that allows access to the public internet
-  private_interface: "enp0s9" #NIC that allows access to compute nodes
+  private_interface: "enp0s8" #NIC that allows access to compute nodes
   headnode_private_ip: "10.1.1.1"
   build_kernel_ver: '3.10.0-862.11.6.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
