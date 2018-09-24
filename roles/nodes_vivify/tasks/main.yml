@@ -4,9 +4,6 @@
      pause:
        seconds: 150
 
-   - name: create cluster using sacctmgr
-     shell: sacctmgr create cluster {{ cluster_name }} -i
-
    - name: tell nodes to get files
      command: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') /warewulf/bin/wwgetfiles
 
