@@ -19,7 +19,7 @@
   gpu_ip_minimum: "10.1.1.128" #This could be more clever, like compute_ip_minimum + num_nodes...
 
 #slurm.conf variables
-  cluster_name: "xcbc-example"
+  cluster_name: "ohpc"
 #  gres_types: "gpu"
 
 #Stateful compute or not?
