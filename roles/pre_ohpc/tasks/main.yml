@@ -30,6 +30,8 @@
        - "libselinux-python"
        - "libsemanage-python"
        - "policycoreutils"
+       - "NetworkManager"
+       - "NetworkManager-glib"
 #       - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
@@ -54,6 +56,19 @@
    - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
 
    - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+
+   - name: start Network Manager
+     service: 
+       name: NetworkManager
+       state: started
+       enabled: yes
+
+   - name: manage interface with nmcli
+     nmcli: 
+       conn_name: "{{ private_interface }}"
+       ifname: "{{ private_interface }}"
+       type: ethernet
+       state: present
 
    - name: add private interface to internal zone via nmcli
      command: nmcli connection modify {{ private_interface }} connection.zone internal
