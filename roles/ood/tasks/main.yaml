@@ -14,9 +14,14 @@
     name: "ondemand"
     state: present
 
-- name: Open port 80
+- name: Open port http/s
   firewalld:
     service: http
+    permanent: true
+    state: enabled
+
+  firewalld:
+    service: https
     permanent: true
     state: enabled
 
