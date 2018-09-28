@@ -31,7 +31,10 @@
     permanent: true
     state: enabled
 
-- name: Disable SELinux
+- name: Disable SELinux Enforcement (permissive)
   selinux:
-    state: disabled
+    policy: permissive
+    state: permissive
 
+- name: Set SELinux to permissive mode without reboot
+  command: setenforce 0
