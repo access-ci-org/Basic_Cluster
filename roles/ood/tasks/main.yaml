@@ -14,6 +14,12 @@
     name: "ondemand"
     state: present
 
+- name: Enable http service
+  systemd:
+    state: started
+    name: httpd24-httpd
+    enabled: yes
+
 - name: Open port http/s
   firewalld:
     service: http
@@ -38,8 +44,3 @@
   local_action: wait_for host={{ inventory_hostname }} state=started port=22 delay=15 timeout=300 connect_timeout=15
   become: false
 
-- name: Make sure a service is running
-  systemd:
-    state: started
-    name: httpd24-httpd
-    enabled: yes
