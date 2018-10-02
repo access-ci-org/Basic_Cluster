@@ -56,6 +56,9 @@
     src: ntp.conf
     dest: /ntp.conf
 
+- name: create slurm.conf
+  template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
@@ -69,6 +72,13 @@
     state: started
     name: ntpd
     enabled: yes
+
+- name: start and enable slurmd
+  service: 
+    name: slurmd
+    state: started
+    enabled: yes
+
 
 - name: Enable http service
   systemd:
