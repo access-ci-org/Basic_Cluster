@@ -51,6 +51,11 @@
     src: cluster.yml
     dest: /etc/ood/config/cluster.d/{{ cluster_name }}.yml
 
+- name: Add ntp configuration files
+  template:
+    src: ntp.conf
+    dest: /ntp.conf
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
@@ -58,6 +63,12 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Enable NTP service
+  systemd:
+    state: started
+    name: ntpd
+    enabled: yes
 
 - name: Enable http service
   systemd:
