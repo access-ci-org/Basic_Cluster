@@ -5,7 +5,7 @@ ohpc	ansible_connection=local
 sshgroup=headnode
 
 [ood]
-ood1
+ood
 
 [ood:vars]
 sshgroup=ood
