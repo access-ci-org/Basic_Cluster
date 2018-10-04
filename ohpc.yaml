@@ -1,9 +1,9 @@
 ---
 - hosts: ohpc
   roles:
-    - pre_ohpc
-    - ohpc_install
-    - ohpc_config
-    - compute_build_vnfs
-    - compute_build_nodes
-    - nodes_vivify
+    - { name: 'pre_ohpc', tags: 'pre_ohpc' }
+    - { name: 'ohpc_install', tags: 'ophc_install' }
+    - { name: 'ohpc_config', tags: 'ohpc_config' }
+    - { name: 'compute_build_vnfs', tags: 'compute_build_vnfs' }
+    - { name: 'compute_build_nodes', tags: 'compute_build_nodes' }
+    - { name: 'nodes_vivify', tags: 'nodes_vivify' }
