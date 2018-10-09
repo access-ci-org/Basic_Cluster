@@ -66,6 +66,9 @@
   login_node_prefix: "login-"
   num_login_nodes: 0
 
+#OpenOnDemand
+  ood: "ood"
+
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
 # There is a real difference between building from scratch, and using these for maintenance / node addition!
