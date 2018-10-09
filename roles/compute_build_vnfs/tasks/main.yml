@@ -41,8 +41,19 @@
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2 freeipmi ipmitool ohpc-slurm-client
-#" for vim
+     yum:
+       name: "{{ item }}"
+       state: present
+       installroot: "{{ compute_chroot_loc }}"
+     with_items:
+       - chrony
+       - 'kernel-{{ running_kernel_version.stdout }}'
+       - lmod-ohpc
+       - grub2
+       - freeipmi
+       - ipmitool
+       - ohpc-slurm-client
+       - ohpc-base-compute
 
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys

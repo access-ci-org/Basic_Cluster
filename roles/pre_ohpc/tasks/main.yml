@@ -61,8 +61,13 @@
      #   - name: modify the name of the network profile name
      #command: nmcli con mod 'eth0' connection.id '{{ public_interface }}'
 
+   - name: check network profile name
+     shell: nmcli con | grep '{{ private_interface }}'
+     register: network_profile_name
+
    - name: modify the name of the network profile name
      command: nmcli con mod 'System {{ private_interface }}' connection.id '{{ private_interface }}'
+     when: "'System' in network_profile_name.stdout"
 
    - name: add private interface to internal zone via nmcli
      command: nmcli connection modify {{ private_interface }} connection.zone internal
