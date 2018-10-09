@@ -24,7 +24,7 @@
     - nfs-utils
     - ohpc-base-compute
     - ohpc-slurm-client
-    - ntp
+    - chrony 
     - zsh
     - git
     - vim
@@ -48,11 +48,6 @@
   template:
     src: cluster.yml
     dest: /etc/ood/config/cluster.d/{{ cluster_name }}.yml
-
-- name: Add ntp configuration files
-  template:
-    src: ntp.conf
-    dest: /ntp.conf
 
 - name: Stage http authz file for ood
   copy:
