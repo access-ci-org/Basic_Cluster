@@ -54,6 +54,11 @@
        - ipmitool
        - ohpc-slurm-client
        - ohpc-base-compute
+       - tmux
+       - ruby
+       - turbojpeg
+       - '@X Window System'
+       - '@Xfce'
 
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
