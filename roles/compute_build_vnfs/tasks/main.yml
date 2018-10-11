@@ -78,6 +78,19 @@
        state: present
        installroot: "{{ compute_chroot_loc }}"
 
+   - name: download Websockify source code
+     get_url:
+       url: https://github.com/novnc/websockify/archive/v0.8.0.tar.gz
+       dest: /vagrant/CRI_XCBC/files/websockify-0.8.0.tar.gz
+
+   - name: extract Websockify source code into chroot env
+     unarchive:
+       src: /vagrant/CRI_XCBC/files/websockify-0.8.0.tar.gz
+       dest: '{{ compute_chroot_loc }}/tmp'
+
+   - name: install Websockify inside chroot env
+     command: "chroot {{ compute_chroot_loc }} /bin/bash -c 'cd /tmp/websockify-0.8.0; python setup.py install'"
+
    - name: put NFS home mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
