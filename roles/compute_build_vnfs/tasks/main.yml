@@ -66,6 +66,18 @@
    - name: copy slurm.conf over
      copy: src=/etc/slurm/slurm.conf dest={{ compute_chroot_loc }}/etc/slurm/slurm.conf
 
+   - name: download TurboVNC rpm
+     get_url:
+       url: https://sourceforge.net/projects/turbovnc/files/2.2/turbovnc-2.2.x86_64.rpm
+       dest: /vagrant/CRI_XCBC/files/turbovnc-2.2.x86_64.rpm
+       checksum: md5:25711ad32bfae63031aff20528d4af79
+
+   - name: install TurboVNC via rpm into chroot image
+     yum:
+       name: /vagrant/CRI_XCBC/files/turbovnc-2.2.x86_64.rpm
+       state: present
+       installroot: "{{ compute_chroot_loc }}"
+
    - name: put NFS home mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
@@ -80,7 +92,6 @@
 
    - name: add headnode to compute chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
-
    - name: slurmd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable slurmd
 
