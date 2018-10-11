@@ -24,7 +24,6 @@
     - nfs-utils
     - ohpc-base-compute
     - ohpc-slurm-client
-    - chrony 
     - zsh
     - git
     - vim
@@ -56,12 +55,6 @@
     owner: root
     group: root
     mode: 0644
-
-- name: Enable NTP service
-  systemd:
-    state: started
-    name: ntpd
-    enabled: yes
 
 - name: start and enable slurmd
   service: 
