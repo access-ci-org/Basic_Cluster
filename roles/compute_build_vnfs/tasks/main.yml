@@ -91,6 +91,9 @@
    - name: install Websockify inside chroot env
      command: "chroot {{ compute_chroot_loc }} /bin/bash -c 'cd /tmp/websockify-0.8.0; python setup.py install'"
 
+   - name: set compute node to boot with multi-user mode
+     command: chroot '{{ compute_chroot_loc }}' systemctl set-default multi-user.target
+
    - name: put NFS home mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
