@@ -94,6 +94,11 @@
     owner: root
     group: root
 
+- file:
+    path: /warewulf/bin
+    recurse: true
+    mode: u+x,g+x
+
 - name: create custom warewulf config file for node
   template:
     src: wwnodeconf.j2
