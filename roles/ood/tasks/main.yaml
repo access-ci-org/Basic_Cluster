@@ -14,6 +14,40 @@
     name: "ondemand"
     state: present
 
+- name: Get OpenHPC repo
+  yum: name={{ openhpc_release_rpm }} state=present update_cache=true
+
+
+- name: Install dependencies-nfs-utils, ohpc packages, ntp and other required tools.
+  yum: name={{ item }} state=installed update_cache=true
+  with_items:
+    - nfs-utils
+    - ohpc-base-compute
+    - ohpc-slurm-client
+    - zsh
+    - git
+    - vim
+    - tmux
+    - ruby
+
+- name: Mount /home, /opt/ohpc/pub from OHPC node
+  lineinfile:
+    path: /etc/fstab
+    line: '{{ item }}'
+  with_items:
+    - "{{ headnode_private_ip }}:/home /home nfs nfsvers=3,nodev,nosuid,noatime 0 0"
+    - "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev,noatime 0 0"
+
+- name: Create cluster.d directory
+  file:
+    path: /etc/ood/config/cluster.d
+    state: directory
+
+- name: Add cluster configuration files
+  template:
+    src: cluster.yml
+    dest: /etc/ood/config/cluster.d/{{ cluster_name }}.yml
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
@@ -21,6 +55,13 @@
     owner: root
     group: root
     mode: 0644
+
+- name: start and enable slurmd
+  service: 
+    name: slurmd
+    state: started
+    enabled: yes
+
 
 - name: Enable http service
   systemd:

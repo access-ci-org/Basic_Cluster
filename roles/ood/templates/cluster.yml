@@ -1,0 +1,10 @@
+---
+v2:
+  metadata:
+    title: "{{ cluster_name }}"
+  login:
+    host: "{{ cluster_name }}"
+  job:
+    adapter: "slurm"
+    bin: "/bin"
+
