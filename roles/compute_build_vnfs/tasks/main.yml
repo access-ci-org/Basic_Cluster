@@ -66,6 +66,7 @@
    - name: copy slurm.conf over
      copy: src=/etc/slurm/slurm.conf dest={{ compute_chroot_loc }}/etc/slurm/slurm.conf
 
+   # one method to install TurboVNC
    - name: download TurboVNC rpm
      get_url:
        url: https://sourceforge.net/projects/turbovnc/files/2.2/turbovnc-2.2.x86_64.rpm
@@ -77,6 +78,25 @@
        name: /vagrant/CRI_XCBC/files/turbovnc-2.2.x86_64.rpm
        state: present
        installroot: "{{ compute_chroot_loc }}"
+
+   # Another method to install TurboVNC, tested
+   # All information comes from TurboVNC official website:
+   # https://turbovnc.org/pmwiki/uploads/Downloads/TurboVNC.repo
+   #   - name: add TurboVNC repo into yum inside compute node image
+   #     yum_repository:
+   #       name: TurboVNC
+   #       description: TurboVNC official RPMs
+   #       baseurl: https://sourceforge.net/projects/turbovnc/files
+   #       gpgcheck: yes
+   #       gpgkey: http://pool.sks-keyservers.net/pks/lookup?op=get&search=0x6BBEFA1972FEB9CE
+   #       exclude: 'turbovnc-*.*.9[0-9]-*' # exclude beta releases
+   #       reposdir: "{{ compute_chroot_loc }}/etc/yum.repos.d"
+   #
+   #   - name: install TurboVNC via yum into chroot image
+   #     yum:
+   #       name: turbovnc
+   #       state: present
+   #       installroot: "{{ compute_chroot_loc }}"
 
    - name: download Websockify source code
      get_url:
