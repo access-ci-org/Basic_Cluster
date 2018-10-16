@@ -120,15 +120,15 @@
   pause:
     seconds: 1
 
-- name: "sudo wwsh node new ood"
+- name: "sudo wwsh node new ood -y"
   pause:
     seconds: 1
 
-- name: "sudo wwsh node set ood -I {{ ood_ip_addr }} --hwadd {{ hostvars[inventory_hostname].ansible_enp0s8.macaddress }}"
+- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ hostvars[inventory_hostname].ansible_enp0s8.macaddress }}"
   pause:
     seconds: 1
 
-- name: "sudo wwsh provision set ood --files dynamic_hosts,munge.key,slurm.conf"
+- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf"
   pause:
     seconds: 180
 
