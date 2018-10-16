@@ -24,7 +24,7 @@
      when: running_kernel_version.stdout not in build_kernel_ver
 
    - name: remove old vnfs if it exists
-     file: 
+     file:
        path: "{{ compute_chroot_loc }}"
        state: absent
 
@@ -91,6 +91,8 @@
    - name: install Websockify inside chroot env
      command: "chroot {{ compute_chroot_loc }} /bin/bash -c 'cd /tmp/websockify-0.8.0; python setup.py install'"
 
+   # After we installed Xfce, the compute node is set to bootup in graphical mode.
+   # This task is to unset that back to multi-user mode.
    - name: set compute node to boot with multi-user mode
      command: chroot '{{ compute_chroot_loc }}' systemctl set-default multi-user.target
 
