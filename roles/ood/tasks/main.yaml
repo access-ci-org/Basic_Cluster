@@ -17,7 +17,6 @@
 - name: Get OpenHPC repo
   yum: name={{ openhpc_release_rpm }} state=present update_cache=true
 
-
 - name: Install dependencies-nfs-utils, ohpc packages, ntp and other required tools.
   yum: name={{ item }} state=installed update_cache=true
   with_items:
@@ -87,3 +86,34 @@
 
 - name: Set SELinux to permissive mode without reboot
   command: setenforce 0
+
+- name: install warewulf file synchronization
+  copy:
+    src: warewulf
+    dest: /
+    owner: root
+    group: root
+
+- name: create custom warewulf config file for node
+  template:
+    src: wwnodeconf.j2
+    dest: /warewulf/config
+    owner: root
+    group: root
+    mode: 0640
+
+- name: add warewulf file sync via cron
+  copy:
+    src: wwupdatefiles
+    dest: /etc/cron.d
+    owner: root
+    group: root
+    mode: 0640
+
+- name: create log output dir for warewulf cron
+  file:
+    path: /var/log/warewulf
+    state: directory
+    owner: root
+    group: root
+    mode: 755
