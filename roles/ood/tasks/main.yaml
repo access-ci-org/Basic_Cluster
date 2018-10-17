@@ -37,15 +37,15 @@
     - "{{ headnode_private_ip }}:/home /home nfs nfsvers=3,nodev,nosuid,noatime 0 0"
     - "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev,noatime 0 0"
 
-- name: Create cluster.d directory
+- name: Create clusters.d directory
   file:
-    path: /etc/ood/config/cluster.d
+    path: /etc/ood/config/clusters.d
     state: directory
 
 - name: Add cluster configuration files
   template:
     src: cluster.yml
-    dest: /etc/ood/config/cluster.d/{{ cluster_name }}.yml
+    dest: /etc/ood/config/clusters.d/{{ cluster_name }}.yml
 
 - name: Stage http authz file for ood
   copy:
