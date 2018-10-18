@@ -80,6 +80,17 @@
 - name: Set SELinux to permissive mode without reboot
   command: setenforce 0
 
+# Discovery avoids having to hard code the ethernet device number
+# it keys off the assigned static IP for the ood node and uses that
+# to discover the ethernet device and mac address for the node
+# adapted from: https://serverfault.com/a/852093
+- name: discover ethernet address for ood internal network
+  set_fact:
+    ood_macaddress: "{{ hostvars[inventory_hostname]['ansible_' + item]['macaddress'] }}"
+  when: hostvars[inventory_hostname]['ansible_' + item]['ipv4']['address'] == ood_ip_addr
+  with_items:
+    - "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"
+
 - name: install warewulf file synchronization
   copy:
     src: warewulf
@@ -124,7 +135,7 @@
   pause:
     seconds: 1
 
-- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ hostvars[inventory_hostname].ansible_enp0s8.macaddress }}"
+- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
   pause:
     seconds: 1
 
