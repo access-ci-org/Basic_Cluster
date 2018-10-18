@@ -80,6 +80,10 @@
 - name: Set SELinux to permissive mode without reboot
   command: setenforce 0
 
+# Implement warewulf file synchrnoization for cluster integration
+# https://groups.io/g/OpenHPC-users/message/2084
+# https://groups.io/g/OpenHPC-users/message/2405
+
 # Discovery avoids having to hard code the ethernet device number
 # it keys off the assigned static IP for the ood node and uses that
 # to discover the ethernet device and mac address for the node
@@ -98,6 +102,7 @@
     owner: root
     group: root
 
+# ensure script files are executable
 - file:
     path: /warewulf/bin
     recurse: true
