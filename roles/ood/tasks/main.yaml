@@ -144,7 +144,7 @@
   pause:
     seconds: 1
 
-- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf"
+- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
   pause:
     seconds: 90
 
