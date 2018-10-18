@@ -1,0 +1,1 @@
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * root WWGETFILES_INTERVAL=180 /warewulf/bin/wwgetfiles >/var/log/warewulf/wwgetfiles.log 2>&1
