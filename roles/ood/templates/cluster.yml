@@ -7,4 +7,17 @@ v2:
   job:
     adapter: "slurm"
     bin: "/bin"
+  batch_connect:
+    basic:
+      script_wrapper: |
+        module purge
+        %s
+      set_host: "host=$(hostname -A | awk '{print $1}')"
+    vnc:
+      script_wrapper: |
+        module purge
+        export PATH="/opt/TurboVNC/bin:$PATH"
+        export WEBSOCKIFY_CMD="/bin/websockify"
+        %s
+      set_host: "host=$(hostname -A | awk '{print $1}')"
 
