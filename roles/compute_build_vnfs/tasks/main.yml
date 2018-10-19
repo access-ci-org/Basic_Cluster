@@ -133,6 +133,7 @@
 
    - name: add headnode to compute chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ compute_chroot_loc }}/etc/chrony.conf state=present
+
    - name: slurmd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable slurmd
 
