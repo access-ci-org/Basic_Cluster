@@ -68,6 +68,15 @@
     src: bc_desktop/submit.yml.erb
     dest: /etc/ood/config/apps/bc_desktop/submit/submit.yml.erb
 
+- name: Enable reverse proxy
+  lineinfile:
+    path: /etc/ood/config/ood_portal.yml
+    line: '{{ item }}'
+  with_items:
+    - "host_regex: '{{ compute_node_glob }}.localdomain'"
+    - "node_uri: '/node'"
+    - "rnode_uri: '/rnode'"
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
@@ -75,6 +84,9 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Build the updated Apache config
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
 
 - name: start and enable slurmd
   service: 
