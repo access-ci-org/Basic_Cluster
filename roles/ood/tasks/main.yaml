@@ -58,6 +58,16 @@
     src: bc_desktop/cluster.yml
     dest: /etc/ood/config/apps/bc_desktop/{{ cluster_name }}.yml
 
+- name: Create interactive desktop job submit script directory
+  file:
+    path: /etc/ood/config/apps/bc_desktop/submit
+    state: directory
+
+- name: Add interactive desktop job submit script
+  template:
+    src: bc_desktop/submit.yml.erb
+    dest: /etc/ood/config/apps/bc_desktop/submit/submit.yml.erb
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
