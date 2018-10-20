@@ -48,6 +48,16 @@
     src: cluster.yml
     dest: /etc/ood/config/cluster.d/{{ cluster_name }}.yml
 
+- name: Create interactive desktop settings directory
+  file:
+    path: /etc/ood/config/apps/bc_desktop
+    state: directory
+
+- name: Add interactive desktop settings
+  template:
+    src: bc_desktop/cluster.yml
+    dest: /etc/ood/config/apps/bc_desktop/{{ cluster_name }}.yml
+
 - name: Stage http authz file for ood
   copy:
     src: htpasswd
@@ -61,7 +71,6 @@
     name: slurmd
     state: started
     enabled: yes
-
 
 - name: Enable http service
   systemd:

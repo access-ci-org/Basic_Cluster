@@ -1,0 +1,6 @@
+---
+title: "HPC Desktop"
+cluster: "{{ cluster_name }}"
+attributes:
+  desktop: "xfce"
+
