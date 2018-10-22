@@ -24,7 +24,7 @@
      when: running_kernel_version.stdout not in build_kernel_ver
 
    - name: remove old vnfs if it exists
-     file: 
+     file:
        path: "{{ compute_chroot_loc }}"
        state: absent
 
@@ -54,12 +54,61 @@
        - ipmitool
        - ohpc-slurm-client
        - ohpc-base-compute
+       - tmux
+       - ruby
+       - turbojpeg
+       - '@X Window System'
+       - '@Xfce'
 
-   - name: copy ssh keys over
-     copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys
+   # one method to install TurboVNC
+   - name: download TurboVNC rpm
+     get_url:
+       url: https://sourceforge.net/projects/turbovnc/files/2.2/turbovnc-2.2.x86_64.rpm
+       dest: /var/tmp/turbovnc-2.2.x86_64.rpm
+       checksum: md5:25711ad32bfae63031aff20528d4af79
 
-   - name: copy slurm.conf over
-     copy: src=/etc/slurm/slurm.conf dest={{ compute_chroot_loc }}/etc/slurm/slurm.conf
+   - name: install TurboVNC via rpm into chroot image
+     yum:
+       name: /var/tmp/turbovnc-2.2.x86_64.rpm
+       state: present
+       installroot: "{{ compute_chroot_loc }}"
+
+   # Another method to install TurboVNC, tested
+   # All information comes from TurboVNC official website:
+   # https://turbovnc.org/pmwiki/uploads/Downloads/TurboVNC.repo
+   #   - name: add TurboVNC repo into yum inside compute node image
+   #     yum_repository:
+   #       name: TurboVNC
+   #       description: TurboVNC official RPMs
+   #       baseurl: https://sourceforge.net/projects/turbovnc/files
+   #       gpgcheck: yes
+   #       gpgkey: http://pool.sks-keyservers.net/pks/lookup?op=get&search=0x6BBEFA1972FEB9CE
+   #       exclude: 'turbovnc-*.*.9[0-9]-*' # exclude beta releases
+   #       reposdir: "{{ compute_chroot_loc }}/etc/yum.repos.d"
+   #
+   #   - name: install TurboVNC via yum into chroot image
+   #     yum:
+   #       name: turbovnc
+   #       state: present
+   #       installroot: "{{ compute_chroot_loc }}"
+
+   - name: download Websockify source code
+     get_url:
+       url: https://github.com/novnc/websockify/archive/v0.8.0.tar.gz
+       dest: /var/tmp/websockify-0.8.0.tar.gz
+
+   - name: extract Websockify source code into chroot env
+     unarchive:
+       src: /var/tmp/websockify-0.8.0.tar.gz
+       dest: '{{ compute_chroot_loc }}/tmp'
+
+   - name: install Websockify inside chroot env
+     command: "chroot {{ compute_chroot_loc }} /bin/bash -c 'cd /tmp/websockify-0.8.0; python setup.py install'"
+
+   # After we installed Xfce, the compute node is set to bootup in graphical mode.
+   # This task is to unset that back to multi-user mode.
+   - name: set compute node to boot with multi-user mode
+     command: chroot '{{ compute_chroot_loc }}' systemctl set-default multi-user.target
 
    - name: put NFS home mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
@@ -69,6 +118,9 @@
 
    - name: put NFS opt mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/export /export nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+
+   - name: firewalld on compute image disabled
+     command: chroot '{{ compute_chroot_loc }}' systemctl disable firewalld
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd
