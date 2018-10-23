@@ -107,7 +107,7 @@
 
 - name: Disable SELinux Enforcement (permissive)
   selinux:
-    policy: permissive
+    policy: targeted 
     state: permissive
 
 - name: Set SELinux to permissive mode without reboot
