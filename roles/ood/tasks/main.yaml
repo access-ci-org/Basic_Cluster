@@ -86,6 +86,7 @@
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes
 
 - name: Enable http service
   systemd:
@@ -99,7 +100,7 @@
     permanent: true
     state: enabled
 
--  firewalld:
+- firewalld:
     service: https
     permanent: true
     state: enabled
