@@ -32,6 +32,20 @@
     executable: /bin/bash
     chdir: /tmp
 
+- name: Add EasyBuild installation path into default MODULEPATH
+  replace:
+    path: /etc/profile.d/lmod.sh
+    regexp: '(MODULEPATH=.*)'
+    replace: '\1:{{ easybuild_prefix }}/modules/all'
+    backup: yes
+
+- name: Add EasyBuild installation path into default MODULEPATH
+  replace:
+    path: /etc/profile.d/lmod.csh
+    regexp: '(MODULEPATH "[^"]*)'
+    replace: '\1:{{ easybuild_prefix }}/modules/all'
+    backup: yes
+
 - name: Verify EasyBuild installation
   shell: |
       source /opt/ohpc/admin/lmod/lmod/init/bash
