@@ -1,0 +1,71 @@
+---
+# Implement warewulf file synchrnoization for cluster integration
+# https://groups.io/g/OpenHPC-users/message/2084
+# https://groups.io/g/OpenHPC-users/message/2405
+
+# Discovery avoids having to hard code the ethernet device number
+# it keys off the assigned static IP for the ood node and uses that
+# to discover the ethernet device and mac address for the node
+# adapted from: https://serverfault.com/a/852093
+- name: discover ethernet address for ood internal network
+  set_fact:
+    ood_macaddress: "{{ hostvars[inventory_hostname]['ansible_' + item]['macaddress'] }}"
+  when: hostvars[inventory_hostname]['ansible_' + item]['ipv4']['address'] == ood_ip_addr
+  with_items:
+    - "{{ hostvars[inventory_hostname]['ansible_interfaces'] }}"
+
+- name: install warewulf file synchronization
+  copy:
+    src: warewulf
+    dest: /
+    owner: root
+    group: root
+
+# ensure script files are executable
+- file:
+    path: /warewulf/bin
+    recurse: true
+    mode: u+x,g+x
+
+- name: create custom warewulf config file for node
+  template:
+    src: wwnodeconf.j2
+    dest: /warewulf/config
+    owner: root
+    group: root
+    mode: 0640
+
+- name: add warewulf file sync via cron
+  copy:
+    src: wwupdatefiles
+    dest: /etc/cron.d
+    owner: root
+    group: root
+    mode: 0640
+
+- name: create log output dir for warewulf cron
+  file:
+    path: /var/log/warewulf
+    state: directory
+    owner: root
+    group: root
+    mode: 755
+
+- name: "RUN THESE COMMAND ON OHPC MASTER TO COMPLETE REGISTRATION"
+  pause:
+    seconds: 1
+
+- name: "sudo wwsh node new ood -y"
+  pause:
+    seconds: 1
+
+- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
+  pause:
+    seconds: 1
+
+- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
+  pause:
+    seconds: 90
+
+- name: Force warewulf synchronization
+  shell: /warewulf/bin/wwgetfiles >/var/log/warewulf/wwgetfiles.log 2>&1
