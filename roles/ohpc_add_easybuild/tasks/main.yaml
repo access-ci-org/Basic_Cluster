@@ -1,0 +1,40 @@
+---
+- name: Install pip for system python and build tools
+  yum:
+    state: present
+    name: 
+      - '@Development Tools'
+      - python-pip
+   
+- name: Create user build
+  user:
+    name: build
+
+- name: Change owner and permission of easybuild installation directory
+  file:
+    path: "{{ easybuild_prefix }}"
+    owner: root
+    group: build
+    mode: "g+w"
+    recurse: yes
+
+- name: Download EasyBuild bootstrap script
+  get_url:
+    url: https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+    dest: /tmp/bootstrap_eb.py
+
+- name: Boostrap EasyBuild
+  shell: |
+      source /opt/ohpc/admin/lmod/lmod/init/bash
+      python bootstrap_eb.py "{{ easybuild_prefix }}"
+  become_user: build
+  args:
+    executable: /bin/bash
+    chdir: /tmp
+
+- name: Verify EasyBuild installation
+  shell: |
+      source /opt/ohpc/admin/lmod/lmod/init/bash
+      module use "{{ easybuild_prefix }}/modules/all"
+      module load EasyBuild
+      eb --version
