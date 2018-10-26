@@ -3,3 +3,4 @@
   roles:
     - prep_ood
     - ood
+    - warewulf_sync
