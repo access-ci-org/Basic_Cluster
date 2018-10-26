@@ -1,4 +1,5 @@
 ---
 - hosts: ood
   roles:
+    - prep_ood
     - ood
