@@ -111,6 +111,12 @@
   easybuild_buildpath: "/tmp/build"
   easybuild_sourcepath: "/tmp/source"
 
+#matlab download
+  matlab_provision: false
+  matlab_download_url: "https://uab.box.com/shared/static/y01qu7oo1gpne6j2s6nqwcuee63epivo.gz"
+  matlab_clustershare: "/opt/ohpc/pub/apps/matlab/"
+  matlab_destination: "/tmp/matlab.tar.gz"
+
 #Rstudio related
   rstudio_provision: false
   singularity_ver: '2.4.2'
@@ -126,4 +132,3 @@
 
 # Shibboleth SSO
   enable_shib: false
-

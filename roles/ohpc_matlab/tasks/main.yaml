@@ -1,0 +1,12 @@
+- name: install the latest version of libXtst
+  yum:
+    name: libXt
+    state: latest
+
+- name: Download matlab
+  get_url:
+    url: "{{ matlab_download_url }}"
+    dest: "{{ matlab_destination  }}"
+
+- name: Un-tar downloaded MATLAB 
+  command: tar -xvf {{ matlab_destination  }} -C "{{ matlab_clustershare }}"

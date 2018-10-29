@@ -1,0 +1,21 @@
+- name: matlab directory
+  file:
+    path: /var/www/ood/apps/sys/matlab
+    state: directory
+
+- git:
+    repo: 'https://github.com/OSC/bc_osc_matlab.git'
+    dest: /var/www/ood/apps/sys/matlab/
+    clone: yes
+
+- name: Replace submit.yml.erb
+  template:
+    src: submit.yml
+    dest: /var/www/ood/apps/sys/matlab/submit.yml.erb
+
+- name: modify to fit our environment
+  lineinfile:
+    path: /var/www/ood/apps/sys/matlab/form.yml
+    regexp: '^cluster:'
+    line: 'cluster: {{ cluster_name }}'
+
