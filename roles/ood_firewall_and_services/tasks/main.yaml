@@ -23,15 +23,3 @@
 
 - name: Set SELinux to permissive mode without reboot
   command: setenforce 0
-
-- name: start and enable munge
-  service:
-    name: munge
-    state: started
-    enabled: yes
-
-- name: start and enable slurmd
-  service:
-    name: slurmd
-    state: started
-    enabled: yes
