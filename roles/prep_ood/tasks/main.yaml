@@ -1,0 +1,23 @@
+---
+- name: Get OpenHPC repo
+  yum: name={{ openhpc_release_rpm }} state=present update_cache=true
+
+- name: Install dependencies-nfs-utils, ohpc packages, ntp and other required tools.
+  yum: name={{ item }} state=installed update_cache=true
+  with_items:
+    - nfs-utils
+    - ohpc-base-compute
+    - ohpc-slurm-client
+    - zsh
+    - git
+    - vim
+    - tmux
+    - ruby
+
+- name: Mount /home, /opt/ohpc/pub from OHPC node
+  lineinfile:
+    path: /etc/fstab
+    line: '{{ item }}'
+  with_items:
+    - "{{ headnode_private_ip }}:/home /home nfs nfsvers=3,nodev,nosuid,noatime 0 0"
+    - "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev,noatime 0 0"

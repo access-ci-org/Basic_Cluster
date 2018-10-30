@@ -1,0 +1,25 @@
+---
+- name: Enable http service
+  systemd:
+    state: started
+    name: httpd24-httpd
+    enabled: yes
+
+- name: Open port http/s
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+
+- firewalld:
+    service: https
+    permanent: true
+    state: enabled
+
+- name: Disable SELinux Enforcement (permissive)
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Set SELinux to permissive mode without reboot
+  command: setenforce 0
