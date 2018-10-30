@@ -1,7 +1,7 @@
 ---
 - hosts: ood
   roles:
-    - prep_ood
-    - ood
-    - warewulf_sync
-    - ood_firewall_and_services
+    - { name: 'prep_ood', tags: 'prep_ood' }
+    - { name: 'ood', tags: 'ood' }
+    - { name: 'warewulf_sync', tags: 'warewulf_sync' }
+    - { name: 'ood_firewall_and_services', tags: 'ood_firewall_and_services' }
