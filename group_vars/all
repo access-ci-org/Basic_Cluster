@@ -101,3 +101,9 @@
   gpu_node_glob: "{{ gpu_node_prefix }}[0-{{ num_gpu_nodes|int - 1}}]"
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
   gpu_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+
+#Rstudio related
+  singularity_ver: '2.4.2'
+  r_versions:
+    - { full: '3.5.1', short: '3.5' }
+    - { full: '3.4.4', short: '3.4' }
