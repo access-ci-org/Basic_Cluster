@@ -2,3 +2,4 @@
 - hosts: ood
   roles:
     - ood
+    - { name: 'ood_add_rstudio', tags: 'ood_add_rstudio' }

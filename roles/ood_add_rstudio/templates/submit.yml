@@ -1,0 +1,7 @@
+---
+batch_connect:
+  template: "basic"
+script:
+  native:
+    - "-c"
+    - "<%= num_cores.blank? ? 1 : num_cores.to_i %>"
