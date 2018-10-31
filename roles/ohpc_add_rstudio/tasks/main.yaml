@@ -1,0 +1,115 @@
+---
+- name: Install Singularity
+  shell: |
+    source /etc/profile.d/lmod.sh
+    export EASYBUILD_PREFIX={{ easybuild_prefix }}
+    module load EasyBuild
+    eb Singularity-{{ singularity_ver }}-GCC-5.4.0-2.26.eb --try-toolchain-name=dummy -Dr
+  become_user: build
+  args:
+    executable: /bin/bash
+    chdir: /tmp
+
+- name: Singularity post install steps(1/3) - chown
+  file:
+    path: "{{ easybuild_prefix }}/software/Singularity/{{ item }}"
+    owner: root
+    group: root
+  with_items:
+    - "{{ singularity_ver }}/etc/singularity/singularity.conf"
+    - "{{ singularity_ver }}/libexec/singularity/bin/action-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/mount-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/start-suid"
+    - "{{ singularity_ver }}/var/singularity/mnt/container"
+
+- name: Singularity post install steps(2/3) - chmod
+  file:
+    path: "{{ easybuild_prefix }}/software/Singularity/{{ item }}"
+    mode: '4755'
+  with_items:
+    - "{{ singularity_ver }}/libexec/singularity/bin/action-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/mount-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/start-suid"
+
+- name: Singularity post install steps(3/3) - chmod
+  file:
+    path: "{{ easybuild_prefix }}/software/Singularity/{{ item }}"
+    mode: '+s'
+  with_items:
+    - "{{ singularity_ver }}/libexec/singularity/bin/action-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/mount-suid"
+    - "{{ singularity_ver }}/libexec/singularity/bin/start-suid"
+
+- name: Clone template modulefiles from upstream
+  git:
+    repo: 'https://github.com/nickjer/singularity-rstudio.git'
+    dest: '/tmp/singularity-rstudio'
+    force: yes
+  become_user: build
+
+- name: Delete folder and modulefile of old version
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/tmp/singularity-rstudio/example_module/3.4.3"
+    - "/tmp/singularity-rstudio/example_module/modulefiles/rstudio_singularity/3.4.3.lua"
+
+- name: Create folder for different R versions
+  file:
+    path: /tmp/singularity-rstudio/example_module/{{ item.full }}
+    state: directory
+  with_items:
+    "{{ r_versions }}"
+  become_user: build
+
+- name: Create library folder for different R versions
+  file:
+    path: /tmp/singularity-rstudio/example_module/library-{{ item.short }}
+    state: directory
+  with_items:
+    "{{ r_versions }}"
+  become_user: build
+
+- name: Download Rstudio singularity image
+  shell: |
+    source /etc/profile.d/lmod.sh
+    module load Singularity
+    SINGULARITY_PULLFOLDER={{ item.full }} singularity pull --name singularity-rstudio.simg shub://nickjer/singularity-rstudio:{{ item.full }}
+  with_items:
+    "{{ r_versions }}"
+  become_user: build
+  args:
+    chdir: /tmp/singularity-rstudio/example_module
+
+- name: Generate modulefiles for each version
+  template:
+    src: modulefiles/rstudio.j2
+    dest: /tmp/singularity-rstudio/example_module/modulefiles/rstudio_singularity/{{ item.full }}.lua
+  vars:
+    ver: "{{ item }}"
+  with_items:
+    "{{ r_versions }}"
+
+- name: Move modulefiles into shared folder
+  command: mv {{ src }} {{ dest }}
+  args:
+    creates: "{{ dest }}"
+    removes: "{{ src }}"
+  vars:
+    src: /tmp/singularity-rstudio/example_module/modulefiles/rstudio_singularity
+    dest: "{{ easybuild_prefix }}/modules/all/rstudio_singularity"
+
+- file:
+    path: /tmp/singularity-rstudio/example_module/modulefiles
+    state: absent
+
+- name: Move Singularity image and executable into shared folder
+  command: mv {{ src }} {{ dest }}
+  args:
+    creates: "{{ dest }}"
+    removes: "{{ src }}"
+  vars:
+    src: /tmp/singularity-rstudio/example_module
+    dest: "{{ easybuild_prefix }}/software/singularity-rstudio"
+
