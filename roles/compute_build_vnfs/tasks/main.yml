@@ -57,6 +57,7 @@
        - tmux
        - ruby
        - turbojpeg
+       - nc
        - '@X Window System'
        - '@Xfce'
 
