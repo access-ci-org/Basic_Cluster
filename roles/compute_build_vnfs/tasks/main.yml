@@ -114,7 +114,7 @@
      lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
      lineinfile: line="{{ headnode_private_ip }}:/export /export nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
