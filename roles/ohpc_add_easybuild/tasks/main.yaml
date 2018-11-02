@@ -5,7 +5,7 @@
     name: 
       - '@Development Tools'
       - python-pip
-   
+
 - name: Create user build
   user:
     name: build
@@ -32,12 +32,22 @@
     executable: /bin/bash
     chdir: /tmp
 
+- name: Check if EasyBuild installation path is in default MODULEPATH
+  shell: grep "{{ easybuild_prefix }}/modules/all" /etc/profile.d/lmod.sh
+  ignore_errors: yes
+  register: default_modulepath_sh
+
+- shell: grep "{{ easybuild_prefix }}/modules/all" /etc/profile.d/lmod.csh
+  ignore_errors: yes
+  register: default_modulepath_csh
+
 - name: Add EasyBuild installation path into default MODULEPATH
   replace:
     path: /etc/profile.d/lmod.sh
     regexp: '(MODULEPATH=.*)'
     replace: '\1:{{ easybuild_prefix }}/modules/all'
     backup: yes
+  when: default_modulepath_sh.stdout == ""
 
 - name: Add EasyBuild installation path into default MODULEPATH
   replace:
@@ -45,6 +55,7 @@
     regexp: '(MODULEPATH "[^"]*)'
     replace: '\1:{{ easybuild_prefix }}/modules/all'
     backup: yes
+  when: default_modulepath_csh.stdout == ""
 
 - name: Verify EasyBuild installation
   shell: |
