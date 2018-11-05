@@ -1,0 +1,65 @@
+---
+- name: Install pip for system python and build tools
+  yum:
+    state: present
+    name: 
+      - '@Development Tools'
+      - python-pip
+
+- name: Create user build
+  user:
+    name: build
+
+- name: Change owner and permission of easybuild installation directory
+  file:
+    path: "{{ easybuild_prefix }}"
+    owner: root
+    group: build
+    mode: "g+w"
+    recurse: yes
+
+- name: Download EasyBuild bootstrap script
+  get_url:
+    url: https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+    dest: /tmp/bootstrap_eb.py
+
+- name: Boostrap EasyBuild
+  shell: |
+      source /opt/ohpc/admin/lmod/lmod/init/bash
+      python bootstrap_eb.py "{{ easybuild_prefix }}"
+  become_user: build
+  args:
+    executable: /bin/bash
+    chdir: /tmp
+
+- name: Check if EasyBuild installation path is in default MODULEPATH
+  shell: grep "{{ easybuild_prefix }}/modules/all" /etc/profile.d/lmod.sh
+  ignore_errors: yes
+  register: default_modulepath_sh
+
+- shell: grep "{{ easybuild_prefix }}/modules/all" /etc/profile.d/lmod.csh
+  ignore_errors: yes
+  register: default_modulepath_csh
+
+- name: Add EasyBuild installation path into default MODULEPATH
+  replace:
+    path: /etc/profile.d/lmod.sh
+    regexp: '(MODULEPATH=.*)'
+    replace: '\1:{{ easybuild_prefix }}/modules/all'
+    backup: yes
+  when: default_modulepath_sh.stdout == ""
+
+- name: Add EasyBuild installation path into default MODULEPATH
+  replace:
+    path: /etc/profile.d/lmod.csh
+    regexp: '(MODULEPATH "[^"]*)'
+    replace: '\1:{{ easybuild_prefix }}/modules/all'
+    backup: yes
+  when: default_modulepath_csh.stdout == ""
+
+- name: Verify EasyBuild installation
+  shell: |
+      source /opt/ohpc/admin/lmod/lmod/init/bash
+      module use "{{ easybuild_prefix }}/modules/all"
+      module load EasyBuild
+      eb --version
