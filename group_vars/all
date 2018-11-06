@@ -103,7 +103,8 @@
   gpu_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
 
 #EasyBuild variables
-  easybuild_prefix: "/export"
+  cluster_shared_folder: "/export"
+  easybuild_prefix: "{{ cluster_shared_folder }}/eb"
   easybuild_tmpdir: "/tmp"
   easybuild_buildpath: "/tmp/build"
   easybuild_sourcepath: "/tmp/source"
