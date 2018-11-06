@@ -7,4 +7,5 @@
     - { name: 'compute_build_vnfs', tags: 'compute_build_vnfs' }
     - { name: 'compute_build_nodes', tags: 'compute_build_nodes' }
     - { name: 'nodes_vivify', tags: 'nodes_vivify' }
+    - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild' }
     - { name: 'ohpc_add_rstudio', tags: 'ohpc_add_rstudio' }
