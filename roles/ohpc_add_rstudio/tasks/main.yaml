@@ -113,3 +113,7 @@
     src: /tmp/singularity-rstudio/example_module
     dest: "{{ easybuild_prefix }}/software/singularity-rstudio"
 
+- name: Clean up
+  file:
+    path: /tmp/singularity-rstudio
+    state: absent
