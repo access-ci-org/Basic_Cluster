@@ -4,7 +4,7 @@
     source /etc/profile.d/lmod.sh
     export EASYBUILD_PREFIX={{ easybuild_prefix }}
     module load EasyBuild
-    eb Singularity-{{ singularity_ver }}-GCC-5.4.0-2.26.eb --try-toolchain-name=dummy -Dr
+    eb Singularity-{{ singularity_ver }}-GCC-5.4.0-2.26.eb --try-toolchain-name=dummy -r
   become_user: build
   args:
     executable: /bin/bash
