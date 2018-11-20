@@ -49,7 +49,7 @@
     path: /etc/ood/config/ood_portal.yml
     line: '{{ item }}'
   with_items:
-    - "host_regex: '{{ compute_node_glob }}.localdomain'"
+    - "host_regex: '{{ compute_node_glob }}'"
     - "node_uri: '/node'"
     - "rnode_uri: '/rnode'"
 
