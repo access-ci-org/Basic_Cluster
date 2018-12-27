@@ -1,11 +1,6 @@
 ---
-#  - name: Download Slurm 17.11.11 RPMs
-#    get_url:
-#      url: {{ slurm_17_11_11_url }}
-#      dest: {{ slurm_17_11_11_dest }}
   - name: Extract Slurm 17.11.11 RPMs
     unarchive:
-        #src: "{{ slurm_17_11_11_dest }}/unbuz2ceuhfbeysqg5d7knhc6qn99p4z.zip"
       src: "{{ slurm_17_11_11_url }}"
       dest: "{{ slurm_17_11_11_dest }}"
       remote_src: yes
