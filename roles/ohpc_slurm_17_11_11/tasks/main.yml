@@ -15,7 +15,7 @@
         - "{{ slurm_17_11_11_dest }}/slurm17.11.11/slurm-slurmctld-ohpc-17.11.11-6.2.ohpc.1.3.6.x86_64.rpm"
         - "{{ slurm_17_11_11_dest }}/slurm17.11.11/slurm-slurmdbd-ohpc-17.11.11-6.2.ohpc.1.3.6.x86_64.rpm"
 
-  - name: Update slurm related packages on compute node
+  - name: Update slurm related packages for compute node image
     yum:
       installroot: "{{ compute_chroot_loc }}"
       name:
