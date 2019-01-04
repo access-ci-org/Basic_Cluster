@@ -115,3 +115,8 @@
   r_versions:
     - { full: '3.5.1', short: '3.5' }
     - { full: '3.4.4', short: '3.4' }
+
+#Slurm 17.11.11 patch
+  slurm_update: false
+  slurm_17_11_11_url: "https://uab.box.com/shared/static/8tftck8vlpnf6lo8ax0xaoqdrp8z7d6h.gz"
+  slurm_17_11_11_dest: "/vagrant/CRI_XCBC"
