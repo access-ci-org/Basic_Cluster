@@ -68,4 +68,4 @@
     seconds: 90
 
 - name: Force warewulf synchronization
-  shell: /warewulf/bin/wwgetfiles >/var/log/warewulf/wwgetfiles.log 2>&1
+  shell: WWGETFILES_INTERVAL=0 /warewulf/bin/wwgetfiles >/var/log/warewulf/wwgetfiles.log 2>&1
