@@ -1,0 +1,82 @@
+<VirtualHost {{ headnode_private_ip }}:80>
+  ServerName warewulf.local
+  <IfModule !perl_module>
+      LoadModule perl_module modules/mod_perl.so
+  </IfModule>
+  <IfModule !version_module>
+      LoadModule version_module modules/mod_version.so
+  </IfModule>
+  PerlSwitches -w
+  PerlSwitches -T
+  PerlSwitches -I/var/www/stage/cgi-bin
+  
+  # This is disabled as RHEL6 perl_mod seems to be missing this support
+  #PerlPreConnectionHandler Apache2::Reload
+  
+  Alias /WW/static /usr/share/warewulf/www
+  Alias /WW/vnfs_cache /var/tmp/warewulf_cache
+  Alias /WW/ipxe /srv/warewulf/ipxe
+  Alias /WW/bootstrap /srv/warewulf/bootstrap
+  
+  ScriptAlias /WW/file /usr/libexec/warewulf/cgi-bin/file.pl
+  ScriptAlias /WW/script /usr/libexec/warewulf/cgi-bin/script.pl
+  ScriptAlias /WW/nodeconfig /usr/libexec/warewulf/cgi-bin/nodeconfig.pl
+  ScriptAlias /WW/vnfs /usr/libexec/warewulf/cgi-bin/vnfs.pl
+
+
+  <Directory /usr/libexec/warewulf/cgi-bin>
+      SetHandler perl-script
+      PerlResponseHandler ModPerl::Registry
+      PerlOptions +ParseHeaders
+      Options +ExecCGI
+      <IfVersion >= 2.4>
+          Require all granted
+      </IfVersion>
+  </Directory>
+  
+  <Directory /usr/share/warewulf/www>
+      Options Indexes MultiViews
+      AllowOverride None
+      <IfVersion < 2.4>
+          Order allow,deny
+          Allow from all
+      </IfVersion>
+      <IfVersion >= 2.4>
+          Require all granted
+      </IfVersion>
+  </Directory>
+  
+  <Directory /var/tmp/warewulf_cache>
+      AllowOverride None
+      <IfVersion < 2.4>
+          Order allow,deny
+          Allow from all
+      </IfVersion>
+      <IfVersion >= 2.4>
+          Require all granted
+      </IfVersion>
+  </Directory>
+  
+  <Directory /srv/warewulf/ipxe>
+      AllowOverride None
+      <IfVersion < 2.4>
+          Order allow,deny
+          Allow from all
+      </IfVersion>
+      <IfVersion >= 2.4>
+          Require all granted
+      </IfVersion>
+  </Directory>
+  
+  <Directory /srv/warewulf/bootstrap>
+      AllowOverride None
+      <IfVersion < 2.4>
+          Order allow,deny
+          Allow from all
+      </IfVersion>
+      <IfVersion >= 2.4>
+          Require all granted
+      </IfVersion>
+  </Directory>
+
+</VirtualHost>
