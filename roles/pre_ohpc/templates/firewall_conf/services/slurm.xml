@@ -10,4 +10,5 @@
   <port protocol="udp" port="6818"/>
   <port protocol="tcp" port="7321"/>
   <port protocol="udp" port="7321"/>
+  <port protocol="tcp" port="60001-63000"/>
 </service>
