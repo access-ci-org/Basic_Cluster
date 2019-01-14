@@ -43,6 +43,11 @@
      yum: name=yum-plugin-copr state=present update_cache=true
      when: enable_copr == true
 
+   - name: enable Copr Repos
+     shell: yum -y copr enable "{{ item.repo_name }}"
+     with_items: "{{ copr_repos }}"
+     when: enable_copr == true and inventory_hostname in item.host
+
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
 
