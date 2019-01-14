@@ -38,7 +38,11 @@
 
    - name: get OpenHPC Repo #hardcoded version # :(
      yum: name={{ openhpc_release_rpm }} state=present
- 
+
+   - name: Install Copr plugin for yum
+     yum: name=yum-plugin-copr state=present update_cache=true
+     when: enable_copr == true
+
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
 
