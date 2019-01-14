@@ -109,11 +109,6 @@
   easybuild_buildpath: "/tmp/build"
   easybuild_sourcepath: "/tmp/source"
 
-#Slurm 17.11.11 patch
-  slurm_update: true
-  slurm_17_11_11_url: "https://uab.box.com/shared/static/8tftck8vlpnf6lo8ax0xaoqdrp8z7d6h.gz"
-  slurm_17_11_11_dest: "/vagrant/CRI_XCBC"
-
 #Copr Repos
   enable_copr: true
   copr_repos:
