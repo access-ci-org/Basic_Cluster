@@ -2,7 +2,6 @@
 - hosts: ood
   roles:
     - { name: 'prep_ood', tags: 'prep_ood' }
-    - { name: 'slurm_17_11_11', tags: 'slurm_17_11_11', when: slurm_update }
     - { name: 'ood', tags: 'ood' }
     - { name: 'warewulf_sync', tags: 'warewulf_sync' }
     - { name: 'ood_firewall_and_services', tags: 'ood_firewall_and_services' }
