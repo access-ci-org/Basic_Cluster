@@ -1,0 +1,22 @@
+---
+- name: Creates directory to clone the jupyter app
+  file:
+    path: /var/www/ood/apps/sys/jupyter/
+    state: directory
+
+- name: Clone the default jupyter app from OOD
+  git:
+    repo: https://github.com/OSC/bc_example_jupyter.git
+    version: custom_environment
+    dest: /var/www/ood/apps/sys/jupyter
+
+- name: Add cluster name for the jupyter app to use
+  lineinfile:
+    path: /var/www/ood/apps/sys/jupyter/form.yml
+    regexp: '^cluster:'
+    line: 'cluster: {{ cluster_name }}'
+
+- name: Use submit.yml.erb file tailored for slurm usage at UAB
+  copy:
+    src: jupyter-submit.yml.erb
+    dest: /var/www/ood/apps/sys/jupyter/submit.yml.erb
