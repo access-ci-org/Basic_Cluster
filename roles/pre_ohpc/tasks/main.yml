@@ -76,6 +76,13 @@
    - name: add public interface to public zone via nmcli
      command: nmcli connection modify {{ public_interface }} connection.zone public
 
+   - name: enable masquerade
+     firewalld: 
+       zone: public
+       masquerade: yes
+       permanent: yes
+     when: enable_compute_NAT == true
+
 #   - name: restart dbus for firewalld :(
 #     service: name=dbus state=restarted
 

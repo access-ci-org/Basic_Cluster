@@ -17,6 +17,7 @@
   compute_ip_minimum: "10.0.0.2"
   compute_ip_maximum: "10.0.0.255"
   gpu_ip_minimum: "10.0.0.128" #This could be more clever, like compute_ip_minimum + num_nodes...
+  enable_compute_NAT: true
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
