@@ -68,7 +68,7 @@
 #       seconds: 180
 
    - name: set files to provision
-     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network --kargs="net.ifnames=1 biosdevname=1 quiet" --postnetdown=1
+     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,lmod.sh,lmod.csh --kargs="net.ifnames=1 biosdevname=1 quiet" --postnetdown=1
      when: node_inventory_auto == true
 
    - name: sync files #also generates dynamic hosts on headnode!
