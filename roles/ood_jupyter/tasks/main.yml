@@ -22,6 +22,6 @@
     dest: /var/www/ood/apps/sys/jupyter/submit.yml.erb
 
 - name: Use custom script.sh.erb provided to avoid Jupyter Crash with user id!=1000
-  copy:
+  template:
     src: jupyter-script.sh.erb
-    dest: /var/www/ood/apps/sys/jupyter/script.sh.erb
+    dest: /var/www/ood/apps/sys/jupyter/template/script.sh.erb
