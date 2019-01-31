@@ -147,6 +147,12 @@
    - name: wwimport file into image (munge)
      command: wwsh file import /etc/munge/munge.key
 
+   - name: wwimport file into image (lmod.sh)
+     command: wwsh file import /etc/profile.d/lmod.sh
+
+   - name: wwimport file into image (lmod.csh)
+     command: wwsh file import /etc/profile.d/lmod.csh
+
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
 

@@ -18,6 +18,13 @@
     mode: "g+w"
     recurse: yes
 
+# EasyBuild bootstrap will fail with outdated setuptools on CentOS
+# This is a work-around that updates the sytem installed setuptools
+# Ideal solution is to provide a python specific to EasyBuild
+# likely via software collections
+- name: Fix EasyBuild setuptools dependency on version > 17.1
+  shell: pip install -U setuptools
+
 - name: Download EasyBuild bootstrap script
   get_url:
     url: https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
@@ -57,9 +64,13 @@
     backup: yes
   when: default_modulepath_csh.stdout == ""
 
+- name: Update file in warewulf file database
+  command: wwsh file sync
+
 - name: Verify EasyBuild installation
   shell: |
       source /opt/ohpc/admin/lmod/lmod/init/bash
       module use "{{ easybuild_prefix }}/modules/all"
       module load EasyBuild
       eb --version
+

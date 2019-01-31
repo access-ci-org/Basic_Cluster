@@ -38,7 +38,16 @@
 
    - name: get OpenHPC Repo #hardcoded version # :(
      yum: name={{ openhpc_release_rpm }} state=present
- 
+
+   - name: Install Copr plugin for yum
+     yum: name=yum-plugin-copr state=present update_cache=true
+     when: enable_copr == true
+
+   - name: enable Copr Repos
+     shell: yum -y copr enable "{{ item.repo_name }}"
+     with_items: "{{ copr_repos }}"
+     when: enable_copr == true and inventory_hostname in item.host
+
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
 
@@ -58,14 +67,24 @@
 
    - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
 
-     #   - name: modify the name of the network profile name
-     #command: nmcli con mod 'eth0' connection.id '{{ public_interface }}'
+   # default network profile naming in CentOS-7 uses the name  'System ethN' as
+   # the profile name for the 'ethN' interface. The ansible framework uses
+   # a single variable for the profile name interface name.   We change the
+   # default profile names to match the interface name to match this convesion
+   # and make nmcli commands more consistent with tranditional naming.
+   - name: check for default public network profile name
+     shell: nmcli con | grep '{{ public_interface }}'
+     register: network_profile_name
 
-   - name: check network profile name
+   - name: simplify the name of the public network profile name
+     command: nmcli con mod 'System {{ public_interface }}' connection.id '{{ public_interface }}'
+     when: "'System' in network_profile_name.stdout"
+
+   - name: check for default private network profile name
      shell: nmcli con | grep '{{ private_interface }}'
      register: network_profile_name
 
-   - name: modify the name of the network profile name
+   - name: simplify the name of the private network profile name
      command: nmcli con mod 'System {{ private_interface }}' connection.id '{{ private_interface }}'
      when: "'System' in network_profile_name.stdout"
 
