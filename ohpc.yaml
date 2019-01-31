@@ -9,3 +9,4 @@
     - { name: 'nodes_vivify', tags: 'nodes_vivify' }
     - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild' }
     - { name: 'ohpc_jupyter', when: jupyter_provision == true, tags: 'ohpc_jupyter'}
+    - { name: 'ohpc_add_rstudio', tags: 'ohpc_add_rstudio', when: rstudio_provision }
