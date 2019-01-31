@@ -1,0 +1,48 @@
+---
+cluster: "{{ cluster_name }}"
+form:
+  - version
+  - bc_account
+  - bc_num_hours
+  - node_type
+  - num_cores
+  - bc_email_on_started
+attributes:
+  num_cores:
+    widget: "number_field"
+    label: "Number of cores"
+    value: 1
+    help: |
+      Number of cores on node type (4 GB per core unless requesting whole
+      node). Leave blank if requesting full node.
+    min: 1
+    max: 28
+    step: 1
+  bc_account:
+    label: "Project"
+    help: "You can leave this blank if **not** in multiple projects."
+  node_type:
+    widget: select
+    label: "Node type"
+    help: |
+      - **any** - (*1-28 cores*) Use any available Owens node. This reduces the
+        wait time as there are no node requirements.
+      - **hugemem** - (*48 cores*) Use an Owens node that has 1.5TB of
+        available RAM as well as 48 cores. There are 16 of these nodes on
+        Owens.
+      - **debug** - (*1-28 cores*) For short sessions (= 1 hour) the debug
+        queue will have the shortest wait time. This is only accessible during
+        8AM - 6PM, Monday - Friday. There are 6 of these nodes on Owens.
+    options:
+      - [ "any",     "any"     ]
+      - [ "hugemem", "hugemem" ]
+      - [ "debug",   "debug"   ]
+  version:
+    widget: select
+    label: "R version"
+    help: "This defines the version of R you want to load."
+    options:
+      # Define functioning R version overloads using a colon after the module load statement
+{% for ver in r_versions %}
+      - [ "{{ ver.full }}", "rstudio_singularity/{{ ver.full }}"]
+{% endfor %}
