@@ -10,11 +10,10 @@
     version: custom_environment
     dest: /var/www/ood/apps/sys/jupyter
 
-- name: Add cluster name for the jupyter app to use
-  lineinfile:
-    path: /var/www/ood/apps/sys/jupyter/form.yml
-    regexp: '^cluster:'
-    line: 'cluster: {{ cluster_name }}'
+- name: Use custom script.sh.erb provided to avoid Jupyter Crash with user id!=1000
+  template:
+    src: custom-jupyter-form.yml
+    dest: /var/www/ood/apps/sys/jupyter/form.yml
 
 - name: Use submit.yml.erb file tailored for slurm usage at UAB
   copy:
