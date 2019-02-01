@@ -10,7 +10,7 @@
     version: custom_environment
     dest: /var/www/ood/apps/sys/jupyter
 
-- name: Use custom script.sh.erb provided to avoid Jupyter Crash with user id!=1000
+- name: Use custom form.yml from templates for jupyter app 
   template:
     src: custom-jupyter-form.yml
     dest: /var/www/ood/apps/sys/jupyter/form.yml
