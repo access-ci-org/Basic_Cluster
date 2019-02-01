@@ -37,9 +37,6 @@ attributes:
     widget: text_area
     label: Environment Setup
     value: |
-      # Restore module environment to avoid conflicts
-      module restore
-
       # Load required modules
       module load Anaconda3
 
