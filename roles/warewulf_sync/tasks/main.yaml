@@ -52,18 +52,22 @@
     mode: 755
 
 - name: Check if ood already in warewulf database
-  shell: ssh "{{ headnode_private_ip }}" -c "wwsh node list"
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node list"
+  become_user: vagrant
   register: wwsh_node_list
 
 - name: Add ood node into warewulf database
-  shell: ssh "{{ headnode_private_ip }}" -c "wwsh node new ood -y"
-  when: 'ood' not in wwsh_node_list.stdout
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node new ood -y"
+  become_user: vagrant
+  when: "'ood' not in wwsh_node_list.stdout"
 
 - name: Register ood node IP and MAC address in warewulf database
-  shell: ssh "{{ headnode_private_ip }}" -c "wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
+  become_user: vagrant
 
 - name: Setup ood node provision in warewult database
-  shell: ssh "{{ headnode_private_ip }}" -c "wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
+  become_user: vagrant
 
 #- name: "RUN THESE COMMAND ON OHPC MASTER TO COMPLETE REGISTRATION"
 #  pause:
