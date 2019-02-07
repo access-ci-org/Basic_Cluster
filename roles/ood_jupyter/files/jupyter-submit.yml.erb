@@ -10,4 +10,11 @@ batch_connect:
   template: "basic"
 
 script:
-  native: [ "-N", "<%= bc_num_slots.blank? ? 1 : bc_num_slots.to_i %>" ]
+  native:
+    - "-N 1"
+    - "-n <%= bc_num_slots.blank? ? 1 : bc_num_slots.to_i %>"
+    - "--mem-per-cpu=<%= bc_num_mems.blank? ? 4 : bc_num_mems.to_i %>G"
+    - "--partition=<%= bc_partition %>"
+<%- if bc_partition == "pascalnodes" -%>
+    - "--gres=gpu:1"
+<%- end -%>
