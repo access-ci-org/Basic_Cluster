@@ -66,11 +66,6 @@ attributes:
 #   option, then it will not appear in the form page that the user sees in the
 #   Dashboard
 form:
-  - custom_environment
   - conda_extensions
-  - extra_jupyter_args
-  - bc_num_hours
   - bc_num_slots
-  - bc_account
-  - bc_queue
   - bc_email_on_started
