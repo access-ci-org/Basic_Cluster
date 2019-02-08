@@ -52,7 +52,10 @@
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
   login_chroot: centos7-login 
 
-# Node Inventory method - automatic, or manual
+# Node Inventory method - true: automatic, or false: manual
+# Setting this to 'false' uses the list provided in the compute_nodes list below to add
+# nodes to the Warewulf databse. 'true' uses the wwnodescan utility to automatically
+# detect and add nodes.
   node_inventory_auto: true
 
 #Node naming variables - no need to change
