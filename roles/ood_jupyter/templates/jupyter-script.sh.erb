@@ -10,4 +10,4 @@ module load Anaconda3
 <%= context.custom_environment %>
 unset XDG_RUNTIME_DIR
 # Launch the Jupyter Notebook Server
-jupyter notebook --config="${CONFIG_FILE}"
+jupyter notebook --config="${CONFIG_FILE}" <%= context.extra_jupyter_args %>

@@ -58,7 +58,9 @@ attributes:
 
   # Any extra command line arguments to feed to the `jupyter notebook ...`
   # command that launches the Jupyter notebook within the batch job
-  extra_jupyter_args: ""
+  extra_jupyter_args:
+    widget: text_field
+    label: Extra jupyter arguments
 
   bc_num_hours:
     value: 1
@@ -96,6 +98,7 @@ attributes:
 form:
   - custom_environment
   - conda_extensions
+  - extra_jupyter_args
   - bc_num_hours
   - bc_partition
   - bc_num_slots
