@@ -60,6 +60,9 @@ attributes:
   # command that launches the Jupyter notebook within the batch job
   extra_jupyter_args: ""
 
+  bc_num_hours:
+    value: 1
+
   bc_num_slots:
     label: Number of CPU
     value: 1
@@ -93,6 +96,7 @@ attributes:
 form:
   - custom_environment
   - conda_extensions
+  - bc_num_hours
   - bc_partition
   - bc_num_slots
   - bc_num_mems
