@@ -37,8 +37,12 @@ attributes:
     widget: text_area
     label: Environment Setup
     value: |
-      # Load required modules
-      module load Anaconda3
+      # By default, it already load latest version of Anaconda3
+      # If you would like to load other modules
+      # or use specific version of Anaconda please list below
+      #
+      # format:
+      # module load example_module/VERSION example_module2
 
   # Whether Conda extensions will be available within the Jupyter notebook
   # server
