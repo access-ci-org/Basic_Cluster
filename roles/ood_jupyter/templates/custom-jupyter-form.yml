@@ -87,6 +87,7 @@ attributes:
 #   option, then it will not appear in the form page that the user sees in the
 #   Dashboard
 form:
+  - custom_environment
   - conda_extensions
   - bc_partition
   - bc_num_slots
