@@ -37,7 +37,7 @@ attributes:
     widget: text_area
     label: Environment Setup
     value: |
-      # The latest version of Anaconda3 with jupyter is loaded by defualt.
+      # The latest version of Anaconda3 with jupyter is loaded by default.
       # If you would like to load other modules
       # or use specific version of Anaconda please list below
       #
