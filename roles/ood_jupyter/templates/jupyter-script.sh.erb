@@ -2,10 +2,11 @@
 
 # Set working directory to home directory
 cd "${HOME}"
-module use {{ easybuild_prefix }}/modules/all
+module reset
 #
 # Start Jupyter Notebook Server
 #
+module load Anaconda3
 <%= context.custom_environment %>
 unset XDG_RUNTIME_DIR
 # Launch the Jupyter Notebook Server

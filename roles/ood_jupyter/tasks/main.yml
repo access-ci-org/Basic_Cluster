@@ -1,4 +1,9 @@
 ---
+- name: Remove existing jupyter app install
+  file:
+    path: /var/www/ood/apps/sys/jupyter/
+    state: absent
+
 - name: Creates directory to clone the jupyter app
   file:
     path: /var/www/ood/apps/sys/jupyter/

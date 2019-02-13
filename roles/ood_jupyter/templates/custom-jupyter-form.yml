@@ -37,8 +37,12 @@ attributes:
     widget: text_area
     label: Environment Setup
     value: |
-      # Load required modules
-      module load Anaconda3
+      # The latest version of Anaconda3 with jupyter is loaded by default.
+      # If you would like to load other modules
+      # or use specific version of Anaconda please list below
+      #
+      # format:
+      # module load example_module/VERSION example_module2
 
   # Whether Conda extensions will be available within the Jupyter notebook
   # server
@@ -54,7 +58,33 @@ attributes:
 
   # Any extra command line arguments to feed to the `jupyter notebook ...`
   # command that launches the Jupyter notebook within the batch job
-  extra_jupyter_args: ""
+  extra_jupyter_args:
+    widget: text_field
+    label: Extra jupyter arguments
+
+  bc_num_hours:
+    value: 1
+
+  bc_num_slots:
+    label: Number of CPU
+    value: 1
+    min: 1
+    max: 24
+    step: 1
+
+  bc_num_mems:
+    widget: "number_field"
+    label: Memory per CPU
+    value: 4
+    min: 1
+    max: 128
+    step: 1
+
+  bc_partition:
+    widget: select
+    label: Partition
+    options:
+      - [ "low", "low" ]
 
 # All of the attributes that make up the Dashboard form (in respective order),
 # and made available to the submit configuration file and the template ERB
@@ -70,7 +100,7 @@ form:
   - conda_extensions
   - extra_jupyter_args
   - bc_num_hours
+  - bc_partition
   - bc_num_slots
-  - bc_account
-  - bc_queue
+  - bc_num_mems
   - bc_email_on_started
