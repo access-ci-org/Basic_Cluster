@@ -1,6 +1,17 @@
 ---
   # Implement web single sign on support using shibboleth
 
+# Shibboleth repo config from
+# https://shibboleth.net/downloads/service-provider/latest/RPMS/
+- name: Add shibboleth openSUSE build service repository
+  yum_repository:
+    name: shibboleth
+    description: Shibboleth (CentOS_7)
+    mirrorlist: https://shibboleth.net/cgi-bin/mirrorlist.cgi/CentOS_7
+    gpgkey: https://shibboleth.net/downloads/service-provider/RPMS/repomd.xml.key
+    gpgcheck: yes
+    enabled: yes
+
 # note the copr repo for shibboleth was added during node prep roles
 - name: install shibboleth rpm for scl apache
   yum: name=shibboleth state=latest
