@@ -81,7 +81,7 @@
        zone: public
        masquerade: yes
        permanent: yes
-       state:enabled
+       state: enabled
      when: enable_compute_NAT == true
 
 #   - name: restart dbus for firewalld :(
