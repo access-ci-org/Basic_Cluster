@@ -16,7 +16,7 @@
 #For compatibility with OpenXDMoD (use name-based vhost on the private ip only)
    - name: config warewulf http
      template: 
-       source: warewulf-httpd.conf.j2
+       src: warewulf-httpd.conf.j2
        dest: /etc/httpd/conf.d/warewulf-httpd.conf
      
    - name: reload xinetd
