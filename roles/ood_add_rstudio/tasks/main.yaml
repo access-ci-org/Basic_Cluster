@@ -1,9 +1,10 @@
 ---
 - name: Clone template repo from upstream
   git:
-    repo: 'https://github.com/OSC/bc_osc_rstudio_server.git'
+    repo: 'https://github.com/rtripath89/bc_osc_rstudio_server.git'
     dest: '/var/www/ood/apps/sys/bc_rstudio_server'
     force: yes
+    version: 0.6.0
 
 - name: Replace form.yml
   template:
