@@ -15,3 +15,9 @@
   copy:
     src: submit.yml
     dest: /var/www/ood/apps/sys/bc_rstudio_server/submit.yml.erb
+
+- name: Replace manifest file
+  copy:
+    src: manifest.yml
+    dest: /var/www/ood/apps/sys/bc_rstudio_server/manifest.yml
+
