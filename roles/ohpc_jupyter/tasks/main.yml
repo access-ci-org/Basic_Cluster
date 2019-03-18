@@ -1,0 +1,20 @@
+---
+- name: Install Anaconda3 for jupyter.
+  shell: |
+    source /etc/profile.d/lmod.sh 
+    export EASYBUILD_PREFIX={{ easybuild_prefix }}
+    module load EasyBuild
+    eb Anaconda3-5.3.0.eb --try-toolchain-name=dummy -r --force
+  become_user: build
+  args:
+    executable: /bin/bash
+
+- name: Install nb_conda_kernels to manage jupyter kernels
+  shell : |
+    source /etc/profile.d/lmod.sh
+    export EASYBUILD_PREFIX={{ easybuild_prefix }}
+    module load Anaconda3
+    conda install -y nb_conda_kernels
+  become_user: root
+  args:
+    executable: /bin/bash

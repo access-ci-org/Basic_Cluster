@@ -1,0 +1,13 @@
+#!/bin/bash -l
+
+# Set working directory to home directory
+cd "${HOME}"
+module reset
+#
+# Start Jupyter Notebook Server
+#
+module load Anaconda3
+<%= context.custom_environment %>
+unset XDG_RUNTIME_DIR
+# Launch the Jupyter Notebook Server
+jupyter notebook --config="${CONFIG_FILE}" <%= context.extra_jupyter_args %>

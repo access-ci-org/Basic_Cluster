@@ -1,0 +1,69 @@
+---
+  # Implement web single sign on support using shibboleth
+
+# Shibboleth repo config from
+# https://shibboleth.net/downloads/service-provider/latest/RPMS/
+- name: Add shibboleth openSUSE build service repository
+  yum_repository:
+    name: shibboleth
+    description: Shibboleth (CentOS_7)
+    mirrorlist: https://shibboleth.net/cgi-bin/mirrorlist.cgi/CentOS_7
+    gpgkey: https://shibboleth.net/downloads/service-provider/RPMS/repomd.xml.key
+    gpgcheck: yes
+    enabled: yes
+
+# note the copr repo for shibboleth was added during node prep roles
+- name: install shibboleth rpm for scl apache
+  yum: name=shibboleth state=latest
+
+# note the shibboleth rpm is not fully scl-yet so need hand correction
+- name: copy shibbolth apache module into ood scl installe
+  copy:
+    src: /etc/httpd/conf.d/shib.conf
+    dest: /opt/rh/httpd24/root/etc/httpd/conf.d/
+    remote_src: yes
+
+# this loads a stock shibboleth config that will work with rpm-provided
+# shibboleth credentials against the samltest.id
+# must use the SP target host name testshib.dev.rc.uab.edu for ood node
+# from client running web browser.  e.g. edit /etc/hosts to map to localhost
+# also requires ood to be accessible on port 8080 to match entityID
+# note testshib.dev.rc.uab.edu is not a real Hostname
+- name: load samltest.id shibboleth config
+  copy:
+    src: shibboleth2.xml
+    dest: /etc/shibboleth/shibboleth2.xml
+
+- name: add saml-to-ood user map file
+  copy:
+    src: ood-user-mapfile
+    dest: /etc/ood/ood-user-mapfile
+
+- name: update ood portal config with user mapfile
+  replace:
+    path: /etc/ood/config/ood_portal.yml
+    regexp: '^#user_map_cmd:.*$'
+    replace: "user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile --file /etc/ood/ood-user-mapfile'\nuser_env: 'REMOTE_USER'\n"
+    backup: yes
+
+- name: update ood portal config for shibboleth authn
+  replace:
+    path: /etc/ood/config/ood_portal.yml
+    regexp: "^(#  - 'Require valid-user')"
+    replace: '\1\nauth:\n - "AuthType shibboleth"\n - "ShibRequestSetting requireSession 1"\n - "Require valid-user"\n'
+    backup: yes
+
+- name: Build the updated Apache config
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes
+
+- name: start shibd and enable on boot
+  service:
+    name: shibd
+    state: started
+    enabled: yes
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd24-httpd
+    state: restarted

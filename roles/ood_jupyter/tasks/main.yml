@@ -1,0 +1,31 @@
+---
+- name: Remove existing jupyter app install
+  file:
+    path: /var/www/ood/apps/sys/jupyter/
+    state: absent
+
+- name: Creates directory to clone the jupyter app
+  file:
+    path: /var/www/ood/apps/sys/jupyter/
+    state: directory
+
+- name: Clone the default jupyter app from OOD
+  git:
+    repo: https://github.com/OSC/bc_example_jupyter.git
+    version: custom_environment
+    dest: /var/www/ood/apps/sys/jupyter
+
+- name: Use custom form.yml from templates for jupyter app 
+  template:
+    src: custom-jupyter-form.yml
+    dest: /var/www/ood/apps/sys/jupyter/form.yml
+
+- name: Use submit.yml.erb file tailored for slurm usage at UAB
+  copy:
+    src: jupyter-submit.yml.erb
+    dest: /var/www/ood/apps/sys/jupyter/submit.yml.erb
+
+- name: Use custom script.sh.erb provided to avoid Jupyter Crash with user id!=1000
+  template:
+    src: jupyter-script.sh.erb
+    dest: /var/www/ood/apps/sys/jupyter/template/script.sh.erb

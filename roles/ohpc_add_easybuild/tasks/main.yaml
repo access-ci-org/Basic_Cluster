@@ -64,9 +64,13 @@
     backup: yes
   when: default_modulepath_csh.stdout == ""
 
+- name: Update file in warewulf file database
+  command: wwsh file sync
+
 - name: Verify EasyBuild installation
   shell: |
       source /opt/ohpc/admin/lmod/lmod/init/bash
       module use "{{ easybuild_prefix }}/modules/all"
       module load EasyBuild
       eb --version
+
