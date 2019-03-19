@@ -24,9 +24,12 @@
     - ruby
 
 - name: Mount /home, /opt/ohpc/pub from OHPC node
-  lineinfile:
-    path: /etc/fstab
-    line: '{{ item }}'
+  mount:
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: nfs
+    opts: nfsvers=3,nodev,noatime
+    state: mounted
   with_items:
-    - "{{ headnode_private_ip }}:/home /home nfs nfsvers=3,nodev,nosuid,noatime 0 0"
-    - "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev,noatime 0 0"
+    - { path: "/home", src: "{{ headnode_private_ip }}:/home" }
+    - { path: "/opt/ohpc/pub", src: "{{ headnode_private_ip }}:/opt/ohpc/pub" }
