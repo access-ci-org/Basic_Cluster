@@ -51,21 +51,39 @@
     group: root
     mode: 755
 
-- name: "RUN THESE COMMAND ON OHPC MASTER TO COMPLETE REGISTRATION"
-  pause:
-    seconds: 1
+- name: Check if ood already in warewulf database
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node list"
+  become_user: vagrant
+  register: wwsh_node_list
 
-- name: "sudo wwsh node new ood -y"
-  pause:
-    seconds: 1
+- name: Add ood node into warewulf database
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node new ood -y"
+  become_user: vagrant
+  when: "'ood' not in wwsh_node_list.stdout"
 
-- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
-  pause:
-    seconds: 1
+- name: Register ood node IP and MAC address in warewulf database
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
+  become_user: vagrant
 
-- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
-  pause:
-    seconds: 90
+- name: Setup ood node provision in warewult database
+  shell: ssh "{{ headnode_private_ip }}" "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
+  become_user: vagrant
 
+#- name: "RUN THESE COMMAND ON OHPC MASTER TO COMPLETE REGISTRATION"
+#  pause:
+#    seconds: 1
+#
+#- name: "sudo wwsh node new ood -y"
+#  pause:
+#    seconds: 1
+#
+#- name: "sudo wwsh node set ood -y -I {{ ood_ip_addr }} --hwadd {{ ood_macaddress }}"
+#  pause:
+#    seconds: 1
+#
+#- name: "sudo wwsh provision set ood -y --files dynamic_hosts,munge.key,slurm.conf  --bootlocal=exit"
+#  pause:
+#    seconds: 90
+#
 - name: Force warewulf synchronization
   shell: WWGETFILES_INTERVAL=0 /warewulf/bin/wwgetfiles >/var/log/warewulf/wwgetfiles.log 2>&1
