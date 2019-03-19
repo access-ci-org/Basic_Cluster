@@ -16,7 +16,7 @@
   with_items:
     - nfs-utils
     - ohpc-base-compute
-    - ohpc-slurm-client
+    - slurm-ohpc
     - zsh
     - git
     - vim

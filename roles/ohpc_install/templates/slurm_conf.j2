@@ -108,8 +108,3 @@ NodeName=c0 Sockets=1 CoresPerSocket=1 State=UNKNOWN
 #PartitionName=high Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
 #PartitionName=gpu  Nodes=gpu-compute-1 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
 PartitionName=low  Nodes=c0 Default=YES MaxTime=2-00:00:00 State=UP
-
-#OOD
-{% if ood_provision %}
-NodeName={{ ood_nodename }}
-{% endif %}
