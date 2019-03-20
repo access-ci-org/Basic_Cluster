@@ -74,7 +74,7 @@ attributes:
 
   bc_num_mems:
     widget: "number_field"
-    label: Memory per CPU
+    label: Memory per CPU (GB)
     value: 4
     min: 1
     max: 128
