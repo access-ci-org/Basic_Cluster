@@ -69,7 +69,6 @@
 #OpenOnDemand
   ood_nodename: "ood"
   ood_ip_addr: 10.1.1.254
-  ood_provision: true
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.

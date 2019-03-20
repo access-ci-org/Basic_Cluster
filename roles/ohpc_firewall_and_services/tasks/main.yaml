@@ -4,9 +4,3 @@
     name: munge
     state: started
     enabled: yes
-
-- name: start and enable slurmd
-  service:
-    name: slurmd
-    state: started
-    enabled: yes
