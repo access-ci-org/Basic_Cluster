@@ -45,6 +45,13 @@
        line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
        state: present
 
+   - name: Remove innodb log file
+     file:
+       path: "{{ item }}"
+       state: absent
+     with_items:
+       - /var/lib/mysql/ib_logfile0
+       - /var/lib/mysql/ib_logfile1
  
    - name: initialize slurmdb databases
      mysql_db:
