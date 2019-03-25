@@ -10,12 +10,12 @@ v2:
   batch_connect:
     basic:
       script_wrapper: |
-        module purge
+        module reset
         %s
       set_host: "host=$(hostname -s)"
     vnc:
       script_wrapper: |
-        module purge
+        module reset
         export PATH="/opt/TurboVNC/bin:$PATH"
         export WEBSOCKIFY_CMD="/bin/websockify"
         %s
