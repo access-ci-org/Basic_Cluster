@@ -75,11 +75,11 @@
      command: wwvnfs -y --chroot "{{ login_chroot_loc }}/"
 
    - name: set up provisioning interface
-     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/tmp/network.ww create=yes
+     lineinfile: line="GATEWAYDEV={{ private_interface }}" dest=/etc/warewulf/network.ww create=yes
 #" for vim
 #
    - name: add network file to import
-     command: wwsh -y file import /tmp/network.ww --name network
+     command: wwsh -y file import /etc/warewulf/network.ww --name network
 
    - name: set network file path
      command: wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
