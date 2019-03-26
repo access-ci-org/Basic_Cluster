@@ -13,27 +13,28 @@
      when: build_kernel_ver != ansible_kernel
 
    - name: install necessary stuff
-     yum: name={{ item }} state=latest
-     with_items:
-       - "MySQL-python"
-       - "epel-release"
-       - "wget" 
-       - "tcpdump"
-       - "whois" 
-       - "lsof" 
-       - "xinetd"
-       - "vim" 
-       - "net-tools"
-       - "exportfs" 
-       - "firewalld"
-       - "chrony"
-       - "pciutils"
-       - "rsync"
-       - "bash-completion"
-       - "libselinux-python"
-       - "libsemanage-python"
-       - "policycoreutils"
-#       - "lua"  # testing; this could fix the lmod-ohpc issue?
+     yum:
+       state: latest
+       name:
+         - "MySQL-python"
+         - "epel-release"
+         - "wget" 
+         - "tcpdump"
+         - "whois" 
+         - "lsof" 
+         - "xinetd"
+         - "vim" 
+         - "net-tools"
+         - "exportfs" 
+         - "firewalld"
+         - "chrony"
+         - "pciutils"
+         - "rsync"
+         - "bash-completion"
+         - "libselinux-python"
+         - "libsemanage-python"
+         - "policycoreutils"
+#         - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
    - name: get OpenHPC Repo #hardcoded version # :(

@@ -12,16 +12,18 @@
   when: enable_copr == true and inventory_hostname in item.host
 
 - name: Install dependencies-nfs-utils, ohpc packages, ntp and other required tools.
-  yum: name={{ item }} state=installed update_cache=true
-  with_items:
-    - nfs-utils
-    - ohpc-base-compute
-    - slurm-ohpc
-    - zsh
-    - git
-    - vim
-    - tmux
-    - ruby
+  yum: 
+    state: installed
+    update_cache: true
+    name:
+      - nfs-utils
+      - ohpc-base-compute
+      - slurm-ohpc
+      - zsh
+      - git
+      - vim
+      - tmux
+      - ruby
 
 - name: Mount /home, /opt/ohpc/pub from OHPC node
   mount:
