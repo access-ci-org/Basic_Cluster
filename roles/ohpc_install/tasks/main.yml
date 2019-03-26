@@ -1,11 +1,12 @@
 ---
 
    - name: install OpenHPC base, warewulf, and slurm server
-     yum: name={{ item }} state=latest
-     with_items:
-       - "ohpc-base"
-       - "ohpc-warewulf"
-       - "ohpc-slurm-server"
+     yum:
+       state: latest
+       name:
+         - "ohpc-base"
+         - "ohpc-warewulf"
+         - "ohpc-slurm-server"
 
 #   - name: yum update
 #     yum: name=* state=latest update_cache=yes

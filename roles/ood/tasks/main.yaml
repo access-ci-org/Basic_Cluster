@@ -52,13 +52,14 @@
     dest: /etc/ood/config/apps/bc_desktop/submit/submit.yml.erb
 
 - name: Enable reverse proxy
-  lineinfile:
+  replace:
     path: /etc/ood/config/ood_portal.yml
-    line: '{{ item }}'
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
   with_items:
-    - "host_regex: '{{ compute_node_glob }}.localdomain'"
-    - "node_uri: '/node'"
-    - "rnode_uri: '/rnode'"
+      - { regexp: "^#?host_regex:.*$", replace: "host_regex: '{{ compute_node_glob }}'" }
+      - { regexp: "^#?node_uri:.*$", replace: "node_uri: '/node'" }
+      - { regexp: "^#?rnode_uri:.*$", replace: "rnode_uri: '/rnode'" }
 
 - name: Stage http authz file for ood
   copy:

@@ -42,24 +42,23 @@
 
    - name: yum install into the image chroot
      yum:
-       name: "{{ item }}"
        state: present
        installroot: "{{ compute_chroot_loc }}"
-     with_items:
-       - chrony
-       - 'kernel-{{ running_kernel_version.stdout }}'
-       - lmod-ohpc
-       - grub2
-       - freeipmi
-       - ipmitool
-       - ohpc-slurm-client
-       - ohpc-base-compute
-       - tmux
-       - ruby
-       - turbojpeg
-       - nc
-       - '@X Window System'
-       - '@Xfce'
+       name:
+         - chrony
+         - 'kernel-{{ running_kernel_version.stdout }}'
+         - lmod-ohpc
+         - grub2
+         - freeipmi
+         - ipmitool
+         - ohpc-slurm-client
+         - ohpc-base-compute
+         - tmux
+         - ruby
+         - turbojpeg
+         - nc
+         - '@X Window System'
+         - '@Xfce'
 
    # one method to install TurboVNC
    - name: download TurboVNC rpm
