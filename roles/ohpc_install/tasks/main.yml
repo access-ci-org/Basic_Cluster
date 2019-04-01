@@ -29,23 +29,6 @@
 #   - name: create the slurmdbd log file
 #     file: path=/var/log/slurmdbd.log state=touch owner=slurm group=slurm
 
-   - name: insert rhel-xcbc WW template
-     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
- 
-   - name: fix the warewulf wwsh script... ARGH (line 29)
-     lineinfile: 
-       dest: /bin/wwsh
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
-       state: present
-
-   - name: fix the warewulf wwnodescan script... ARGH (line 96)
-     lineinfile: 
-       dest: /bin/wwnodescan
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
-       state: present
-
    - name: Remove innodb log file
      file:
        path: "{{ item }}"
@@ -102,6 +85,23 @@
        name: slurmdbd
        state: started
        enabled: yes
+
+   - name: insert rhel-xcbc WW template
+     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
+
+   - name: fix the warewulf wwsh script... ARGH (line 29)
+     lineinfile:
+       dest: /bin/wwsh
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present
+
+   - name: fix the warewulf wwnodescan script... ARGH (line 96)
+     lineinfile:
+       dest: /bin/wwnodescan
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present
 
    - name: load sacctmgr config
      command: sacctmgr -i load /etc/slurm/sacctmgr-heirarchy.cfg
