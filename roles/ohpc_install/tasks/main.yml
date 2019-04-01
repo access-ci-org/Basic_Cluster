@@ -71,6 +71,14 @@
        state: restarted
        enabled: yes
 
+   - name: create slurm log folder
+     file:
+       path: /var/log/slurm
+       state: directory
+       owner: slurm
+       group: slurm
+       mode: 0755
+
    - name: initialize slurmdb databases
      mysql_db:
        name: "{{ slurm_acct_db }}"
