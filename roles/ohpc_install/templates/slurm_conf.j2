@@ -75,9 +75,9 @@ FastSchedule=0
 #
 # LOGGING
 SlurmctldDebug=3
-SlurmctldLogFile=/var/log/slurmctld.log
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
 SlurmdDebug=3
-SlurmdLogFile=/var/log/slurmd.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
 JobCompType=jobcomp/none
 #JobCompLoc=
 #
@@ -87,7 +87,7 @@ JobAcctGatherFrequency=30
 #
 AccountingStorageType=accounting_storage/slurmdbd
 AccountingStorageHost={{ inventory_hostname }}
-#AccountingStorageLoc=/var/log/slurmacct.log
+#AccountingStorageLoc=/var/log/slurm/slurmacct.log
 AccountingStorageLoc={{ slurm_acct_db }}
 AcctGatherNodeFreq=30
 AccountingStorageEnforce=associations,limits
