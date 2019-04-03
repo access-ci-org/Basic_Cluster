@@ -10,3 +10,8 @@
     src: vnc-submit.yml.erb
     dest: /etc/ood/config/apps/bc_desktop/submit/submit.yml.erb
     backup: yes
+
+- name: Put noVNC.html.erb in place
+  copy:
+    src: custom-novnc.html.erb
+    dest: /var/www/ood/apps/sys/dashboard/app/views/batch_connect/sessions/connections/_novnc.html.erb    backup: yes
