@@ -19,6 +19,6 @@
     mode: 0755
 
 - name: Copy modulefile from files to /export/eb/ 
-  file:
+  template:
     src: r2018a
     dest: /export/eb/modules/all/matlab/r2018a
