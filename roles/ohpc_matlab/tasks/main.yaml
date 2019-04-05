@@ -12,3 +12,13 @@
   unarchive:
     src: "{{ matlab_destination  }}"
     dest: "{{ matlab_clustershare }}"
+
+- file: Create directory
+    path: /export/eb/modules/all/matlab
+    state: directory
+    mode: 0755
+
+- name: Copy modulefile from files to /export/eb/ 
+  file:
+    src: r2018a
+    dest: /export/eb/modules/all/matlab/r2018a
