@@ -3,6 +3,11 @@
     name: libXt
     state: latest
 
+- file: Create directory
+    path: "{{ matlab_clustershare }}"
+    state: directory
+    mode: 0755
+
 - name: Download matlab
   get_url:
     url: "{{ matlab_download_url }}"
@@ -14,11 +19,11 @@
     dest: "{{ matlab_clustershare }}"
 
 - file: Create directory
-    path: /export/eb/modules/all/matlab
+    path: "{{ matlab_module_dir }}"
     state: directory
     mode: 0755
 
 - name: Copy modulefile from template to /export/eb/modules/all/matlab/ 
   template:
     src: r2018a
-    dest: /export/eb/modules/all/matlab/r2018a
+    dest: "{{ matlab_module  }}"
