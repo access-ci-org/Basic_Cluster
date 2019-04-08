@@ -3,7 +3,8 @@
     name: libXt
     state: latest
 
-- file: Create directory
+- name: Create directory
+  file:
     path: "{{ matlab_clustershare }}"
     state: directory
     mode: 0755
@@ -18,7 +19,8 @@
     src: "{{ matlab_destination  }}"
     dest: "{{ matlab_clustershare }}"
 
-- file: Create directory
+- name: Create directory
+  file:
     path: "{{ matlab_module_dir }}"
     state: directory
     mode: 0755
