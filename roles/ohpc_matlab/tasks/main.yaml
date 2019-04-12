@@ -19,17 +19,17 @@
     src: "{{ matlab_destination  }}"
     dest: "{{ matlab_clustershare }}"
 
-#- name: "REGISTER MATLAB ON www.mathworks.com"
-#  pause:
-#    seconds: 1
-#
-#- name: "mathworks login -> license center -> install and activate -> activate to retrive license -> activate a computer"
-#  pause:
-#    seconds: 1
-#
-#- name: "enter the host ID and computer login name (vagrant in our case) "
-#  pause:
-#    seconds: 1
+- name: "REGISTER MATLAB ON www.mathworks.com"
+  pause:
+    seconds: 1
+
+- name: "mathworks login -> license center -> install and activate -> activate to retrive license -> activate a computer"
+  pause:
+    seconds: 1
+
+- name: "enter the host ID and computer login name (vagrant in our case) "
+  pause:
+    seconds: 1
 
 - name: Create directory
   file:
@@ -40,4 +40,4 @@
 - name: Copy modulefile from template to /export/eb/modules/all/matlab/ 
   template:
     src: r2018a
-    dest: "{{ matlab_module  }}"
+    dest: "{{ matlab_module_dir  }}/r2018a"
