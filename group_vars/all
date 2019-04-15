@@ -127,3 +127,5 @@
 # Shibboleth SSO
   enable_shib: false
 
+# User Registration
+  enable_user_reg: false
