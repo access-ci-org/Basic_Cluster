@@ -30,14 +30,6 @@ attributes:
     label: "MATLAB version"
     help: "This defines the version of MATLAB you want to load."
     options:
-      - [ "R2012a", "rc/matlab/R2012a" ]
-      - [ "R2013a", "rc/matlab/R2013a" ]
-      - [ "R2015a", "rc/matlab/R2015a" ]
-      - [ "R2015b", "rc/matlab/R2015b" ]
-      - [ "R2016a", "rc/matlab/R2016a" ]
-      - [ "R2016b", "rc/matlab/R2016b" ]
-      - [ "R2017a", "rc/matlab/R2017a" ]
-      - [ "R2017b", "rc/matlab/R2017b" ]
       - [ "R2018a", "rc/matlab/R2018a" ]
 form:
   - version
