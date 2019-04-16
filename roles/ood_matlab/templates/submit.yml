@@ -1,6 +1,0 @@
----
-batch_connect:
-  template: vnc
-script:
-  native:
-cluster: ohpc
