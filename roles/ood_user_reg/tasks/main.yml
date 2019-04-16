@@ -1,0 +1,21 @@
+- name: Enable user registration redirect
+  lineinfile:
+    path: /etc/ood/config/ood_portal.yml
+    line: '{{ item }}'
+  with_items:
+    - "user_map_cmd: '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'"
+    - "map_fail_uri: '/register/'"
+    - "register_root: '/var/www/ood/register'"
+    - "register_uri: '/register'"
+
+- name: Stage regex file for ood
+  copy:
+    src: uab_ood_auth.regex
+    dest: /opt/ood/ood_auth_map/bin/uab_ood_auth.regex
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Build the updated Apache config
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes

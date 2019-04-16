@@ -3,6 +3,7 @@
   roles:
     - { name: 'prep_ood', tags: 'prep_ood' }
     - { name: 'ood', tags: 'ood' }
+    - { name: 'ood_user_reg', tags: 'ood_user_reg', when: enable_user_reg }
     - { name: 'warewulf_sync', tags: 'warewulf_sync' }
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
