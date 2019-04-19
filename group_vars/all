@@ -121,6 +121,7 @@
 #Copr Repos
   enable_copr: true
   copr_repos:
+    - { repo_name: "louistw/mod_wsgi-3.4-18-httpd24", host: ["{{ ood_nodename }}"] }
     - { repo_name: "louistw/slurm-17.11.11-ohpc-1.3.6", host: ["{{ cluster_name }}", "{{ ood_nodename }}"] }
     - { repo_name: "atlurie/shibboleth-3.0-ood", host: ["{{ ood_nodename }}"] }
 
