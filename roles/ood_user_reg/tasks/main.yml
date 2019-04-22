@@ -1,12 +1,14 @@
 ---
 - name: Enable user registration redirect
-  lineinfile:
+  replace:
     path: /etc/ood/config/ood_portal.yml
-    line: '{{ item }}'
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+    backup: yes
   with_items:
-    - "user_map_cmd: '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'"
-    - "map_fail_uri: '/register/'"
-    - "register_uri: '/register'"
+      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'" }
+      - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
+      - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
 
 - name: Stage regex file for ood
   copy:
