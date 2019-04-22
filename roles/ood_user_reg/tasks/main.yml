@@ -10,6 +10,21 @@
 - name: Install virtualenv via pip
   pip: name=virtualenv state=latest
 
+- name: Remove existing user register app install
+  file:
+    path: "{{ user_register_app_path }}"
+    state: absent
+
+- name: Creates directory to clone the user register app
+  file:
+    path: "{{ user_register_app_path }}"
+    state: directory
+
+- name: Clone user register app form from gitlab
+  git:
+    repo: "{{ user_register_app_repo }}"
+    dest: "{{ user_register_app_path }}"
+
 - name: Enable user registration redirect
   replace:
     path: /etc/ood/config/ood_portal.yml
