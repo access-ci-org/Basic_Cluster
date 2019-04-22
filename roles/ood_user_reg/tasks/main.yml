@@ -7,6 +7,9 @@
 - name: Install mod_wsgi for httpd24
   yum: name="{{ mod_wsgi_pkg_name }}" state=latest
 
+- name: Install virtualenv via pip
+  pip: name=virtualenv state=latest
+
 - name: Enable user registration redirect
   replace:
     path: /etc/ood/config/ood_portal.yml
