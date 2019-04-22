@@ -1,3 +1,4 @@
+---
 - name: Enable user registration redirect
   lineinfile:
     path: /etc/ood/config/ood_portal.yml
@@ -5,7 +6,6 @@
   with_items:
     - "user_map_cmd: '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'"
     - "map_fail_uri: '/register/'"
-    - "register_root: '/var/www/ood/register'"
     - "register_uri: '/register'"
 
 - name: Stage regex file for ood
