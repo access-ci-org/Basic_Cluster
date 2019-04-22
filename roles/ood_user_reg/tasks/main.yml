@@ -16,7 +16,7 @@
     dest: /opt/ood/ood_auth_map/bin/uab_ood_auth.regex
     owner: root
     group: root
-    mode: 0777
+    mode: 0755
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
