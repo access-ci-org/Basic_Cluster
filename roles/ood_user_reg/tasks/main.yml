@@ -4,6 +4,9 @@
   with_items: "{{ copr_repos }}"
   when: enable_copr == true and inventory_hostname in item.host
 
+- name: Install mod_wsgi for httpd24
+  yum: name="{{ mod_wsgi_pkg_name }}" state=latest
+
 - name: Enable user registration redirect
   replace:
     path: /etc/ood/config/ood_portal.yml
