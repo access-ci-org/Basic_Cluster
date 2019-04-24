@@ -1,3 +1,8 @@
+- name: Remove existing matlab app install
+  file:
+    path: /var/www/ood/apps/sys/matlab/
+    state: absent
+
 - name: matlab directory
   file:
     path: /var/www/ood/apps/sys/matlab
