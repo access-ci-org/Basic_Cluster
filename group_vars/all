@@ -111,7 +111,8 @@
   easybuild_buildpath: "/tmp/build"
   easybuild_sourcepath: "/tmp/source"
 
-#matlab download
+#matlab install related
+  job-name: "ood-matlab"
   matlab_provision: false
   matlab_download_url: "https://uab.box.com/shared/static/y01qu7oo1gpne6j2s6nqwcuee63epivo.gz"
   matlab_clustershare: "/opt/ohpc/pub/apps/matlab/"

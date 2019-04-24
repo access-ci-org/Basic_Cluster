@@ -8,6 +8,7 @@ script:
     - "--mem-per-cpu=<%= bc_num_mems.blank? ? 4 : bc_num_mems.to_i %>G"
     - "--partition=<%= bc_partition %>"
     - "--time=<%= bc_num_hours.blank? ? 1 : bc_num_hours.to_i %>:00:00"
+    - "--job-name=ood-matlab"
 <%- if bc_partition == "pascalnodes" -%>
     - "--gres=gpu:1"
 <%- end -%>
