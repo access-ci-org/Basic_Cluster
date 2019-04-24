@@ -21,4 +21,4 @@
 - name: Replace form script template
   copy:
     src: script.sh.erb 
-    dest: /var/www/ood/apps/sys/matlab/script.sh.erb 
+    dest: /var/www/ood/apps/sys/matlab/templates/script.sh.erb 
