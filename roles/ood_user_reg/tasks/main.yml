@@ -7,6 +7,9 @@
 - name: Install mod_wsgi for httpd24
   yum: name="{{ mod_wsgi_pkg_name }}" state=latest
 
+- name: Install pip via yum
+  yum: name=python2-pip state=latest
+
 - name: Install virtualenv via pip
   pip: name=virtualenv state=latest
 
