@@ -30,7 +30,7 @@ attributes:
     label: "MATLAB version"
     help: "This defines the version of MATLAB you want to load."
     options:
-      - [ "R2018a", "rc/matlab/R2018a" ]
+      - [ "R2018a", "matlab/R2018a" ]
 form:
   - version
   - bc_num_hours
