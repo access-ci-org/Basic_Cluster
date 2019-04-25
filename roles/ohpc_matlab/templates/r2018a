@@ -1,7 +1,9 @@
 #%Module
 
-set ver r2018a
-set matlabroot /opt/ohpc/pub-master/apps/matlab/M2/
+set ver {{ matlab_ver }}
+set matlabroot {{ matlab_install_root }}
+set url {{ matlab_docs_url }}
+set msg "This module adds Matlab $ver to various paths\n\nSee $url for usage examples\n"
 
 proc ModulesHelp { } {
    puts stderr $msg
@@ -9,9 +11,8 @@ proc ModulesHelp { } {
 
 module-whatis   $msg
 
-#module load foss/2016b
-
 setenv MATLAB $matlabroot
 setenv MATLABROOT $matlabroot
 setenv MATLAB_HOME $matlabroot
+setenv MLM_LICENSE_FILE {{ matlab_license_file }}
 prepend-path PATH $matlabroot/bin

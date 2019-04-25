@@ -116,7 +116,14 @@
   matlab_download_url: "https://uab.box.com/shared/static/y01qu7oo1gpne6j2s6nqwcuee63epivo.gz"
   matlab_clustershare: "/opt/ohpc/pub/apps/matlab/"
   matlab_destination: "/tmp/matlab.tar.gz"
-  matlab_module_dir: "/export/eb/modules/all/matlab" 
+  # module file vars
+  matlab_install_root: "/opt/ohpc/pub-master/apps/matlab/M2/"
+  matlab_docs_url: "http://{{ ood_nodename }}"
+  matlab_license_file: "{{ matlab_install_root }}/licenses/licenses.lic"
+  matlab_module_path: "{{ easybuild_prefix }}/modules/all"
+  matlab_module_appdir: "matlab"
+  matlab_module_file: "r2018a"
+  matlab_ver: "{{ matlab_module_file }}"
 
 #Rstudio related
   rstudio_provision: false

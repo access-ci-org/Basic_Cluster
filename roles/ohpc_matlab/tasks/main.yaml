@@ -22,11 +22,11 @@
 
 - name: Create directory
   file:
-    path: "{{ matlab_module_dir }}"
+    path: "{{ matlab_module_path }}/{{ matlab_module_appdir }}"
     state: directory
     mode: 0755
 
-- name: Copy modulefile from template to /export/eb/modules/all/matlab/ 
+- name: Copy modulefile from template to module path
   template:
-    src: r2018a
-    dest: "{{ matlab_module_dir }}/r2018a"
+    src: "{{ matlab_module_file }}"
+    dest: "{{ matlab_module_path }}/{{ matlab_module_appdir }}/{{ matlab_module_file }}"
