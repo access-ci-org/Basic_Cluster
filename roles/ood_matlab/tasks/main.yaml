@@ -18,6 +18,11 @@
     src: form.yml
     dest: /var/www/ood/apps/sys/matlab/form.yml
 
+- name: Remove form.js
+  file:
+    path: /var/www/ood/apps/sys/matlab/form.js
+    state: absent
+
 - name: Replace form submission template
   copy:
     src: submit.yml
