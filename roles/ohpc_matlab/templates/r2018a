@@ -1,0 +1,18 @@
+#%Module
+
+set ver {{ matlab_ver }}
+set matlabroot {{ matlab_install_root }}
+set url {{ matlab_docs_url }}
+set msg "This module adds Matlab $ver to various paths\n\nSee $url for usage examples\n"
+
+proc ModulesHelp { } {
+   puts stderr $msg
+}
+
+module-whatis   $msg
+
+setenv MATLAB $matlabroot
+setenv MATLABROOT $matlabroot
+setenv MATLAB_HOME $matlabroot
+setenv MLM_LICENSE_FILE {{ matlab_license_file }}
+prepend-path PATH $matlabroot/bin

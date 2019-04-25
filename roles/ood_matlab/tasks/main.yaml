@@ -1,0 +1,34 @@
+- name: Remove existing matlab app install
+  file:
+    path: /var/www/ood/apps/sys/matlab/
+    state: absent
+
+- name: matlab directory
+  file:
+    path: /var/www/ood/apps/sys/matlab
+    state: directory
+
+- git:
+    repo: 'https://github.com/OSC/bc_osc_matlab.git'
+    dest: /var/www/ood/apps/sys/matlab/
+    clone: yes
+
+- name: Replace form.yml
+  template:
+    src: form.yml
+    dest: /var/www/ood/apps/sys/matlab/form.yml
+
+- name: Remove form.js
+  file:
+    path: /var/www/ood/apps/sys/matlab/form.js
+    state: absent
+
+- name: Replace form submission template
+  copy:
+    src: submit.yml
+    dest: /var/www/ood/apps/sys/matlab/submit.yml.erb
+
+- name: Replace form script template
+  copy:
+    src: script.sh.erb 
+    dest: /var/www/ood/apps/sys/matlab/template/script.sh.erb 
