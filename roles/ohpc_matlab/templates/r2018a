@@ -2,7 +2,6 @@
 
 set ver r2018a
 set matlabroot /opt/ohpc/pub-master/apps/matlab/M2/
-set url http://docs.uabgrid.uab.edu/wiki/MatLab
 
 proc ModulesHelp { } {
    puts stderr $msg
