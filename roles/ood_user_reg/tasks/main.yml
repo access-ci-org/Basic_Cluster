@@ -28,11 +28,6 @@
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
 
-- name: Create logs folder for user register app
-  file:
-    path: "{{ user_register_app_path }}/logs"
-    state: directory
-
 - name: Install requirements in virtualenv
   pip:
     requirements: requirements.txt
