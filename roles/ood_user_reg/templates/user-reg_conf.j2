@@ -1,7 +1,3 @@
-ErrorLog "{{ user_register_app_path }}/logs/error.log"
-CustomLog "{{ user_register_app_path}}/logs/access.log" combined
-LogLevel warn rewrite:trace8
-
 WSGIDaemonProcess "{{ user_register_app }}" user=apache group=apache threads=5
 WSGIProcessGroup "{{ user_register_app }}"
 WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
