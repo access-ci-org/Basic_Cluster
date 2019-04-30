@@ -13,7 +13,7 @@
 
 - name: Add Open OnDemand’s repository hosted by the Ohio Supercomputer Center
   yum:
-    name: "https://yum.osc.edu/ondemand/1.3/ondemand-release-web-1.3-1.el7.noarch.rpm"
+    name: "{{ ood_rpm_repo }}"
     state: present
 
 - name: Install OnDemand and all of its dependencies
