@@ -1,4 +1,4 @@
-WSGIDaemonProcess "{{ user_register_app }}" user=apache group=apache threads=5
+WSGIDaemonProcess "{{ user_register_app }}" user={{ RegUser_app_user }} group={{ RegUser_app_user }} threads=5
 WSGIProcessGroup "{{ user_register_app }}"
 WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
 <Location /register>

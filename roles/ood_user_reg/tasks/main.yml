@@ -66,3 +66,26 @@
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
   ignore_errors: yes
+
+- name: Create RegUser - {{ RegUser_app_user }} on OHPC
+  shell: ssh ohpc 'sudo useradd -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}'
+  become_user: vagrant
+
+- name : delay
+  command: sleep 2
+
+- name: Change passwd RegUser - {{ RegUser_app_user }} on OHPC
+  shell: ssh ohpc 'sudo echo "{{ RegUser_app_user_passwd }}" | sudo passwd --stdin "{{ RegUser_app_user }}"'
+  become_user: vagrant
+
+- name: Get UID of RegUser - {{ RegUser_app_user }} from OHPC
+  shell: ssh ohpc "sudo id -u {{ RegUser_app_user }}"
+  become_user: vagrant
+  register: uid
+
+- name : delay
+  command: sleep 1
+
+- name: Create RegUser - {{ RegUser_app_user }} on OOD
+  shell: sudo useradd -M -s "/bin/bash" -u {{ uid.stdout }} -U -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}
+
