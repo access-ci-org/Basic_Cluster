@@ -9,7 +9,7 @@
     repo: "{{ user_create_script_repo }}"
     dest: "{{ user_create_scripts_path }}"
 
-- name: Commands access for Next Sudo
+- name: Commands access for RegUser - {{ RegUser_app_user }}
   lineinfile:
     dest: /etc/sudoers
     insertafter: EOF
