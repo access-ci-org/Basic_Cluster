@@ -15,5 +15,5 @@
     state: present
 
 - name: Create Cluster keys for RegUser - {{ RegUser_app_user }} on OHPC
-  shell: su - reggie -c "/usr/bin/cluster-env"
-    
+  script: /usr/bin/cluster-env
+  become_user: "{{ RegUser_app_user }}"
