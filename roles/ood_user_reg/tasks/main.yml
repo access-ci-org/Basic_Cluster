@@ -91,5 +91,4 @@
   command: sleep 1
 
 - name: Create RegUser - {{ RegUser_app_user }} on OOD
-  shell: sudo useradd -M -s "/bin/bash" -u {{ uid.stdout }} -U -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}
-
+  shell: ssh ohpc 'sudo id -u {{ RegUser_app_user }} &>/dev/null || sudo useradd -M -s "/bin/bash" -u {{ uid.stdout }} -U -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}'
