@@ -68,7 +68,7 @@
   ignore_errors: yes
 
 - name: Create RegUser - {{ RegUser_app_user }} on OHPC
-  shell: ssh ohpc 'sudo useradd -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}'
+  shell: ssh ohpc 'sudo id -u {{ RegUser_app_user }} &>/dev/null || sudo useradd -c "{{ RegUser_app_user_full_name }}" {{ RegUser_app_user }}'
   become_user: vagrant
 
 - name : delay
@@ -76,6 +76,10 @@
 
 - name: Change passwd RegUser - {{ RegUser_app_user }} on OHPC
   shell: ssh ohpc 'sudo echo "{{ RegUser_app_user_passwd }}" | sudo passwd --stdin "{{ RegUser_app_user }}"'
+  become_user: vagrant
+
+- name: Create Cluster keys for RegUser - {{ RegUser_app_user }} on OHPC
+  shell: ssh ohpc 'sudo -s su - reggie -c "sh /usr/bin/cluster-env"'
   become_user: vagrant
 
 - name: Get UID of RegUser - {{ RegUser_app_user }} from OHPC
