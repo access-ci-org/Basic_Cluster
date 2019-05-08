@@ -1,0 +1,19 @@
+---
+- name: Remove existing RegUser - {{ RegUser_app_user }} on OHPC
+  user:
+    name: "{{ RegUser_app_user }}"
+    state: absent
+    remove: yes
+
+- name: Create RegUser - {{ RegUser_app_user }} on OHPC
+  user:
+    name: "{{ RegUser_app_user }}"
+    comment: "{{ RegUser_app_user_full_name }}"
+    shell: /bin/bash
+    createhome: yes
+    home: /home/{{ RegUser_app_user }}
+    state: present
+
+- name: Create Cluster keys for RegUser - {{ RegUser_app_user }} on OHPC
+  shell: su - reggie -c "/usr/bin/cluster-env"
+    
