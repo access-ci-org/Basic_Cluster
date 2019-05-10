@@ -9,10 +9,9 @@
     repo: "{{ user_create_script_repo }}"
     dest: "{{ user_create_scripts_path }}"
 
-- name: Commands access for RegUser - {{ RegUser_app_user }}
+- name: Commands access for RegUser
   lineinfile:
     dest: /etc/sudoers
     insertafter: EOF
     line: "{{ RegUser_app_user }} ALL= NOPASSWD: {{ user_create_scripts_path }}/user_create"
     state: present
-
