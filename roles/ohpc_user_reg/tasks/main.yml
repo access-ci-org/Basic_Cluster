@@ -1,10 +1,4 @@
 ---
-- name: Remove existing RegUser - {{ RegUser_app_user }} on OHPC
-  user:
-    name: "{{ RegUser_app_user }}"
-    state: absent
-    remove: yes
-
 - name: Create RegUser - {{ RegUser_app_user }} on OHPC
   user:
     name: "{{ RegUser_app_user }}"
