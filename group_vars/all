@@ -125,6 +125,14 @@
   matlab_module_file: "r2018a"
   matlab_ver: "{{ matlab_module_file }}"
 
+#SAS install related
+  sas_provision: false
+  sas_clustershare: "/export/apps/sas/"
+  sas_module_path: "{{ easybuild_prefix }}/modules/all"
+  sas_module_appdir: "sas"
+  sas_module_file: "v9.4"
+  sas_ver: "{{ sas_module_file }}"
+
 #Rstudio related
   rstudio_provision: false
   singularity_ver: '2.4.2'
