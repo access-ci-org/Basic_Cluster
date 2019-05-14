@@ -4,13 +4,11 @@
     state: directory
     mode: 0755
 
-- name: Install SAS (Symlink xfce4desktop to sas)
-  file:
-    src: /bin/xfce4-terminal
-    dest: "{{ sas_clustershare }}/{{ sas_module_file }}/SASFoundation/{{ sas_module_file }}/sas"
-    owner: foo
-    group: foo
-    state: link
+- name: Install SAS (Executable file to run  xfce4desktop)
+  template:
+    src: "{{ sas_module_appdir }}"
+    dest: "{{ sas_clustershare }}/{{ sas_module_file }}/SASFoundation/{{ sas_module_file }}/{{ sas_module_appdir }}"
+    mode: a+x
 
 - name: Create modules directory
   file:
