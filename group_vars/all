@@ -130,7 +130,7 @@
   sas_clustershare: "/export/apps/sas/"
   sas_module_path: "{{ easybuild_prefix }}/modules/all"
   sas_module_appdir: "sas"
-  sas_module_file: "v9.4"
+  sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
 
 #Rstudio related
