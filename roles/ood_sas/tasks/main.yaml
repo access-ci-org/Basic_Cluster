@@ -13,6 +13,11 @@
     dest: /var/www/ood/apps/sys/sas/
     clone: yes
 
+- name: Replace form.yml
+  template:
+    src: form.yml
+    dest: /var/www/ood/apps/sys/sas/form.yml
+
 - name: Remove form.js
   file:
     path: /var/www/ood/apps/sys/matlab/form.js
