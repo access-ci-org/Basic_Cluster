@@ -1,0 +1,19 @@
+- name: Remove existing SAS app install
+  file:
+    path: /var/www/ood/apps/sys/sas/
+    state: absent
+
+- name: Create SAS app directory
+  file:
+    path: /var/www/ood/apps/sys/sas
+    state: directory
+
+- git:
+    repo: 'https://github.com/uabrc/ood_sas.git'
+    dest: /var/www/ood/apps/sys/sas/
+    clone: yes
+
+- name: Remove form.js
+  file:
+    path: /var/www/ood/apps/sys/matlab/form.js
+    state: absent
