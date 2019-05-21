@@ -20,5 +20,5 @@
 
 - name: Remove form.js
   file:
-    path: /var/www/ood/apps/sys/matlab/form.js
+    path: /var/www/ood/apps/sys/sas/form.js
     state: absent
