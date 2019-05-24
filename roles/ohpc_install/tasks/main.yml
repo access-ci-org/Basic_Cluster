@@ -26,27 +26,39 @@
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf
 
-   - name: create the slurmdbd log file
-     file: path=/var/log/slurmdbd.log state=touch owner=slurm group=slurm
+   - name: Remove innodb log file
+     file:
+       path: "{{ item }}"
+       state: absent
+     with_items:
+       - /var/lib/mysql/ib_logfile0
+       - /var/lib/mysql/ib_logfile1
 
-   - name: insert rhel-xcbc WW template
-     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
- 
-   - name: fix the warewulf wwsh script... ARGH (line 29)
-     lineinfile: 
-       dest: /bin/wwsh
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+   - name: Update Mariadb setting
+     lineinfile:
+       dest: /etc/my.cnf
+       insertafter: '\[mysqld\]'
+       line: "{{ item }}"
        state: present
-
-   - name: fix the warewulf wwnodescan script... ARGH (line 96)
-     lineinfile: 
-       dest: /bin/wwnodescan
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
-       state: present
-
+     with_items:
+       - innodb_buffer_pool_size=1024M
+       - innodb_log_file_size=64M
+       - innodb_lock_wait_timeout=900
  
+   - name: restart mariadb
+     service:
+       name: mariadb
+       state: restarted
+       enabled: yes
+
+   - name: create slurm log folder
+     file:
+       path: /var/log/slurm
+       state: directory
+       owner: slurm
+       group: slurm
+       mode: 0755
+
    - name: initialize slurmdb databases
      mysql_db:
        name: "{{ slurm_acct_db }}"
@@ -70,6 +82,23 @@
        name: slurmdbd
        state: started
        enabled: yes
+
+   - name: insert rhel-xcbc WW template
+     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
+
+   - name: fix the warewulf wwsh script... ARGH (line 29)
+     lineinfile:
+       dest: /bin/wwsh
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present
+
+   - name: fix the warewulf wwnodescan script... ARGH (line 96)
+     lineinfile:
+       dest: /bin/wwnodescan
+       insertafter: '^\$ENV\{\"PATH\"\}'
+       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+       state: present
 
    - name: load sacctmgr config
      command: sacctmgr -i load /etc/slurm/sacctmgr-heirarchy.cfg
