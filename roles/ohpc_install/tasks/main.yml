@@ -26,9 +26,6 @@
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf
 
-#   - name: create the slurmdbd log file
-#     file: path=/var/log/slurmdbd.log state=touch owner=slurm group=slurm
-
    - name: Remove innodb log file
      file:
        path: "{{ item }}"
