@@ -1,0 +1,16 @@
+---
+- name: Create RegUser on OHPC
+  user:
+    name: "{{ RegUser_app_user }}"
+    comment: "{{ RegUser_app_user_full_name }}"
+    shell: /bin/bash
+    createhome: yes
+    home: /home/{{ RegUser_app_user }}
+    state: present
+
+- name: Create Cluster keys for RegUser on OHPC
+  script: /usr/bin/cluster-env
+  become_user: "{{ RegUser_app_user }}"
+
+- name: WareWulf Sync for RegUser on OHPC
+  command: wwsh file resync passwd group shadow

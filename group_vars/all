@@ -158,3 +158,13 @@
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_repo: "https://gitlab.rc.uab.edu/mmoo97/flask_user_reg.git"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
+  RegUser_app_user: "reggie"
+  RegUser_app_user_full_name: "RegUser of user register app"
+  RegUser_app_user_passwd: "qweasd"
+
+# User Create Scripts
+  enable_user_create_scripts: false
+  user_create_scripts: "ohpc_user_create"
+  user_create_scripts_path: "/opt/{{ user_create_scripts }}"
+  user_create_script_repo: "https://gitlab.rc.uab.edu/tr27p/ohpc_user_create.git"
+
