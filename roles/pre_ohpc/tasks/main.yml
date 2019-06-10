@@ -89,6 +89,9 @@
      command: nmcli con mod 'System {{ private_interface }}' connection.id '{{ private_interface }}'
      when: "'System' in network_profile_name.stdout"
 
+   - name: assign head node static ip on cluster network
+     command: nmcli con mod {{ private_interface }} ipv4.addresses {{ headnode_private_ip }}/24 ipv4.method manual
+
    - name: add private interface to internal zone via nmcli
      command: nmcli connection modify {{ private_interface }} connection.zone internal
 
