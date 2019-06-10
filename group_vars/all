@@ -24,7 +24,7 @@
 
 # sacct user list
   cluster_users:
-    - vagrant   # include each username on separate line as a list
+    - centos   # include each username on separate line as a list
 
 #Stateful compute or not?
   stateful_nodes: false
