@@ -69,7 +69,7 @@
 #OpenOnDemand
   ood_nodename: "ood"
   ood_version: 1.5
-  ood_ip_addr: 10.1.1.11
+  ood_private_ip: "10.1.1.11"
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
