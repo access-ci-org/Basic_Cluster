@@ -88,6 +88,12 @@
     state: stopped
     enabled: no
 
+- name: add headnode to compute chrony.conf
+  lineinfile:
+    line: "server {{ headnode_private_ip }}"
+    dest: /etc/chrony.conf
+    state: present
+
 - name: Enable chronyd on compute image
   service:
     name: chronyd
