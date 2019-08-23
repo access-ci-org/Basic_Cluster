@@ -34,7 +34,7 @@
     dest: /tmp
     remote_src: yes
 
-- name: Install Websockify inside chroot env
+- name: Install Websockify
   command: python setup.py install
   args:
     chdir: /tmp/websockify-0.8.0
