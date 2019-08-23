@@ -2,3 +2,4 @@
 - hosts: compute
   roles:
     - compute_build_image
+    - install_ww_bin
