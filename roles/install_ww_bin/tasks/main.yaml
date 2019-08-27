@@ -12,6 +12,14 @@
     recurse: true
     mode: u+x,g+x
 
+- name: create custom warewulf config file for node
+  template:
+    src: wwnodeconf.j2
+    dest: /warewulf/config
+    owner: root
+    group: root
+    mode: 0640
+
 - name: add warewulf file sync via cron
   copy:
     src: wwupdatefiles
