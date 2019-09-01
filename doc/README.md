@@ -181,7 +181,7 @@ Instead of using the VirtualBox terminal, it's often much simpler to ssh in to t
 from your native local terminal - which allows for copy-pasting, window history, etc. 
 
 Check the address of the host-only network using the ```ip addr``` command on the
-headnode - usually in the ```192.168.56.0\24``` by default.
+headnode - usually in the ```192.168.56.0/24``` by default.
 
 From your host machine, open a terminal emulator, and you should be able to ssh in as 
 root (using the password you set during install - running ```ssh-copy-id root@$headnode_ip```
