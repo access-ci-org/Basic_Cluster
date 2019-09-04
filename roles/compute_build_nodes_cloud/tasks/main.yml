@@ -1,0 +1,102 @@
+---
+
+#   - name: print single node info
+#     debug:
+#       var: item.mac
+#     with_items: "{{ compute_nodes }}"
+#   - name: print single node info
+#     debug:
+#       var: item.vnfs
+#     with_items: "{{ compute_nodes }}"
+#
+#   - fail:
+#       msg: "Quick fail for test!"
+
+   - block:
+     - name: add node to ww db
+       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
+       with_items: "{{ compute_nodes }}"
+  
+     - name: set nodes bootloader
+       command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
+       with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
+  
+     - name: set nodes partitions
+       command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
+       with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
+  
+     - name: format partitions
+       command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
+       with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
+  
+     - name: define filesystems
+       command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
+       with_items: "{{ compute_nodes }}"
+       when: stateful_nodes == true
+  #" for vim
+
+     - name: set files to provision
+       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+       with_items: "{{ compute_nodes }}"
+
+     - name: remove node from slurm.conf if it exists already # to avoid duplication!
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         regexp: "^NodeName={{ item.name }}"
+         state: absent
+       with_items: "{{ compute_nodes }}"
+  
+     - name: add node to slurm.conf
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         line: "NodeName={{ item.name }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
+         insertbefore: "^# PARTITIONS"
+         state: present
+       with_items: "{{ compute_nodes }}"
+  
+     when: node_inventory_auto == false
+
+   - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
+     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     when: node_inventory_auto == true
+
+#   - name: Waiting for the compute node to bootup
+#     pause:
+#       seconds: 180
+
+   - name: set files to provision
+     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,lmod.sh,lmod.csh --kargs="net.ifnames=1 biosdevname=1 quiet" --postnetdown=1
+     when: node_inventory_auto == true
+
+   - name: sync files #also generates dynamic hosts on headnode!
+     command: wwsh file sync
+
+#   - name: add compute nodes to ansible inventory for wait
+#     add_host: name={{ node_glob }} group="compute nodes"
+    
+#   - name: wait for compute nodes to boot
+#     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+
+   - name: restart dhcp
+     service: name=dhcpd state=restarted enabled=yes
+
+   - name: update pxeconfig to force node to boot from pxe
+     command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
+     when: stateful_nodes == false and node_inventory_auto == true
+ 
+   - name: update pxeconfig to let node boot from local disk
+     command: wwsh -y object modify -s bootlocal=EXIT -t node {{ compute_node_glob}}
+     when: stateful_nodes == true and node_inventory_auto == true
+ 
+   - name: wwsh pxe update
+     command: wwsh -v pxe update
+     register: command_result
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"
+
+#   vars:
+#    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+#    - node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+#    - last_node: "{{ node_prefix }}{{ num_nodes|int - 1 }}"
