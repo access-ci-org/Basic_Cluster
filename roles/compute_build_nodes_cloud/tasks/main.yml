@@ -59,10 +59,6 @@
   
      when: node_inventory_auto == false
 
-   - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
-     when: node_inventory_auto == true
-
 #   - name: Waiting for the compute node to bootup
 #     pause:
 #       seconds: 180
@@ -79,9 +75,6 @@
     
 #   - name: wait for compute nodes to boot
 #     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
-
-   - name: restart dhcp
-     service: name=dhcpd state=restarted enabled=yes
 
 
 #   vars:
