@@ -13,10 +13,22 @@
 #       msg: "Quick fail for test!"
 
    - block:
-     - name: add node to ww db
+     
+     - name: Check if node is already in warewulf database
+       command: sudo wwsh node list
+       register: wwsh_node_list
+       ignore_errors: yes
+
+     - name: Add node(s) into warewulf database
        command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
+       when: "'{{ item.name }}' not in wwsh_node_list.stdout"
        with_items: "{{ compute_nodes }}"
-  
+
+     - name: Register node IP and MAC address in warewulf database
+       command: sudo wwsh node set {{ item.name }} -y -I {{ item.ip }} --hwadd {{ item.mac }}
+       when: "'{{ item.name }}' in wwsh_node_list.stdout"
+       with_items: "{{ compute_nodes }}"
+
      - name: set nodes bootloader
        command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
        with_items: "{{ compute_nodes }}"
