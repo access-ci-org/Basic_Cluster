@@ -7,7 +7,7 @@
 # Headnode Info
   public_interface: "eth0" # NIC that allows access to the public internet
   private_interface: "eth1" #NIC that allows access to compute nodes
-  headnode_private_ip: "10.1.1.1"
+  headnode_private_ip: "10.1.1.10"
   build_kernel_ver: '3.10.0-957.12.2.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Private network Info
@@ -69,7 +69,7 @@
 #OpenOnDemand
   ood_nodename: "ood"
   ood_version: 1.5
-  ood_ip_addr: 10.1.1.254
+  ood_ip_addr: 10.1.1.11
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
