@@ -83,18 +83,6 @@
    - name: restart dhcp
      service: name=dhcpd state=restarted enabled=yes
 
-   - name: update pxeconfig to force node to boot from pxe
-     command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
-     when: stateful_nodes == false and node_inventory_auto == true
- 
-   - name: update pxeconfig to let node boot from local disk
-     command: wwsh -y object modify -s bootlocal=EXIT -t node {{ compute_node_glob}}
-     when: stateful_nodes == true and node_inventory_auto == true
- 
-   - name: wwsh pxe update
-     command: wwsh -v pxe update
-     register: command_result
-     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"
 
 #   vars:
 #    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
