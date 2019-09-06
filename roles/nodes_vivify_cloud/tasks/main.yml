@@ -1,25 +1,10 @@
 ---
 
-   - name: tell nodes to get files
-     command: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') /warewulf/bin/wwgetfiles
-
    - name: start munge
      service: name=munge state=restarted enabled=yes
 
    - name: start slurmctld
      service: name=slurmctld state=restarted enabled=yes
-
-   - name: start munge on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl start munge
-
-   - name: enable munge on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable munge
-
-   - name: start slurmd on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl start slurmd
-
-   - name: enable slurmd on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable slurmd
 
    - name: update slurm status on nodes
      shell: scontrol update nodename=$(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') state=IDLE
