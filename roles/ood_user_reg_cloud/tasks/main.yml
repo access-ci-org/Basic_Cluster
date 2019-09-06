@@ -1,0 +1,65 @@
+---
+- name: Enable Copr Repos
+  shell: yum -y copr enable "{{ item.repo_name }}"
+  with_items: "{{ copr_repos }}"
+  when: enable_copr == true and inventory_hostname in item.host
+
+- name: Install mod_wsgi for httpd24
+  yum: name="{{ mod_wsgi_pkg_name }}" state=latest
+
+- name: Install pip via yum
+  yum: name=python2-pip state=latest
+
+- name: Install virtualenv via pip
+  pip: name=virtualenv state=latest
+
+- name: Remove existing user register app install
+  file:
+    path: "{{ user_register_app_path }}"
+    state: absent
+
+- name: Creates directory to clone the user register app
+  file:
+    path: "{{ user_register_app_path }}"
+    state: directory
+
+- name: Clone user register app form from gitlab
+  git:
+    repo: "{{ user_register_app_repo }}"
+    dest: "{{ user_register_app_path }}"
+
+- name: Install requirements in virtualenv
+  pip:
+    requirements: requirements.txt
+    virtualenv: venv
+    chdir: "{{ user_register_app_path }}"
+
+- name: Put apache config file in place
+  template:
+    src: user-reg_conf.j2
+    dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
+
+- name: Put wsgi config file in place
+  template:
+    src: wsgi.j2
+    dest: "{{ user_register_app_path }}/{{ user_register_app}}.wsgi"
+
+- name: Enable user registration redirect
+  replace:
+    path: /etc/ood/config/ood_portal.yml
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+    backup: yes
+  with_items:
+      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'" }
+      - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
+      - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
+
+- name: Stage regex file for ood
+  copy:
+    src: uab_ood_auth.regex
+    dest: /opt/ood/ood_auth_map/bin/uab_ood_auth.regex
+    owner: root
+    group: root
+    mode: 0755
+

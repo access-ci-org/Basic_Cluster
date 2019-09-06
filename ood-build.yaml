@@ -11,5 +11,5 @@
     - { name: 'install_ww_bin', tags: 'install_ww_bin' }
     - { name: 'ood_firewall_and_services', tags: 'ood_firewall_and_services' }
     - { name: 'ohpc_firewall_and_services', tags: 'ohpc_firewall_and_services' }
-    - { name: 'ood_user_reg', tags: 'ood_user_reg' }
+    - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
     - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
