@@ -1,9 +1,5 @@
 ---
 
-   - name: Waiting for the compute node to bootup
-     pause:
-       seconds: 150
-
    - name: tell nodes to get files
      command: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') /warewulf/bin/wwgetfiles
 
@@ -24,10 +20,6 @@
 
    - name: enable slurmd on compute nodes
      shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable slurmd
-
-   - name: Waiting for slurmd to enable on the compute nodes
-     pause:
-       seconds: 30
 
    - name: update slurm status on nodes
      shell: scontrol update nodename=$(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') state=IDLE
