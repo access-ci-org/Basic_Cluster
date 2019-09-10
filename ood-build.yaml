@@ -1,7 +1,7 @@
 ---
 - hosts: ood
   roles:
-    - { name: 'prep_ood', tags: 'prep_ood' }
+    - { name: 'prep_ood_cloud', tags: 'prep_ood' }
     - { name: 'ood', tags: 'ood' }
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
