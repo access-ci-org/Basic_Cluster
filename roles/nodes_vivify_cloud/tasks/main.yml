@@ -6,6 +6,10 @@
    - name: start slurmctld
      service: name=slurmctld state=restarted enabled=yes
 
+   - name: Waiting for slurmd to enable on the compute nodes after restart
+     pause:
+       seconds: 30
+
    - name: update slurm status on nodes
      shell: scontrol update nodename=$(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') state=IDLE
 
