@@ -51,7 +51,7 @@
   #" for vim
 
      - name: set files to provision
-       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network --bootlocal=exit
        with_items: "{{ compute_nodes }}"
 
      - name: remove node from slurm.conf if it exists already # to avoid duplication!
