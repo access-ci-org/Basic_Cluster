@@ -1,0 +1,4 @@
+---
+- import_playbook: ohpc-build.yaml
+- import_playbook: ood-build.yaml
+- import_playbook: compute-build.yaml
