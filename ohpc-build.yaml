@@ -3,7 +3,7 @@
   roles:
     - { name: 'pre_ohpc', tags: 'pre_ohpc' }
     - { name: 'ohpc_install', tags: 'ohpc_install' }
-    - { name: 'ohpc_config', tags: 'ohpc_config' }
+    - { name: 'ohpc_config_build', tags: 'ohpc_config' }
     - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild' }
     - { name: 'ohpc_jupyter', tags: 'ohpc_jupyter', when: jupyter_provision}
     - { name: 'ohpc_matlab', tags: 'ohpc_matlab', when: matlab_provision }
