@@ -84,6 +84,5 @@
            - /etc/shadow
            - /etc/munge/munge.key
            - /etc/slurm/slurm.conf
-           - /etc/hosts
            - /etc/profile.d/lmod.sh
            - /etc/profile.d/lmod.csh
