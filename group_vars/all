@@ -142,7 +142,7 @@
   ansys_module_appdir: "ANSYS"
   ansys_module_file: "19.1"
   ansys_ver: "{{ ansys_module_file }}"
-
+  ansys_executable: "runwb2"
 #Rstudio related
   rstudio_provision: false
   singularity_ver: '2.4.2'
