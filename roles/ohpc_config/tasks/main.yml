@@ -31,7 +31,7 @@
    - name: enable httpd
      service: name=httpd enabled=yes
   
-   - name: restart httpdd
+   - name: restart httpd
      service: name=httpd state=restarted
 
    - name: exportfs home entry on headnode
