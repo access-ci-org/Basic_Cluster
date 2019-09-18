@@ -135,6 +135,14 @@
   sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
 
+#ANSYS install related
+  ansys_provision: false
+  ansys_clustershare: "/export/apps/ANSYS/"
+  ansys_module_path: "{{ easybuild_prefix }}/modules/all"
+  ansys_module_appdir: "ANSYS"
+  ansys_module_file: "19.1"
+  ansys_ver: "{{ ansys_module_file }}"
+
 #Rstudio related
   rstudio_provision: false
   singularity_ver: '2.4.2'
