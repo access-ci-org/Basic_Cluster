@@ -37,7 +37,7 @@
    - name: make chroot
      command: wwmkchroot "{{ compute_template }}" "{{ compute_chroot_loc }}"
 
-   - name: copy resolve.conf into image
+   - name: copy resolv.conf into image
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
