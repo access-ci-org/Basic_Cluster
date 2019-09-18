@@ -7,7 +7,7 @@ mkdir -p $HOME/ansible_env
 cd $HOME/ansible_env
 virtualenv ansible
 source $HOME/ansible_env/ansible/bin/activate 
-git clone git://github.com/ansible/ansible.git --recursive ./ansible_source
+git clone https://github.com/ansible/ansible.git --recursive ./ansible_source
 #pexpect has to be 3.3 because new 4.01 version only
 # works with python >= 2.7 :(
 pip install paramiko PyYAML Jinja2 httplib2 six pexpect==3.3
