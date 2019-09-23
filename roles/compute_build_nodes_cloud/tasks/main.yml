@@ -13,7 +13,7 @@
 #       msg: "Quick fail for test!"
 
    - block:
-     
+
      - name: Check if node is already in warewulf database
        command: sudo wwsh node list
        register: wwsh_node_list
@@ -28,27 +28,6 @@
        command: sudo wwsh node set {{ item.name }} -y -I {{ item.ip }} --hwadd {{ item.mac }}
        when: "'{{ item.name }}' in wwsh_node_list.stdout"
        with_items: "{{ compute_nodes }}"
-
-     - name: set nodes bootloader
-       command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-       when: stateful_nodes == true
-  
-     - name: set nodes partitions
-       command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-       when: stateful_nodes == true
-  
-     - name: format partitions
-       command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-       when: stateful_nodes == true
-  
-     - name: define filesystems
-       command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
-       with_items: "{{ compute_nodes }}"
-       when: stateful_nodes == true
-  #" for vim
 
      - name: set files to provision
        command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network --bootlocal=exit
@@ -68,17 +47,9 @@
          insertbefore: "^# PARTITIONS"
          state: present
        with_items: "{{ compute_nodes }}"
-  
+
      when: node_inventory_auto == false
-
-#   - name: Waiting for the compute node to bootup
-#     pause:
-#       seconds: 180
-
-   - name: set files to provision
-     command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,lmod.sh,lmod.csh --kargs="net.ifnames=1 biosdevname=1 quiet" --postnetdown=1
-     when: node_inventory_auto == true
-
+  
    - name: sync files #also generates dynamic hosts on headnode!
      command: wwsh file sync
 
