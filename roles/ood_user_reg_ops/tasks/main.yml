@@ -19,5 +19,7 @@
     createhome: no
     state: present
 
-- name: restart httpdd
-    service: name=httpd state=restarted
+- name: Restart service httpd24, in all cases
+  service:
+    name: httpd24-httpd
+    state: restarted
