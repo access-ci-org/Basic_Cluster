@@ -81,6 +81,7 @@
        zone: public
        masquerade: yes
        permanent: yes
+       state: enabled
      when: enable_compute_NAT == true
 
 #   - name: restart dbus for firewalld :(
@@ -153,7 +154,7 @@
      lineinfile:
        path: /etc/chrony.conf
        regexp: '^#allow 192'
-       line: "allow all {{ private_network }}/24"
+       line: "allow all {{ private_network }}/{{ private_network_mask }}"
        state: present
        
  

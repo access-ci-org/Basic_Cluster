@@ -16,7 +16,7 @@
 #For compatibility with OpenXDMoD (use name-based vhost on the private ip only)
    - name: config warewulf http
      template: 
-       source: warewulf-httpd.conf.j2
+       src: warewulf-httpd.conf.j2
        dest: /etc/httpd/conf.d/warewulf-httpd.conf
      
    - name: reload xinetd
@@ -31,7 +31,7 @@
    - name: enable httpd
      service: name=httpd enabled=yes
   
-   - name: restart httpdd
+   - name: restart httpd
      service: name=httpd state=restarted
 
    - name: exportfs home entry on headnode
