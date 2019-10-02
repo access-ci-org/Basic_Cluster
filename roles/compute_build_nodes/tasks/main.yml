@@ -65,11 +65,11 @@
      when: node_inventory_auto == false
 
    - name: add nodes via wwnodescan, no NAT - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
      when: node_inventory_auto == true and enable_compute_NAT != true
 
    - name: add nodes via wwnodescan, NAT enabled - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
      when: node_inventory_auto == true and enable_compute_NAT == true
 
    - name: set files to provision
