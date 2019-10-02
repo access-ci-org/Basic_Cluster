@@ -259,10 +259,7 @@ Separated by category, the full list of parameters is:
 -   ```openhpc_release_rpm: "https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"```
 
     This contains the version number and path
-    of the current openhpc release rpm. Older versions are listed and
-    commented out. generate the list of these via
-
-        curl -s https://github.com/openhpc/ohpc/releases/ | grep rpm | grep -v sles | grep -v strong | sed 's/.*="\(.*\)".*".*".*/\1/'
+    of the current openhpc release rpm. 
 
 #### Headnode Information
 -   ```public_interface: enp0s3 ```

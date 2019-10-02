@@ -1,8 +1,8 @@
 ---
 #OpenHPC release version
   openhpc_release_rpm: "https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"
-#The full list of available versions for CentOS can be generated via
-# curl -s https://github.com/openhpc/ohpc/releases/ | grep rpm | grep -v sle | grep -v strong  | sed 's/.*="\(.*\)".*".*".*/\1/'
+#The full list of available releases can be viewed at
+# https://github.com/openhpc/ohpc/releases/ 
 #
 # Headnode Info
   public_interface: "enp0s3" # NIC that allows access to the public internet
