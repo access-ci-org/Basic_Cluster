@@ -1,4 +1,4 @@
 ---
 - hosts: ood
   roles:
-    - { name: 'ood_user_reg_ops', tags:'ood_user_reg_ops' }
+    - { name: 'ood_user_reg_ops', tags: 'ood_user_reg_ops' }
