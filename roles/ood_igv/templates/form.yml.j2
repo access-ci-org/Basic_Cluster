@@ -27,11 +27,11 @@ attributes:
 
   version:
     widget: select
-    label: "MATLAB version"
-    help: "This defines the version of MATLAB you want to load."
+    label: "IGV version"
+    help: "This defines the version of IGV you want to load."
     options:
 {% for ver in igv_versions %}
-      -[ "{{ ver }}", "{{ igv_module_name }}/{{ ver }}" ]
+      - [ "{{ ver }}", "{{ igv_module_name }}/{{ ver }}" ]
 {% endfor %}
 
 form:
