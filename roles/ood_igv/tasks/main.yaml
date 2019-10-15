@@ -27,3 +27,4 @@
   copy:
     src: script.sh.erb 
     dest: "{{ igv_ood_app_dir }}/template/script.sh.erb"
+    mode: '0755'
