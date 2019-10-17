@@ -1,0 +1,15 @@
+WSGIDaemonProcess "{{ user_register_app }}" user={{ RegUser_app_user }} group={{ RegUser_app_user }} threads=5
+WSGIProcessGroup "{{ user_register_app }}"
+WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
+<Location /register>
+        AuthType Basic
+        AuthName "Private"
+        AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
+        RequestHeader unset Authorization
+        Require valid-user
+</Location>
+<Directory {{ user_register_app_path }}>
+        WSGIProcessGroup {{ user_register_app }}
+        WSGIApplicationGroup %{GLOBAL}
+        Require all granted
+</Directory>
