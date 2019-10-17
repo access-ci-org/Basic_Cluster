@@ -1,0 +1,106 @@
+---
+- name: Get OpenHPC Repo
+  yum:
+    name: https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm
+    state: present
+
+- name: yum install
+  yum:
+    state: present
+    name:
+      - autofs
+      - chrony
+      - lmod-ohpc
+      - grub2
+      - freeipmi
+      - ipmitool
+      - ohpc-slurm-client
+      - ohpc-base-compute
+      - tmux
+      - ruby
+      - turbojpeg
+      - nc
+      - '@X Window System'
+      - '@Xfce'
+
+- name: Install TurboVNC via rpm
+  yum:
+    name: https://sourceforge.net/projects/turbovnc/files/2.2/turbovnc-2.2.x86_64.rpm
+    state: present
+
+- name: Download and extract Websockify source code
+  unarchive:
+    src: https://github.com/novnc/websockify/archive/v0.8.0.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Install Websockify
+  command: python setup.py install
+  args:
+    chdir: /tmp/websockify-0.8.0
+
+# Change to autofs
+- name: add autofs maps
+  lineinfile:
+    path: "/etc/auto.master.d/uab-dev.autofs"
+    line: "{{ item.path }} /etc/auto.{{ item.name }}"
+    create: yes
+  with_items:
+    - { name: "home", path: "/home"}
+    - { name: "opt-ohpc-pub", path: "/opt/ohpc/pub"}
+    - { name: "export", path: "/export"}
+
+- lineinfile:
+    path: "/etc/auto.{{ item.name }}"
+    line: "* -{{ item.opt }} {{ headnode_private_ip }}:{{ item.path }}/&"
+    create: yes
+  with_items:
+    - { name: "home", opt: "rw,soft,intr,_netdev", path: "/home"}
+    - { name: "opt-ohpc-pub", opt: "ro", path: "/opt/ohpc/pub"}
+    - { name: "export", opt: "ro", path: "/export"}
+
+- name: Put SELinux in permissive mode, logging actions that would be blocked.
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Create folder for mounting
+  file:
+    state: directory
+    path: /export
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Enable autofs on compute image
+  service:
+    name: autofs
+    enabled: yes
+
+# After we installed Xfce, the compute node is set to bootup in graphical mode.
+# This task is to unset that back to multi-user mode.
+- name: Set compute node to boot with multi-user mode
+  command: systemctl set-default multi-user.target
+
+- name: Disable firewalld on compute image
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: add headnode to compute chrony.conf
+  lineinfile:
+    line: "server {{ headnode_private_ip }}"
+    dest: /etc/chrony.conf
+    state: present
+
+- name: Enable chronyd on compute image
+  service:
+    name: chronyd
+    enabled: yes
+
+- name: Enable slurmd on compute image
+  service:
+    name: slurmd
+    enabled: yes
+

@@ -11,7 +11,7 @@ ood
 sshgroup=ood
 
 [compute]
-c1
+c[0:9]
 
 [compute:vars]
 sshgroup=compute
