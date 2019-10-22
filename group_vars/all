@@ -56,7 +56,7 @@
   login_chroot: centos7-login 
 
 # Node Inventory method - automatic, or manual
-  node_inventory_auto: true
+  node_inventory_auto: false
 
 #Node naming variables - no need to change
   compute_node_prefix: "c"

@@ -1,0 +1,66 @@
+---
+
+#   - name: print single node info
+#     debug:
+#       var: item.mac
+#     with_items: "{{ compute_nodes }}"
+#   - name: print single node info
+#     debug:
+#       var: item.vnfs
+#     with_items: "{{ compute_nodes }}"
+#
+#   - fail:
+#       msg: "Quick fail for test!"
+
+   - block:
+
+     - name: Check if node is already in warewulf database
+       command: sudo wwsh node list
+       register: wwsh_node_list
+       ignore_errors: yes
+
+     - name: Add node(s) into warewulf database
+       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
+       when: "'{{ item.name }}' not in wwsh_node_list.stdout"
+       with_items: "{{ compute_nodes }}"
+
+     - name: Register node IP and MAC address in warewulf database
+       command: sudo wwsh node set {{ item.name }} -y -I {{ item.ip }} --hwadd {{ item.mac }}
+       when: "'{{ item.name }}' in wwsh_node_list.stdout"
+       with_items: "{{ compute_nodes }}"
+
+     - name: set files to provision
+       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network --bootlocal=exit
+       with_items: "{{ compute_nodes }}"
+
+     - name: remove node from slurm.conf if it exists already # to avoid duplication!
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         regexp: "^NodeName={{ item.name }}"
+         state: absent
+       with_items: "{{ compute_nodes }}"
+  
+     - name: add node to slurm.conf
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         line: "NodeName={{ item.name }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }} State=UNKNOWN"
+         insertbefore: "^# PARTITIONS"
+         state: present
+       with_items: "{{ compute_nodes }}"
+
+     when: node_inventory_auto == false
+  
+   - name: sync files #also generates dynamic hosts on headnode!
+     command: wwsh file sync
+
+#   - name: add compute nodes to ansible inventory for wait
+#     add_host: name={{ node_glob }} group="compute nodes"
+    
+#   - name: wait for compute nodes to boot
+#     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
+
+
+#   vars:
+#    - compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
+#    - node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+#    - last_node: "{{ node_prefix }}{{ num_nodes|int - 1 }}"
