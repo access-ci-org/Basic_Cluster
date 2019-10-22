@@ -1,0 +1,64 @@
+---
+- name: Get OpenHPC repo
+  yum: name={{ openhpc_release_rpm }} state=present update_cache=true
+
+- name: Install Copr plugin for yum
+  yum: name=yum-plugin-copr state=present update_cache=true
+  when: enable_copr == true
+
+- name: enable Copr Repos
+  shell: yum -y copr enable "{{ item.repo_name }}"
+  with_items: "{{ copr_repos }}"
+  when: enable_copr == true and inventory_hostname in item.host
+
+- name: Install dependencies-nfs-utils, ohpc packages, ntp and other required tools.
+  yum: 
+    state: installed
+    update_cache: true
+    name:
+      - autofs
+      - ohpc-base-compute
+      - slurm-ohpc
+      - zsh
+      - git
+      - vim
+      - tmux
+      - ruby
+
+# Change to autofs
+- name: add autofs maps
+  lineinfile:
+    path: "/etc/auto.master.d/uab-dev.autofs"
+    line: "{{ item.path }} /etc/auto.{{ item.name }}"
+    create: yes
+  with_items:
+    - { name: "home", path: "/home"}
+    - { name: "opt-ohpc-pub", path: "/opt/ohpc/pub"}
+    - { name: "export", path: "/export"}
+
+- lineinfile:
+    path: "/etc/auto.{{ item.name }}"
+    line: "* -{{ item.opt }} {{ headnode_private_ip }}:{{ item.path }}/&"
+    create: yes
+  with_items:
+    - { name: "home", opt: "rw,soft,intr,_netdev", path: "/home"}
+    - { name: "opt-ohpc-pub", opt: "ro", path: "/opt/ohpc/pub"}
+    - { name: "export", opt: "ro", path: "/export"}
+
+- name: Put SELinux in permissive mode, logging actions that would be blocked.
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Create folder for mounting
+  file:
+    state: directory
+    path: /export
+    owner: root
+    group: root
+    mode: 0777
+
+- name: Enable autofs on compute image
+  service:
+    name: autofs
+    enabled: yes
