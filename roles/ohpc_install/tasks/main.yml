@@ -1,14 +1,16 @@
 ---
 
    - name: install OpenHPC base, warewulf, slurm server, and compiler packages
-     yum: name={{ item }} state=latest
-     with_items:
-       - "ohpc-base"
-       - "ohpc-warewulf"
-       - "ohpc-slurm-server"
-       - "lmod-defaults-gnu-openmpi-ohpc"
-       - "openmpi-gnu-ohpc"
-       - "gnu-compilers-ohpc"
+     yum:
+       name: [ 
+               "ohpc-base",
+               "ohpc-warewulf",
+               "ohpc-slurm-server",
+               "lmod-defaults-gnu-openmpi-ohpc",
+               "openmpi-gnu-ohpc", 
+               "gnu-compilers-ohpc"
+             ]
+       state: latest
 
    - name: yum update
      yum: name=* state=latest update_cache=yes
