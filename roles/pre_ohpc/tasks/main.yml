@@ -81,7 +81,7 @@
    - name: enable masquerade
      firewalld: 
        zone: public
-       masquerade: yes
+       masquerade: 'yes'
        permanent: yes
        state: enabled
      when: enable_compute_NAT == true
