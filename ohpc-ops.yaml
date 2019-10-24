@@ -1,5 +1,5 @@
 ---
-- hosts: ohpc
+- hosts: headnode
   roles:
     - { name: 'compute_build_nodes_cloud', tags: 'compute_build_nodes_cloud' }
     - { name: 'nodes_vivify_cloud', tags: 'nodes_vivify_cloud' }
