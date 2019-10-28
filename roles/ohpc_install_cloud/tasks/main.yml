@@ -1,0 +1,17 @@
+---
+   - name: Check if slurm.conf is already updated
+     command: grep "^ControlMachine={{ inventory_hostname }}$" /etc/slurm/slurm.conf
+     register: slurm_updated
+     ignore_errors: yes
+
+   - name: update slurm.conf with runtime controller and slurmdbd host
+     template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf
+     when: slurm_updated is failed
+
+
+   - name: start and enable slurmctld
+     service:
+       name: slurmctld
+       state: started
+       enabled: yes
+
