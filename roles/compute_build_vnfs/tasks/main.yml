@@ -14,7 +14,8 @@
    - name: check most recent installed kernel version
      shell: yum list installed | grep 'kernel\.' | tail -n 1 | awk '{print $2}'
      register: installed_kernel_version
-     warn: false
+     args:
+       warn: false
 
    - fail:
        msg: "Most recently installed kernel is not currently loaded version! Consider rebooting before building the vnfs"
