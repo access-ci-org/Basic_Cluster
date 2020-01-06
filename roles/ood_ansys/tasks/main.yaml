@@ -1,0 +1,30 @@
+---
+- name: Remove existing ANSYS app install
+  file:
+    path: "{{ ansys_ood_app_dir }}"
+    state: absent
+
+- name: Create ANSYS app directory
+  file:
+    path: "{{ ansys_ood_app_dir }}"
+    state: directory
+
+- git:
+    repo: "{{ ansys_ood_repo }}"
+    dest: "{{ ansys_ood_app_dir }}"
+    clone: yes
+
+- name: Replace form.yml
+  template:
+    src: form.yml.j2
+    dest: "{{ ansys_ood_app_dir }}/form.yml"
+
+- name: Replace submission template
+  template:
+    src: submit.yml.erb.j2
+    dest: "{{ ansys_ood_app_dir }}/submit.yml.erb"
+
+- name: Remove form.js
+  file:
+    path: "{{ ansys_ood_app_dir }}/form.js"
+    state: absent

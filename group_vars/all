@@ -71,6 +71,7 @@
   ood_version: 1.5
   ood_ip_addr: 10.1.1.254
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
+  ood_sys_apps_dir: "/var/www/ood/apps/sys"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
@@ -134,6 +135,16 @@
   sas_module_appdir: "sas"
   sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
+
+#ANSYS install related
+  ansys_provision: false
+  ansys_module_name: "ANSYS"
+  ansys_install_root: "{{ cluster_shared_folder }}/apps/{{ ansys_module_name }}"
+  ansys_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ ansys_module_name }}"
+  ansys_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ ansys_module_name }}"
+  ansys_ood_repo: "http://github.com/uabrc/ood_ansys.git"
+  ansys_versions:
+    - "19.1"
 
 #Rstudio related
   rstudio_provision: false
