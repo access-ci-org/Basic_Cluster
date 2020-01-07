@@ -30,3 +30,30 @@
     src: igv.j2
     dest: "{{ igv_modulefiles_dir }}/{{ item }}.lua"
   with_items: "{{ igv_versions }}"
+
+- name: Check if modulefiles path is in default MODULEPATH
+  shell: grep "{{ cluster_shared_folder }}/modulefiles" /etc/profile.d/lmod.sh
+  ignore_errors: yes
+  register: default_modulepath_sh
+
+- shell: grep "{{ cluster_shared_folder }}/modulefiles" /etc/profile.d/lmod.csh
+  ignore_errors: yes
+  register: default_modulepath_csh
+
+- name: Add modulefiles path into default MODULEPATH
+  replace:
+    path: /etc/profile.d/lmod.sh
+    regexp: '(MODULEPATH=.*)'
+    replace: '\1:{{ cluster_shared_folder }}/modulefiles'
+    backup: yes
+  when: default_modulepath_sh.stdout == ""
+
+- replace:
+    path: /etc/profile.d/lmod.csh
+    regexp: '(MODULEPATH "[^"]*)'
+    replace: '\1:{{ cluster_shared_folder }}/modulefiles'
+    backup: yes
+  when: default_modulepath_csh.stdout == ""
+
+- name: Update file in warewulf file database
+  command: wwsh file sync
