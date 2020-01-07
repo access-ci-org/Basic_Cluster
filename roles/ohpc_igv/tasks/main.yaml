@@ -1,0 +1,32 @@
+- name: Create directory
+  file:
+    path: "{{ igv_install_root }}/{{ item }}/bin"
+    state: directory
+    mode: 0755
+  with_items: "{{ igv_versions }}"
+
+- name: Install igv.sh (Executable file to run xfce4desktop)
+  copy:
+    src: igv.sh
+    dest: "{{ igv_install_root }}/{{ item }}/bin/igv.sh"
+    mode: a+x
+  with_items: "{{ igv_versions }}"
+
+- name: Install igvtools_gui.command (Executable file to run xfce4desktop)
+  copy:
+    src: igvtools_gui.command
+    dest: "{{ igv_install_root }}/{{ item }}/bin/igvtools_gui.command"
+    mode: a+x
+  with_items: "{{ igv_versions }}"
+
+- name: Create modules directory
+  file:
+    path: "{{ igv_modulefiles_dir }}"
+    state: directory
+    mode: 0755
+
+- name: Copy modulefile from template to module path
+  template:
+    src: igv.j2
+    dest: "{{ igv_modulefiles_dir }}/{{ item }}.lua"
+  with_items: "{{ igv_versions }}"
