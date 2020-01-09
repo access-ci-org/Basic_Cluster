@@ -1,0 +1,30 @@
+- name: Remove existing igv app install
+  file:
+    path: "{{ igv_ood_app_dir }}"
+    state: absent
+
+- name: igv directory
+  file:
+    path: "{{ igv_ood_app_dir }}"
+    state: directory
+
+- git:
+    repo: "{{ igv_ood_repo }}"
+    dest: "{{ igv_ood_app_dir }}"
+    clone: yes
+
+- name: Replace form.yml
+  template:
+    src: form.yml.j2
+    dest: "{{ igv_ood_app_dir }}/form.yml"
+
+- name: Replace form submission template
+  template:
+    src: submit.yml.erb.j2
+    dest: "{{ igv_ood_app_dir }}/submit.yml.erb"
+
+- name: Replace form script template
+  copy:
+    src: script.sh.erb 
+    dest: "{{ igv_ood_app_dir }}/template/script.sh.erb"
+    mode: '0755'

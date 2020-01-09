@@ -146,6 +146,16 @@
   ansys_versions:
     - "19.1"
 
+#IGV install related
+  igv_provision: false
+  igv_module_name: "IGV"
+  igv_install_root: "{{ cluster_shared_folder }}/apps/{{ igv_module_name }}"
+  igv_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ igv_module_name }}"
+  igv_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ igv_module_name }}"
+  igv_ood_repo: "https://github.com/uabrc/ood_igv.git"
+  igv_versions:
+    - "2.5.0-Java-11"
+
 #Rstudio related
   rstudio_provision: false
   singularity_ver: '2.4.2'
