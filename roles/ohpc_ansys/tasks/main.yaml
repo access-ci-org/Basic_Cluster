@@ -1,0 +1,22 @@
+- name: Create directory
+  file:
+    path: "{{ ansys_clustershare }}/{{ ansys_module_file }}/v191/Framework/bin/Linux64/"
+    state: directory
+    mode: 0755
+
+- name: Install SAS (Executable file to run  xfce4desktop)
+  template:
+    src: "{{ ansys_executable }}"
+    dest: "{{ ansys_clustershare }}/{{ ansys_module_file }}/v191/Framework/bin/Linux64/{{ ansys_executable }}"
+    mode: a+x
+
+- name: Create modules directory
+  file:
+    path: "{{ ansys_module_path }}/{{ ansys_module_appdir }}"
+    state: directory
+    mode: 0755
+
+- name: Copy modulefile from template to module path
+  template:
+    src: "{{ ansys_module_file }}"
+    dest: "{{ ansys_module_path }}/{{ ansys_module_appdir }}/{{ ansys_module_file }}"
