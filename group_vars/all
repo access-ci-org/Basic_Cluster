@@ -137,7 +137,7 @@
   sas_ver: "{{ sas_module_file }}"
 
 #ANSYS install related
-  ansys_provision: false
+  ansys_provision: true
   ansys_module_name: "ANSYS"
   ansys_install_root: "{{ cluster_shared_folder }}/apps/{{ ansys_module_name }}"
   ansys_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ ansys_module_name }}"
