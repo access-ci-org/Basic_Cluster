@@ -1,0 +1,12 @@
+local ver = "{{ item }}"
+local name = "{{ igv_module_name }}"
+local base = pathJoin("{{ cluster_shared_folder }}/apps", name, ver)
+
+help([[
+This module sets the environment for {{ igv_module_name }}
+]])
+
+whatis("Set environment variables to use " .. name .. " version " .. ver)
+
+-- Add bin directories to the path
+prepend_path("PATH", pathJoin(base, "bin"))
