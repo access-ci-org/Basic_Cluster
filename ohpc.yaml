@@ -12,6 +12,7 @@
     - { name: 'ohpc_matlab', tags: 'ohpc_matlab', when: matlab_provision }
     - { name: 'ohpc_sas', tags: 'ohpc_sas', when: sas_provision }
     - { name: 'ohpc_igv', tags: 'ohpc_igv', when: igv_provision }
+    - { name: 'ohpc_ansys', tags: 'ohpc_ansys', when: ansys_provision }
     - { name: 'ohpc_add_rstudio', tags: 'ohpc_add_rstudio', when: rstudio_provision }
     - { name: 'ohpc_user_reg', tags: 'ohpc_user_reg', when: enable_user_reg }
     - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
