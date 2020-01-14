@@ -25,7 +25,7 @@
 # Ideal solution is to provide a python specific to EasyBuild
 # likely via software collections
 - name: Fix EasyBuild setuptools dependency on version > 17.1
-  shell: pip3 install -U setuptools wheel
+  shell: pip3 install -U pip setuptools wheel
 
 - name: Download EasyBuild bootstrap script
   get_url:
