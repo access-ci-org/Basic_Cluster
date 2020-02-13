@@ -1,0 +1,34 @@
+---
+- name: Clone the git repo to the machine
+  git: 
+    repo: https://github.com/uabrc/rabbitmq_agents.git
+    dest: /opt
+    version: develop
+
+- name: Make a copy of rabbit config example file
+  copy:
+    src: /opt/rabbitmq_agents/rabbit_config.py.example
+    dest: /opt/rabbitmq_agents/rabbit_config.py
+    remote_src: yes
+
+- name: Add rabbitmq password in the rabbit_config file
+  replace:
+    path: /opt/rabbitmq_agents/rabbit_config.py
+    regexp: '^#Password:.*$'
+    replace: "Password = {{ rabbitmq_user_password }}"
+    backup: yes
+
+- name: Check if environment is properly setup, and install python packages if not
+  pip:
+    requirements: /opt/rabbitmq_agents/requirements.txt
+
+- name: Run the ohpc_account_create agent in the background
+  command: python ohpc_account_create.py >/dev/null 2>&1 &
+  async: 10
+  poll: 0
+
+- name: Run the slurm_account_create agent in the background
+  command: python slurm_agent.py >/dev/null 2>&1 &
+  async: 10
+  poll: 0
+
