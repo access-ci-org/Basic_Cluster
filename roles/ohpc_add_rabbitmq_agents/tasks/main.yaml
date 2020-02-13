@@ -14,8 +14,8 @@
 - name: Add rabbitmq password in the rabbit_config file
   replace:
     path: /opt/rabbitmq_agents/rabbit_config.py
-    regexp: '^#Password:.*$'
-    replace: "Password = {{ rabbitmq_user_password }}"
+    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
+    replace: '{{ rabbitmq_user_password }}'
     backup: yes
 
 - name: Check if environment is properly setup, and install python packages if not
@@ -23,12 +23,7 @@
     requirements: /opt/rabbitmq_agents/requirements.txt
 
 - name: Run the ohpc_account_create agent in the background
-  command: python ohpc_account_create.py >/dev/null 2>&1 &
-  async: 10
-  poll: 0
+  shell: cd /opt/rabbitmq_agents; nohup python ohpc_account_create.py </dev/null >/dev/null 2>&1 & 
 
 - name: Run the slurm_account_create agent in the background
-  command: python slurm_agent.py >/dev/null 2>&1 &
-  async: 10
-  poll: 0
-
+  shell: cd /opt/rabbitmq_agents; nohup python slurm_agent.py </dev/null >/dev/null 2>&1 &
