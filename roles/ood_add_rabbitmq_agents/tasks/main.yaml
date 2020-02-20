@@ -32,7 +32,7 @@
   with_items:
     - ood_account.service
 
-- name: Start ohpc_account.service
+- name: Start ood_account.service
   service:
     name: ood_account.service
     state: started
