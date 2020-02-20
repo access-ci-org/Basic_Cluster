@@ -22,6 +22,18 @@
   pip:
     requirements: /opt/rabbitmq_agents/requirements.txt
 
-- name: Run the ood_account_create agent in the background
-  shell: cd /opt/rabbitmq_agents; nohup python ood_account_create.py </dev/null >/dev/null 2>&1 &
+#- name: Run the ood_account_create agent in the background
+#  shell: cd /opt/rabbitmq_agents; nohup python ood_account_create.py </dev/null >/dev/null 2>&1 &
 
+- name: Copy service files to the machine.
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - ood_account.service
+
+- name: Start ohpc_account.service
+  service:
+    name: ood_account.service
+    state: started
+    enabled: yes
