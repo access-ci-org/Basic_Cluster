@@ -14,4 +14,3 @@
     - { name: 'ohpc_add_rstudio', tags: 'ohpc_add_rstudio', when: rstudio_provision }
     - { name: 'ohpc_user_reg', tags: 'ohpc_user_reg', when: enable_user_reg }
     - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
-    - { name: 'ohpc_add_rabbitmq_agents', tags: 'ohpc_add_rabbitmq_agents', when: rabbitmq_provision }

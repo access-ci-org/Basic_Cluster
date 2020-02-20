@@ -15,5 +15,3 @@
     - { name: 'ood_user_reg', tags: 'ood_user_reg', when: enable_user_reg }
     - { name: 'warewulf_sync', tags: 'warewulf_sync' }
     - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
-    - { name: 'ood_add_rabbitmq_agents', tags: 'ood_add_rabbitmq_agents', when: rabbitmq_provision }
-
