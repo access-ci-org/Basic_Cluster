@@ -1,0 +1,14 @@
+[Unit]
+Description=Service to create a SLURM user and account.
+After=rabbitmq-server.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=centos
+ExecStart=/usr/bin/env python3 /opt/rabbitmq_agents/slurm_agent.py
+
+[Install]
+WantedBy=multi-user.target

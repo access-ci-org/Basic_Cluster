@@ -1,0 +1,14 @@
+[Unit]
+Description=Service to create an account on OOD.
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=centos
+ExecStart=/usr/bin/env python3 /opt/rabbitmq_agents/ood_account_create.py
+
+[Install]
+WantedBy=multi-user.target
