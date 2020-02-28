@@ -1,0 +1,39 @@
+---
+- name: Clone the git repo to the machine
+  git: 
+    repo: https://github.com/uabrc/rabbitmq_agents.git
+    dest: /opt/rabbitmq_agents
+    version: develop
+
+- name: Make a copy of rabbit config example file
+  copy:
+    src: /opt/rabbitmq_agents/rabbit_config.py.example
+    dest: /opt/rabbitmq_agents/rabbit_config.py
+    remote_src: yes
+
+- name: Add rabbitmq password in the rabbit_config file
+  replace:
+    path: /opt/rabbitmq_agents/rabbit_config.py
+    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
+    replace: "{{ rabbitmq_user_password }}"
+    backup: yes
+
+- name: Check if environment is properly setup, and install python packages if not
+  pip:
+    requirements: /opt/rabbitmq_agents/requirements.txt
+
+#- name: Run the ood_account_create agent in the background
+#  shell: cd /opt/rabbitmq_agents; nohup python ood_account_create.py </dev/null >/dev/null 2>&1 &
+
+- name: Copy service files to the machine.
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - ood_account.service
+
+- name: Start ood_account.service
+  service:
+    name: ood_account.service
+    state: started
+    enabled: yes

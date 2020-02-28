@@ -1,0 +1,49 @@
+---
+- name: Clone the git repo to the machine
+  git: 
+    repo: https://github.com/uabrc/rabbitmq_agents.git
+    dest: /opt/rabbitmq_agents
+    version: develop
+
+- name: Make a copy of rabbit config example file
+  copy:
+    src: /opt/rabbitmq_agents/rabbit_config.py.example
+    dest: /opt/rabbitmq_agents/rabbit_config.py
+    remote_src: yes
+
+- name: Add rabbitmq password in the rabbit_config file
+  replace:
+    path: /opt/rabbitmq_agents/rabbit_config.py
+    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
+    replace: '{{ rabbitmq_user_password }}'
+    backup: yes
+
+- name: Check if environment is properly setup, and install python packages if not
+  pip:
+    requirements: /opt/rabbitmq_agents/requirements.txt
+
+- name: Run the ohpc_account_create agent in the background
+  shell: cd /opt/rabbitmq_agents; nohup python ohpc_account_create.py </dev/null >/dev/null 2>&1 & 
+
+#- name: Run the slurm_account_create agent in the background
+#  shell: cd /opt/rabbitmq_agents; nohup python slurm_agent.py </dev/null >/dev/null 2>&1 &
+
+- name: Copy service files to the machine.
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - ohpc_account.service
+    - slurm_account.service
+
+- name: Start ohpc_account.service
+  service:
+    name: ohpc_account.service
+    state: started
+    enabled: yes
+
+- name: Start slurm_account.service
+  service:
+    name: slurm_account.service
+    state: started
+    enabled: yes

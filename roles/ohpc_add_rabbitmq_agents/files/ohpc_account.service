@@ -1,0 +1,14 @@
+[Unit]
+Description=Service to create an account on OHPC.
+After=rabbitmq-server.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=centos
+ExecStart=/usr/bin/env python /opt/rabbitmq_agents/ohpc_account_create.py
+
+[Install]
+WantedBy=multi-user.target
