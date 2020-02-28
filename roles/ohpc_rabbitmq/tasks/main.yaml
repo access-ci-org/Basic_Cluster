@@ -42,6 +42,8 @@
     write_priv: .*
     state: present
 
+# jpr: this may be redundant for ohpc
+# also, we should know what ports to open. ;)
 - name: Turn off firewalld
   service:
     name: firewalld
