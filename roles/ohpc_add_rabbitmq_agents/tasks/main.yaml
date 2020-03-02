@@ -21,6 +21,7 @@
 - name: Check if environment is properly setup, and install python packages if not
   pip:
     requirements: /opt/rabbitmq_agents/requirements.txt
+    executable: pip3
 
 - name: Run the ohpc_account_create agent in the background
   shell: cd /opt/rabbitmq_agents; nohup python ohpc_account_create.py </dev/null >/dev/null 2>&1 & 
