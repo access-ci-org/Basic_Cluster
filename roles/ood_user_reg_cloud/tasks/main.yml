@@ -8,7 +8,7 @@
   yum: name="{{ mod_wsgi_pkg_name }}" state=latest
 
 - name: Install pip via yum
-  yum: name=python2-pip state=latest
+  yum: name=python3-pip state=latest
 
 - name: Install virtualenv via pip
   pip: name=virtualenv state=latest
