@@ -7,15 +7,18 @@
     path: "{{ user_register_app_path }}"
     state: absent
 
-- name: Creates directory to clone the user register app
-  file:
-    path: "{{ user_register_app_path }}"
-    state: directory
-
 - name: Clone user register app form from gitlab
   git:
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
+
+- name: Creates directory to clone the user register app
+  file:
+    path: "{{ user_register_app_path }}"
+    owner: "{{ RegUser_app_user }}"
+    group: apache
+    state: directory
+    recurse: yes
 
 - name: Install requirements in virtualenv
   pip:
