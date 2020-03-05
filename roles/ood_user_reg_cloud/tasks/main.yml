@@ -1,12 +1,4 @@
 ---
-- name: Enable Copr Repos
-  shell: yum -y copr enable "{{ item.repo_name }}"
-  with_items: "{{ copr_repos }}"
-  when: enable_copr == true and inventory_hostname in item.host
-
-- name: Install mod_wsgi for httpd24
-  yum: name="{{ mod_wsgi_pkg_name }}" state=latest
-
 - name: Install pip via yum
   yum: name=python3-pip state=latest
 
