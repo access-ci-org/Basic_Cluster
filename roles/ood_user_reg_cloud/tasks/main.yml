@@ -2,9 +2,6 @@
 - name: Install pip via yum
   yum: name=python3-pip state=latest
 
-- name: Install virtualenv via pip
-  pip: name=virtualenv state=latest
-
 - name: Remove existing user register app install
   file:
     path: "{{ user_register_app_path }}"
