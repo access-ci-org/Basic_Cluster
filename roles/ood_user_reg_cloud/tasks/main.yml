@@ -39,10 +39,20 @@
     src: user-reg_conf.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
 
-- name: Put wsgi config file in place
+- name: Put wsgi file in place
   template:
     src: wsgi.j2
-    dest: "{{ user_register_app_path }}/{{ user_register_app}}.wsgi"
+    dest: "{{ user_register_app_path }}/wsgi.py"
+
+- name: Put uwsgi config file in place
+  template:
+    src: ini.j2
+    dest: "{{ user_register_app_path }}/{{ user_register_app }}.ini"
+
+- name: Create uwsgi system service
+  template:
+    src: service.j2
+    dest: "/etc/systemd/system/{{ user_register_app }}.service"
 
 - name: Enable user registration redirect
   replace:
