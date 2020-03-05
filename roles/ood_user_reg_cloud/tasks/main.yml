@@ -27,6 +27,13 @@
     virtualenv_command: /usr/bin/python3 -m venv
     chdir: "{{ user_register_app_path }}"
 
+- name: Install uwsgi in virtualenv
+  pip:
+    name: uwsgi
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ user_register_app_path }}"
+
 - name: Put apache config file in place
   template:
     src: user-reg_conf.j2
