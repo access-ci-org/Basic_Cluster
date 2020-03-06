@@ -34,6 +34,13 @@
     virtualenv_command: /usr/bin/python3 -m venv
     chdir: "{{ user_register_app_path }}"
 
+- name: Create log directory
+  file:
+    path: "{{ user_register_app_path }}/log"
+    owner: "{{ RegUser_app_user }}"
+    group: apache
+    state: directory
+
 - name: Put apache config file in place
   template:
     src: user-reg_conf.j2
