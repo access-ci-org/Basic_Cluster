@@ -12,7 +12,7 @@
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
 
-- name: Creates directory to clone the user register app
+- name: Change ownership of directory
   file:
     path: "{{ user_register_app_path }}"
     owner: "{{ RegUser_app_user }}"
