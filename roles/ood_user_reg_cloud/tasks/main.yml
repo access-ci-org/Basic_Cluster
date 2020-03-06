@@ -89,3 +89,9 @@
     name: httpd24-httpd
     state: restarted
     enabled: yes
+
+- name: Start and enable flask app uwsgi service
+  service:
+    name: "{{ user_register_app }}"
+    state: restarted
+    enabled: yes
