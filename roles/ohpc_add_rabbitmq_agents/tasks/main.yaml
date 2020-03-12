@@ -23,6 +23,11 @@
     - ohpc_account.service
     - slurm_account.service
 
+- name: Add Vhost in RabbitMQ
+  rabbitmq_vhost:
+    name: "{{ rabbitmq_vhost }}"
+    state: present
+
 - name: Start ohpc_account.service
   service:
     name: ohpc_account.service
