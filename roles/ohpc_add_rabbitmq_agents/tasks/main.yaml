@@ -6,17 +6,10 @@
     version: develop
 
 - name: Make a copy of rabbit config example file
-  copy:
-    src: /opt/rabbitmq_agents/rabbit_config.py.example
-    dest: /opt/rabbitmq_agents/rabbit_config.py
+  template:
+    src: config.j2
+    dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
     remote_src: yes
-
-- name: Add rabbitmq password in the rabbit_config file
-  replace:
-    path: /opt/rabbitmq_agents/rabbit_config.py
-    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
-    replace: '{{ rabbitmq_user_password }}'
-    backup: yes
 
 - name: Check if environment is properly setup, and install python packages if not
   pip:
