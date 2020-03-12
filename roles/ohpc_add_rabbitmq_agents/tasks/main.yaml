@@ -13,7 +13,10 @@
 
 - name: Check if environment is properly setup, and install python packages if not
   pip:
-    requirements: /opt/rabbitmq_agents/requirements.txt
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ rabbitmq_agents_loc }}"
 
 - name: Copy service files to the machine.
   copy:
