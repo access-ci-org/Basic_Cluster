@@ -28,6 +28,16 @@
     name: "{{ rabbitmq_vhost }}"
     state: present
 
+- name: Add User in RabbitMQ
+  rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_user_password }}"
+    vhost: "{{ rabbitmq_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
 - name: Start ohpc_account.service
   service:
     name: ohpc_account.service
