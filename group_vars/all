@@ -172,3 +172,8 @@
   rabbitmq_provision: false
   rabbitmq_user: "reggie"
   rabbitmq_user_password: ""
+  rabbitmq_host: "ohpc"
+  rabbitmq_exchange: "RegUsr"
+  rabbitmq_vhost: "adduser"
+  rabbitmq_port: "5672"
+  rabbitmq_agents_loc: "/opt/rabbitmq_agents"
