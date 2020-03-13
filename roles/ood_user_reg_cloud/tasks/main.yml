@@ -52,7 +52,7 @@
   with_items:
     - celery.service
 
-- name: Start ood_account.service
+- name: Start celery.service
   service:
     name: celery.service
     state: started
