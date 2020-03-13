@@ -112,3 +112,18 @@
     name: "{{ user_register_app }}"
     state: restarted
     enabled: yes
+
+- name: Add Vhost in celery
+  celery_vhost:
+    name: "{{ celery_vhost }}"
+    state: present
+
+- name: Add User in celery
+  celery_user:
+    user: "{{ celery_user }}"
+    password: "{{ celery_user_password }}"
+    vhost: "{{ celery_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
