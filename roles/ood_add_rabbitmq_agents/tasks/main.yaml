@@ -6,17 +6,9 @@
     version: develop
 
 - name: Make a copy of rabbit config example file
-  copy:
-    src: /opt/rabbitmq_agents/rabbit_config.py.example
-    dest: /opt/rabbitmq_agents/rabbit_config.py
-    remote_src: yes
-
-- name: Add rabbitmq password in the rabbit_config file
-  replace:
-    path: /opt/rabbitmq_agents/rabbit_config.py
-    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
-    replace: "{{ rabbitmq_user_password }}"
-    backup: yes
+  template:
+    src: config.j2
+    dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
 
 - name: Check if environment is properly setup, and install python packages if not
   pip:
@@ -26,11 +18,9 @@
 #  shell: cd /opt/rabbitmq_agents; nohup python ood_account_create.py </dev/null >/dev/null 2>&1 &
 
 - name: Copy service files to the machine.
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  with_items:
-    - ood_account.service
+  template:
+    src: ood_account.j2
+    dest: "/etc/systemd/system/ood_account.service"
 
 - name: Start ood_account.service
   service:
