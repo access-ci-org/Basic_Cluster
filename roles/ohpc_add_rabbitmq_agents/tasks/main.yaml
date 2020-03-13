@@ -9,7 +9,6 @@
   template:
     src: config.j2
     dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
-    remote_src: yes
 
 - name: Check if environment is properly setup, and install python packages if not
   pip:
