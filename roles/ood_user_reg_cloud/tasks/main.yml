@@ -1,48 +1,82 @@
 ---
-- name: Enable Copr Repos
-  shell: yum -y copr enable "{{ item.repo_name }}"
-  with_items: "{{ copr_repos }}"
-  when: enable_copr == true and inventory_hostname in item.host
-
-- name: Install mod_wsgi for httpd24
-  yum: name="{{ mod_wsgi_pkg_name }}" state=latest
-
-- name: Install pip via yum
-  yum: name=python3-pip state=latest
-
-- name: Install virtualenv via pip
-  pip: name=virtualenv state=latest
+- name: Install packages via yum
+  yum:
+    name:
+      - python3-pip
+      - python3-devel
+    state: latest
 
 - name: Remove existing user register app install
   file:
     path: "{{ user_register_app_path }}"
     state: absent
 
-- name: Creates directory to clone the user register app
-  file:
-    path: "{{ user_register_app_path }}"
-    state: directory
-
 - name: Clone user register app form from gitlab
   git:
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
 
+- name: Change ownership of directory
+  file:
+    path: "{{ user_register_app_path }}"
+    owner: "{{ RegUser_app_user }}"
+    group: apache
+    state: directory
+    recurse: yes
+
 - name: Install requirements in virtualenv
   pip:
     requirements: requirements.txt
     virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
     chdir: "{{ user_register_app_path }}"
+
+- name: Install uwsgi in virtualenv
+  pip:
+    name: uwsgi
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ user_register_app_path }}"
+
+- name: Create log directory
+  file:
+    path: "{{ user_register_app_path }}/log"
+    owner: "{{ RegUser_app_user }}"
+    group: apache
+    state: directory
+
+- name: Copy Celery service template
+  template:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - celery.service
+
+- name: Start celery.service
+  service:
+    name: celery.service
+    state: started
+    enabled: yes
 
 - name: Put apache config file in place
   template:
     src: user-reg_conf.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
 
-- name: Put wsgi config file in place
+- name: Put wsgi file in place
   template:
     src: wsgi.j2
-    dest: "{{ user_register_app_path }}/{{ user_register_app}}.wsgi"
+    dest: "{{ user_register_app_path }}/wsgi.py"
+
+- name: Put uwsgi config file in place
+  template:
+    src: ini.j2
+    dest: "{{ user_register_app_path }}/{{ user_register_app }}.ini"
+
+- name: Create uwsgi system service
+  template:
+    src: service.j2
+    dest: "/etc/systemd/system/{{ user_register_app }}.service"
 
 - name: Enable user registration redirect
   replace:
@@ -66,3 +100,15 @@
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
   ignore_errors: yes
+
+- name: Restart apache
+  service:
+    name: httpd24-httpd
+    state: restarted
+    enabled: yes
+
+- name: Start and enable flask app uwsgi service
+  service:
+    name: "{{ user_register_app }}"
+    state: restarted
+    enabled: yes
