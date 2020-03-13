@@ -19,12 +19,12 @@
     chdir: "{{ rabbitmq_agents_loc }}"
 
 - name: Copy service files to the machine.
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  with_items:
-    - ohpc_account.service
-    - slurm_account.service
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
+  loop:
+    - ohpc_account
+    - slurm_account
 
 - name: Add Vhost in RabbitMQ
   rabbitmq_vhost:

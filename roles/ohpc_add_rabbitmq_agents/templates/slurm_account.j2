@@ -8,7 +8,9 @@ Type=simple
 Restart=always
 RestartSec=1
 User=centos
-ExecStart=/usr/bin/env python /opt/rabbitmq_agents/slurm_agent.py
+WorkingDirectory={{ rabbitmq_agents_loc }}
+Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin"
+ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python slurm_agent.py
 
 [Install]
 WantedBy=multi-user.target
