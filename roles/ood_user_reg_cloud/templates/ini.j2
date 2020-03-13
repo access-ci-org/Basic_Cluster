@@ -1,0 +1,23 @@
+[uwsgi]
+mount = /register=wsgi.py
+
+uid = {{ RegUser_app_user }}
+req-logger = file:{{ user_register_app_path }}/log/req
+logger = file:{{ user_register_app_path }}/log/err
+
+manage-script-name = true
+single-interpreter = true
+http-websockets = true
+enable-threads = true
+
+gevent = 1000
+
+master = true
+processes = 5
+
+http-socket = :8000
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true
+venv = venv

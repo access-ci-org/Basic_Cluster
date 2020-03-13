@@ -1,6 +1,9 @@
-WSGIDaemonProcess "{{ user_register_app }}" user={{ RegUser_app_user }} group={{ RegUser_app_user }} threads=5
-WSGIProcessGroup "{{ user_register_app }}"
-WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
+LoadModule proxy_uwsgi_module modules/mod_proxy_uwsgi.so
+
+ProxyPass /socket.io/ http://127.0.0.1:8000/socket.io/
+ProxyPassReverse /socket.io/ http://127.0.0.1:8000/socket.io/
+
+ProxyPass /register http://127.0.0.1:8000/register/
 <Location /register>
         AuthType Basic
         AuthName "Private"
@@ -8,8 +11,3 @@ WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.w
         RequestHeader unset Authorization
         Require valid-user
 </Location>
-<Directory {{ user_register_app_path }}>
-        WSGIProcessGroup {{ user_register_app }}
-        WSGIApplicationGroup %{GLOBAL}
-        Require all granted
-</Directory>
