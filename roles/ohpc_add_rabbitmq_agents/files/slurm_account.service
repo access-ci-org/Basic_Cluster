@@ -8,7 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=centos
-ExecStart=/usr/bin/env python /opt/rabbitmq_agents/slurm_agent.py
+ExecStart=/usr/bin/env python3 /opt/rabbitmq_agents/slurm_agent.py
 
 [Install]
 WantedBy=multi-user.target

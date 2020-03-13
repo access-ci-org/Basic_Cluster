@@ -16,6 +16,7 @@
      yum:
        state: latest
        name:
+         - "python3"
          - "MySQL-python"
          - "epel-release"
          - "wget" 
