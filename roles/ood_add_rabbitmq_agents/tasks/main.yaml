@@ -12,10 +12,10 @@
 
 - name: Check if environment is properly setup, and install python packages if not
   pip:
-    requirements: /opt/rabbitmq_agents/requirements.txt
-
-#- name: Run the ood_account_create agent in the background
-#  shell: cd /opt/rabbitmq_agents; nohup python ood_account_create.py </dev/null >/dev/null 2>&1 &
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ rabbitmq_agents_loc }}"
 
 - name: Copy service files to the machine.
   template:
