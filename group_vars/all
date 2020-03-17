@@ -177,3 +177,8 @@
   rabbitmq_vhost: "adduser"
   rabbitmq_port: "5672"
   rabbitmq_agents_loc: "/opt/rabbitmq_agents"
+
+# Celery
+  celery_user: "reggie"
+  celery_user_password: ""
+  celery_vhost: "socketio"
