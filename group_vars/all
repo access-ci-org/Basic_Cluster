@@ -177,6 +177,7 @@
   rabbitmq_vhost: "adduser"
   rabbitmq_port: "5672"
   rabbitmq_agents_loc: "/opt/rabbitmq_agents"
+  rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
 
 # Celery
   celery_user: "reggie"
