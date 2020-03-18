@@ -42,6 +42,23 @@
     write_priv: .*
     state: present
 
+# the user_reg feature makes use of celery for task managment in flask
+# this requires a communication channel dedicated to celery in RabbitMQ
+- name: Add Vhost in celery
+  rabbitmq_vhost:
+    name: "{{ celery_vhost }}"
+    state: present
+
+- name: Add User in celery
+  rabbitmq_user:
+    user: "{{ celery_user }}"
+    password: "{{ celery_user_password }}"
+    vhost: "{{ celery_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
 # jpr: this may be redundant for ohpc
 # also, we should know what ports to open. ;)
 - name: Turn off firewalld
