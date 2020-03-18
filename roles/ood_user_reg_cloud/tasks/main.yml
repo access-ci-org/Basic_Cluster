@@ -114,12 +114,12 @@
     enabled: yes
 
 - name: Add Vhost in celery
-  celery_vhost:
+  rabbitmq_vhost:
     name: "{{ celery_vhost }}"
     state: present
 
 - name: Add User in celery
-  celery_user:
+  rabbitmq_user:
     user: "{{ celery_user }}"
     password: "{{ celery_user_password }}"
     vhost: "{{ celery_vhost }}"
