@@ -1,7 +1,7 @@
 ---
 - fail:
-    msg: Please pass in password for rabbitmq user
-  when: rabbitmq_user_password == ""
+    msg: Please specify password for rabbitmq user
+  when: rabbitmq_user_password == "" or celery_user_password == ""
 
 - name: Import RabbitMQ signing key
   rpm_key:
