@@ -15,6 +15,7 @@
   git:
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
+    version: "{{ user_register_app_tag }}"
 
 - name: Change ownership of directory
   file:
