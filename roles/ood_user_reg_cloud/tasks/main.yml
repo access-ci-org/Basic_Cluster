@@ -47,10 +47,8 @@
 
 - name: Copy Celery service template
   template:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  with_items:
-    - celery.service
+    src: celery.j2
+    dest: "/etc/systemd/system/celery.service"
 
 - name: Start celery.service
   service:
