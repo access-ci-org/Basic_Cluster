@@ -13,4 +13,4 @@
     - { name: 'ohpc_firewall_and_services', tags: 'ohpc_firewall_and_services' }
     - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
     - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
-    - { name: 'ood_add_rabbitmq_agents', tags: 'ood_add_rabbitmq_agents', when: rabbitmq_provision }
+    - { name: 'ood_add_rabbitmq_agents', tags: 'ood_add_rabbitmq_agents', when: enable_user_reg }
