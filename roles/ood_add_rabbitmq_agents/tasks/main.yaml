@@ -3,7 +3,7 @@
   git: 
     repo: "{{ rabbitmq_agents_repo }}"
     dest: "{{ rabbitmq_agents_loc }}"
-    version: develop
+    version: "{{ rabbitmq_agents_version }}"
 
 - name: Make a copy of rabbit config example file
   template:
