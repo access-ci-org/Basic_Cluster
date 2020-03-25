@@ -22,8 +22,8 @@
     src: "{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}.service"
   loop:
-    - ohpc_account
-    - slurm_account
+    - ohpc_account_agent
+    - slurm_account_agent
 
 - name: Add Vhost in RabbitMQ
   rabbitmq_vhost:
@@ -42,12 +42,12 @@
 
 - name: Start ohpc_account.service
   service:
-    name: ohpc_account.service
+    name: ohpc_account_agent.service
     state: started
     enabled: yes
 
 - name: Start slurm_account.service
   service:
-    name: slurm_account.service
+    name: slurm_account_agent.service
     state: started
     enabled: yes
