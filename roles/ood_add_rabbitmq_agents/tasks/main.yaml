@@ -5,7 +5,7 @@
     dest: "{{ rabbitmq_agents_loc }}"
     version: "{{ rabbitmq_agents_version }}"
 
-- name: Make a copy of rabbit config example file
+- name: Install rabbitmq agents config file
   template:
     src: config.j2
     dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
@@ -17,12 +17,12 @@
     virtualenv_command: /usr/bin/python3 -m venv
     chdir: "{{ rabbitmq_agents_loc }}"
 
-- name: Copy service files to the machine.
+- name: Install agents as service
   template:
     src: ood_account_agent.j2
     dest: "/etc/systemd/system/ood_account_agent.service"
 
-- name: Start ood_account.service
+- name: Start and enable agent service
   service:
     name: ood_account_agent.service
     state: started

@@ -5,7 +5,7 @@
     dest: "{{ rabbitmq_agents_loc }}"
     version: "{{ rabbitmq_agents_version }}"
 
-- name: Make a copy of rabbit config example file
+- name: Install rabbitmq agents config file
   template:
     src: config.j2
     dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
@@ -17,7 +17,7 @@
     virtualenv_command: /usr/bin/python3 -m venv
     chdir: "{{ rabbitmq_agents_loc }}"
 
-- name: Copy service files to the machine.
+- name: Install agents as service
   template:
     src: "{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}.service"
@@ -40,14 +40,13 @@
     write_priv: .*
     state: present
 
-- name: Start ohpc_account.service
+- name: Start and enable agent services
   service:
     name: ohpc_account_agent.service
     state: started
     enabled: yes
 
-- name: Start slurm_account.service
-  service:
+- service:
     name: slurm_account_agent.service
     state: started
     enabled: yes
