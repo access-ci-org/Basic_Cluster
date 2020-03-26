@@ -42,11 +42,9 @@
 
 - name: Start and enable agent services
   service:
-    name: ohpc_account_agent.service
+    name: "{{ item }}.service"
     state: started
     enabled: yes
-
-- service:
-    name: slurm_account_agent.service
-    state: started
-    enabled: yes
+  loop:
+    - ohpc_account_agent
+    - slurm_account_agent
