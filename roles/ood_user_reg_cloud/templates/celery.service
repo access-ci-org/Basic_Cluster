@@ -5,7 +5,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=always
-RestartSec=1
+RestartSec=5
 User=centos
 WorkingDirectory={{ user_register_app_path }} 
 ExecStart=/usr/bin/env celery -A tasks worker --loglevel=info --concurrency=4
