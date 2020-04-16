@@ -10,7 +10,7 @@ RestartSec=1
 User=centos
 WorkingDirectory={{ rabbitmq_agents_loc }}
 Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin"
-ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python {{ item.name }}.py
+ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python {{ item.name }}_create.py
 
 [Install]
 WantedBy=multi-user.target
