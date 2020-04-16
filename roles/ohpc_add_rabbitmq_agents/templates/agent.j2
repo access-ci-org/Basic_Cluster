@@ -1,5 +1,5 @@
 [Unit]
-Description=Service to create a SLURM user and account.
+Description={{ item.desc }}
 After=rabbitmq-server.service
 StartLimitIntervalSec=0
 
@@ -10,7 +10,7 @@ RestartSec=1
 User=centos
 WorkingDirectory={{ rabbitmq_agents_loc }}
 Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin"
-ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python slurm_agent.py
+ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python {{ item.name }}.py
 
 [Install]
 WantedBy=multi-user.target

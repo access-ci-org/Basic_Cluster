@@ -19,11 +19,11 @@
 
 - name: Install agents as service
   template:
-    src: "{{ item }}.j2"
-    dest: "/etc/systemd/system/{{ item }}.service"
+    src: agent.j2
+    dest: "/etc/systemd/system/{{ item.name }}_agent.service"
   loop:
-    - ohpc_account_agent
-    - slurm_account_agent
+    - { name: "ohpc_account", desc: "Service to create an account on OHPC" }
+    - { name: "slurm_account", desc: "Service to create a SLURM user and account" }
 
 - name: Add Vhost in RabbitMQ
   rabbitmq_vhost:
