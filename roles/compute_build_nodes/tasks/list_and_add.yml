@@ -1,0 +1,14 @@
+---
+
+- name: Check if node exists
+  command: wwsh node list {{ item.name }}
+  register: wwsh_node_list
+  changed_when: no
+  failed_when: no
+#- name: Show output
+#  debug:
+#    msg: "{{ wwsh_node_list }}"
+- name: Add missing node
+  debug:
+    msg: wwsh -y node new {{ item.name }}
+  when: wwsh_node_list.rc != 0
