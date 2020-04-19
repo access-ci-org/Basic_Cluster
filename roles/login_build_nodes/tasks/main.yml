@@ -48,7 +48,7 @@
    - name: add Active Directory files to provision
      command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
      with_items: "{{ login_nodes }}"
-     when: and enable_active_directory == true
+     when: enable_active_directory == true
 
    - name: restart dhcp
      service: name=dhcpd state=restarted
