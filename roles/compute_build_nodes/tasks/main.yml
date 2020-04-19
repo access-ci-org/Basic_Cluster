@@ -47,6 +47,11 @@
        command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
        with_items: "{{ compute_nodes }}"
 
+     - name: add Active Directory files to provision
+       command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+       with_items: "{{ compute_nodes }}"
+       when: enable_active_directory == true
+
      - name: remove node from slurm.conf if it exists already # to avoid duplication!
        lineinfile:
          dest: /etc/slurm/slurm.conf
@@ -75,6 +80,11 @@
    - name: set files to provision
      command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
      when: node_inventory_auto == true
+
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     with_items: "{{ compute_nodes }}"
+     when: node_inventory_auto == true and enable_active_directory == true
 
    - name: sync files #also generates dynamic hosts on headnode!
      command: wwsh file sync

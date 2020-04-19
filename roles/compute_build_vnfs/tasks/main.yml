@@ -70,6 +70,10 @@
    - name: slurmd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable slurmd
 
+   - name: sssd on compute image enabled 
+     command: chroot '{{ compute_chroot_loc }}' systemctl enable sssd
+     when: enable_active_directory == true
+
    - name: wwimport file into image (passwd)
      command: wwsh file import /etc/passwd
 
@@ -84,6 +88,16 @@
 
    - name: wwimport file into image (munge)
      command: wwsh file import /etc/munge/munge.key
+
+   - name: import Active Directory files into image
+     block:
+       - name: wwimport file into image (krb5.keytab)
+         command: wwsh file import /etc/krb5.keytab
+       - name: wwimport file into image (krb5.conf)
+         command: wwsh file import /etc/krb5.conf
+       - name: wwimport file into image (sssd.conf)
+         command: wwsh file import /etc/sssd/sssd.conf
+      when: enable_active_directory == true
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
