@@ -12,10 +12,16 @@
 #   - fail:
 #       msg: "Quick fail for test!"
 
+   - name: Get current list of nodes from Warewulf
+     command: wwsh node list
+     register: wwsh_node_list
+
    - block:
      - name: add node to ww db
        command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
        with_items: "{{ compute_nodes }}"
+       when:
+         - not "{{ item.name }} " in wwsh_node_list.stdout
   
      - name: add node to ww db
        command: wwsh -y node set {{ item.name }} --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }}
