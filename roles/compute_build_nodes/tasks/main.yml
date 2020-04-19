@@ -17,7 +17,7 @@
        command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
        with_items: "{{ compute_nodes }}"
   
-     - name: add node to ww db
+     - name: set node gateway in ww db
        command: wwsh -y node set {{ item.name }} --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }}
        with_items: "{{ compute_nodes }}"
        when: enable_compute_NAT == true
