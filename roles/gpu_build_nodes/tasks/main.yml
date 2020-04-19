@@ -75,6 +75,11 @@
      command: wwsh -y provision set {{ gpu_node_glob }} --vnfs={{ gpu_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,gres.conf
      when: node_inventory_auto == true
 
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     with_items: "{{ gpu_nodes }}"
+     when: enable_active_directory == true
+
    - name: wwsh file sync
      command: wwsh file sync
 
