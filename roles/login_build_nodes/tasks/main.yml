@@ -45,8 +45,13 @@
      command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,gres.conf
      with_items: "{{ login_nodes }}"
 
-   - name: restart dhcp
-     service: name=dhcpd state=restarted
+   - name: restart dhcp if required
+     service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
+
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
  
    - name: update pxeconfig to let node boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ item.name }}

@@ -78,8 +78,13 @@
    - name: wwsh file sync
      command: wwsh file sync
 
-   - name: restart dhcp
-     service: name=dhcpd state=restarted
+   - name: restart dhcp if required
+     service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
+
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
  
    - name: update pxeconfig to let node boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ gpu_node_glob }}

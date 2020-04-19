@@ -9,6 +9,7 @@
   private_interface: "enp0s8" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
   build_kernel_ver: '3.10.0-957.1.3.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  dhcpd_enabled: true
 
 #Private network Info
   private_network: "10.0.0.0"  
