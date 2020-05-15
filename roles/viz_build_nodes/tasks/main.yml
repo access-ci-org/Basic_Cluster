@@ -45,7 +45,7 @@
      command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
      with_items: "{{ viz_nodes }}"
 
-   - name: restart dhcp
+   - name: restart dhcp if required
      service: name=dhcpd state=restarted enabled=yes
      when: dhcpd_enabled == true
  
