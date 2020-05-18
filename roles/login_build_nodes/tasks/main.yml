@@ -55,4 +55,4 @@
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
-     failed_when: "'Building Pxelinux' not in command_result.stdout"
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"
