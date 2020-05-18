@@ -82,8 +82,7 @@
      when: node_inventory_auto == true
 
    - name: add Active Directory files to provision
-     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
-     with_items: "{{ compute_nodes }}"
+     command: wwsh -y provision set {{ compute_node_glob }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
      when: node_inventory_auto == true and enable_active_directory == true
 
    - name: sync files #also generates dynamic hosts on headnode!

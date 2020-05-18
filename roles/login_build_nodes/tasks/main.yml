@@ -25,7 +25,16 @@
      command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
      with_items: "{{ login_nodes }}"
 #" for vim
-  
+
+   - name: set files to provision
+     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+     with_items: "{{ login_nodes }}"
+
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     with_items: "{{ login_nodes }}"
+     when: enable_active_directory == true
+
    - name: remove node from slurm.conf if it exists already # to avoid duplication!
      lineinfile:
        dest: /etc/slurm/slurm.conf
