@@ -42,6 +42,18 @@ http://ood-dev.example.org:8080/Shibboleth.SSO/Metadata, save the Metadata
 file, and upload that file to https://samltest.id/upload.php.  Finally, you can
 test access your ood dev instance at  http://ood-dev.example.org:8080
 
+## A Working Example
+
+This role loads a stock shibboleth config that uses a specific entityID (a name used 
+to identify endpoints in SAML environments and entries in metadata) with the value
+testshib.dev.rc.uab.edu.  To use this name you have to do two things:
+1. associate that host name with the IP address of your deployed ood node in you local /etc/hosts file
+1. get the SAML metadata from your running instance at http://testshib.dev.rc.uab.edu/Shibboleth.sso/Metadata, download it, and upload it to https://samltest.id/upload
+
+Once uploaded to samltest.id, you will be able to log in to your OnDemand node using SAML.
+
+You can change this host name to any value you like as long as you update the deployed shibboleth.xml, map the name in your local /etc/hosts, and upload the new metadata.
+
 ## Common Shibboleth Errors
 
 If you attempt to log into your dev ood instance and see an "Unable to Respond"
