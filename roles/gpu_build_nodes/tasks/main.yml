@@ -7,7 +7,7 @@
 
    - block:
      - name: add node to ww db
-       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+       include_tasks: list_and_add.yml
        with_items: "{{ gpu_nodes }}"
 
      - name: blacklist nouveau on first boot
