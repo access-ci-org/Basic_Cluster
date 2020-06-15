@@ -91,6 +91,9 @@
   slurmdb_sql_pass: "password" #could force this to be a hash... 
   slurmdb_sql_user: slurm
 
+# Active Directory Integration
+  enable_active_directory: false
+
 #automatic variables for internal use
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
