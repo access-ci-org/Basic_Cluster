@@ -73,7 +73,7 @@
          command: wwsh file import /etc/krb5.conf
        - name: wwimport file into image (sssd.conf)
          command: wwsh file import /etc/sssd/sssd.conf
-      when: enable_active_directory == true
+     when: enable_active_directory == true
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}
