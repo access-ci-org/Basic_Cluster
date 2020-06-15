@@ -85,8 +85,13 @@
 #   - name: wait for compute nodes to boot
 #     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
 
-   - name: restart dhcp
+   - name: restart dhcp if required
      service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
+
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
 
    - name: update pxeconfig to force node to boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
