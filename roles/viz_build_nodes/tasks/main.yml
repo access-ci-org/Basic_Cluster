@@ -6,7 +6,7 @@
 #     with_items: "{{ viz_nodes }}"
 
    - name: add node to ww db
-     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+     include_tasks: list_and_add.yml
      with_items: "{{ viz_nodes }}"
 
    - name: set nodes bootloader
@@ -59,9 +59,14 @@
      with_items: "{{ viz_nodes }}"
      when: enable_active_directory == true
 
-   - name: restart dhcp
-     service: name=dhcpd state=restarted
+   - name: restart dhcp if required
+     service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
  
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
+
    - name: update pxeconfig to let node boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
      with_items: "{{ compute_nodes }}"
@@ -69,4 +74,4 @@
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
-     failed_when: "'Building Pxelinux' not in command_result.stdout"
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"
