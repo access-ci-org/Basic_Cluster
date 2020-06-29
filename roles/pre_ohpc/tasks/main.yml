@@ -146,6 +146,7 @@
        name: use_nfs_home_dirs
        state: yes
        persistent: yes
+     when: use_warewulf == 'true'
 
    - name: create /export dir for software
      file: path=/export state=directory owner=root group=root mode=0777
@@ -160,4 +161,7 @@
  
    - name: enable and restart chrony
      service: name=chronyd state=restarted enabled=yes
+
+   - name: start start
+     service: name=mariadb state=restarted
 
