@@ -2,13 +2,20 @@
 
    - name: config warewulf interface
      lineinfile: dest=/etc/warewulf/provision.conf regexp="network device =" line="network device = {{ private_interface }}" 
+     when: use_warewulf == true
 #" for vim
+#
+   - name: set internal interface for xCAT provisioning
+     command: chdef -t site dhcpinterfaces="xcatmn|${private_interface}"
+     when: use_warewulf == false
 
    - name: enable tftp
      lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
+     when: use_warewulf == true
 
    - name: enable httpd access to /srv/warewulf
      command: chcon -t httpd_sys_content_t -R /srv/warewulf
+     when: use_warewulf == true
 #       target: '/srv/warewulf(/.*)?'
 #       setype: httpd_sys_content_t
 #       state: present
@@ -18,21 +25,27 @@
      template: 
        src: warewulf-httpd.conf.j2
        dest: /etc/httpd/conf.d/warewulf-httpd.conf
+     when: use_warewulf == true
      
    - name: reload xinetd
      service: name=xinetd state=restarted
+     when: use_warewulf == true
  
    - name: enable mariadb
      service: name=mariadb enabled=yes
+     when: use_warewulf == true
   
    - name: restart mariadb
      service: name=mariadb state=restarted
+     when: use_warewulf == true
 
    - name: enable httpd
      service: name=httpd enabled=yes
+     when: use_warewulf == true
   
    - name: restart httpd
      service: name=httpd state=restarted
+     when: use_warewulf == true
 
    - name: exportfs home entry on headnode
      lineinfile: line="/home {{ private_network }}/{{ private_network_mask }}(rw,no_subtree_check,fsid=10,no_root_squash)" dest=/etc/exports state=present
@@ -54,12 +67,14 @@
 
    - name: initialize database
      command: wwinit database
+     when: use_warewulf == true
 
    - name: cluster ssh keys
      command: wwinit ssh_keys
      args:
        chdir: /root/
        creates: /etc/warewulf/vnfs/ssh/ssh_host_key.pub
+     when: use_warewulf == true
 
 #need to copy these to localhost first!
    - name: copy key back to management machine
@@ -67,3 +82,4 @@
        src: /root/.ssh/cluster.pub
        dest: ./cluster_root.pub
        flat: yes
+     when: use_warewulf == true
