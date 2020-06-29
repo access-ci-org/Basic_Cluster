@@ -28,11 +28,15 @@
      shell: wget -q -O - "{{ CentOS_checksums_url }}" | grep "{{ CentOS_iso_version }}" | cut -d' ' -f 1
      register: centos_iso_sha256sum
 
+   - name: check checksum output
+     debug:
+       var: centos_iso_sha256sum
+
    - name: get CentOS ISO
      get_url:
         url: "{{ CentOS_iso_url }}"
         dest: /opt/iso/
-        checksum: "{{ centos_iso_sha256sum }}"
+        checksum: "sha256:{{ centos_iso_sha256sum.stdout }}"
      when: use_warewulf == false
  
    - name: install OpenHPC base, warewulf, slurm server, and compiler packages
