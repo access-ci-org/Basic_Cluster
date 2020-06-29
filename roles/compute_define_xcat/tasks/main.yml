@@ -1,0 +1,43 @@
+---
+
+   - name: add nodes to xCAT db
+     command: mkdef -f -t node {{ item.name }} groups=compute,all ip={{ item.ip }} mac={{ item.mac }} \
+      netboot=xnba arch=x86_64 bmc={{ item.bmc_ip }} bmcusername={{ item.bmc_username }} \
+      bmcpassword={{ item.bmc_password }} mgt=ipmi serialport=0 serialspeed=115200
+     loop: "{{ compute_nodes }}"
+
+   - name: set 10Gb netmask in xCAT db
+     command: chdef -t network -o 10Gb mask={{ TenGb_netmask }} net={{ TenGb_network }}
+#     shell: chdef -t network -o 10Gb mask=255.255.255.0 net=10.0.1.0
+
+   - name: set 10Gb interfaces on computes
+     command: chdef -t node {{ item.name }} nicips.10Gb={{ item.TenGb_ip }} nictypes.10Gb="10Gb Ethernet" nicnetworks.10Gb=10Gb
+     loop: "{{ compute_nodes }}"
+
+   - name: set root password for computes
+     shell: chtab key=system passwd.username=root passwd.password=`openssl rand -base64 12`
+
+   - name: set xcat network domain
+     command: chdef -t site domain={{ local_domain }}
+
+   - name: xcat network configuration - makehosts
+     command: makehosts
+
+   - name: xcat network configuration - makenetworks
+     command: makenetworks
+
+   - name: xcat network configuration - makedhcp 
+     command: makedhcp -n
+
+   - name: xcat network configuration - makedns
+     command: makedns -n
+
+   - name: get osimage name
+     shell: lsdef -t osimage | grep install-compute | awk '{print $1}'
+     register: osimage_name
+
+   - name: set compute provisioning image
+     command: nodeset compute osimage={{ osimage_name.stdout }}
+
+   - name: set computes to boot from the network
+     command: rsetboot compute net
