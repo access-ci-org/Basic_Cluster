@@ -26,6 +26,7 @@
                "chrony",
                "pciutils",
                "rsync",
+               "mariadb-server",
                "bash-completion",
                "libselinux-python",
                "libsemanage-python",
