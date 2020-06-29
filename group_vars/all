@@ -8,7 +8,7 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s8" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
-  build_kernel_ver: '3.10.0-957.12.2.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  build_kernel_ver: '3.10.0-1127.10.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Provisioning System: True for Warewulf, False for xCAT
   use_warewulf: false
@@ -24,6 +24,12 @@
   compute_ip_maximum: "10.0.0.255"
   gpu_ip_minimum: "10.0.0.128" #This could be more clever, like compute_ip_minimum + num_nodes...
   enable_compute_NAT: true
+
+#option 10Gb network info
+  TenGb_network: "10.0.2.0"
+  TenGb_netmask: "255.255.255.0"
+
+  local_domain: "local"
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
@@ -78,7 +84,8 @@
 #
   compute_private_nic: "eth0"
   compute_nodes:
-   - { name: "compute-1", vnfs: '{{compute_chroot}}',  cpus: 1, sockets: 1, corespersocket: 1,  mac: "08:00:27:EC:E2:FF", ip: "10.0.0.254"}
+   - { name: "compute-0", vnfs: '{{compute_chroot}}',  cpus: 1, sockets: 1, corespersocket: 1,  mac: "08:00:27:D6:B7:45", ip: "10.0.0.2", bmc_ip: "10.0.1.2", bmc_username: "admin", bmc_password: "admin", TenGb_ip: "10.0.2.2"} 
+   - { name: "compute-1", vnfs: '{{compute_chroot}}',  cpus: 1, sockets: 1, corespersocket: 1,  mac: "08:00:27:E5:28:88", ip: "10.0.0.3", bmc_ip: "10.0.1.3", bmc_username: "admin", bmc_password: "admin", TenGb_ip: "10.0.2.3"} 
 
   login_nodes:
    - { name: "login-1", vnfs: '{{login_chroot}}', cpus: 8, sockets: 2, corespersocket: 4,  mac: "00:26:b9:2e:21:ed", ip: "10.2.255.137"}
