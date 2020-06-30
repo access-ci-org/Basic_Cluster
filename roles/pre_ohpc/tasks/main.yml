@@ -51,6 +51,8 @@
 
    - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
+   - template: src=firewall_conf/services/xcat.xml dest=/etc/firewalld/services/xcat.xml
+
    - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
 
    - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
