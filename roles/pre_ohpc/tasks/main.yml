@@ -54,14 +54,17 @@
 #       regexp: "Defaults    requiretty"
 #       line:  "Defaults    !requiretty"
 #       state: present
-
-   - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
+   - name: slurm service firewall template
+     template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
-   - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
+   - name: firewalld template 
+     template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
 
-   - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
+   - name: firewalld internal zone template
+     template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
 
-   - template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
+   - name: firewalld public zone template
+     template: src=firewall_conf/zones/public.xml dest=/etc/firewalld/zones/public.xml
 
    - name: start Network Manager
      service: 
