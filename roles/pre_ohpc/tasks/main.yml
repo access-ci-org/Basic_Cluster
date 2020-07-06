@@ -72,12 +72,13 @@
        state: started
        enabled: yes
 
-   - name: manage interface with nmcli
-     nmcli: 
-       conn_name: "{{ private_interface }}"
-       ifname: "{{ private_interface }}"
-       type: ethernet
-       state: present
+#   - name: manage interface with nmcli
+#     nmcli: 
+#       conn_name: "{{ private_interface }}"
+#       ifname: "{{ private_interface }}"
+#       type: ethernet
+#       state: present
+#
 
    - name: add private interface to internal zone via nmcli
      command: nmcli connection modify {{ private_interface }} connection.zone internal
