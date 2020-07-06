@@ -10,13 +10,12 @@
      when: build_kernel_ver != ansible_kernel
 
    - name: install necessary stuff
-     yum:
+     dnf:
        name: [
-               "MySQL-python",
+               "python3-PyMySQL",
                "epel-release",
                "wget",
                "tcpdump",
-               "whois",
                "lsof",
                "xinetd",
                "vim",
@@ -27,21 +26,26 @@
                "pciutils",
                "rsync",
                "bash-completion",
-               "libselinux-python",
-               "libsemanage-python",
+               "python3-libselinux",
+               "python3-libsemanage",
                "policycoreutils",
                "NetworkManager",
-               "NetworkManager-glib",            
              ]
        state: latest
+#               "NetworkManager-glib",  not available in CentOS 8; hopefully no longer needed...
 #       - "lua"  # testing; this could fix the lmod-ohpc issue?
- #otherwise, do a yum update --skip-broken, yum update...
+ #otherwise, do a dnf update --skip-broken, dnf update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
-     yum: name={{ openhpc_release_rpm }} state=present
+     dnf: name={{ openhpc_release_rpm }} state=present
  
-   - name: install fail2ban # separate b/c it's in epel
-     yum: name=fail2ban state=latest 
+   - name: install epel-based dependencies
+     dnf: 
+       name: [
+               "fail2ban",
+               "whois",
+             ]
+       state: latest
 
 #this is only necessary for non-local ansible!
 #   - name: turn off requiretty for sudo
