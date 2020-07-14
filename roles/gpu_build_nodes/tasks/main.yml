@@ -73,7 +73,7 @@
      when: node_inventory_auto == false # END NON-AUTO-INVENTORY BLOCK
 
    - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --listen={{ private_interface }} --ip={{ gpu_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }}" --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ gpu_node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ gpu_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ gpu_node_glob_bash }}
      when: node_inventory_auto == true
 
    - name: blacklist nouveau on first boot
