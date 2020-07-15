@@ -1,7 +1,11 @@
 ---
 
+   - name: build comma-separated list of nodes
+     shell: wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ','
+     register: node_list_csv
+
    - name: tell nodes to get files
-     command: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') /warewulf/bin/wwgetfiles
+     command: pdsh -w {{ node_list_csv.stdout }} /warewulf/bin/wwgetfiles
 
    - name: start munge
      service: name=munge state=restarted enabled=yes
@@ -10,20 +14,20 @@
      service: name=slurmctld state=restarted enabled=yes
 
    - name: start munge on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl start munge
+     shell: pdsh -w {{ node_list_csv.stdout }} systemctl start munge
 
    - name: enable munge on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable munge
+     shell: pdsh -w {{ node_list_csv.stdout }} systemctl enable munge
 
    - name: start slurmd on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl start slurmd
+     shell: pdsh -w {{ node_list_csv.stdout }} systemctl start slurmd
 
    - name: enable slurmd on compute nodes
-     shell: pdsh -w $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') systemctl enable slurmd
+     shell: pdsh -w {{ node_list_csv.stdout }} systemctl enable slurmd
 
    - name: update slurm status on nodes
-     shell: scontrol update NodeName=$(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ',') state=IDLE
+     shell: scontrol update NodeName={{ node_list_csv.stdout }} state=IDLE
 
    - name: update pxeconfig to let node boot locally
-     shell: wwsh -y object modify -s bootlocal=EXIT -t node $(wwsh node list | tail --lines=+3 | cut -f 1 -d' '| tr '\n' ' ') 
+     shell: wwsh -y object modify -s bootlocal=EXIT -t node {{ node_list_csv.stdout }}
      when: stateful_nodes == true
