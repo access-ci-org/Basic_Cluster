@@ -8,6 +8,11 @@
 
    - name: set 10Gb netmask in xCAT db
      command: chdef -t network -o 10Gb mask={{ TenGb_netmask }} net={{ TenGb_network }}
+     register: chdef_output
+     failed_when: 
+       - chdef_output.rc != 0 
+       - '"already exists that contains the same net and mask values." not in chdef_output.stderr'
+
 #     shell: chdef -t network -o 10Gb mask=255.255.255.0 net=10.0.1.0
 
    - name: set 10Gb interfaces on computes
@@ -31,6 +36,10 @@
 
    - name: xcat network configuration - makedns
      command: makedns -n
+     register: mkdns_output
+     failed_when: 
+       - chdef_output.rc != 0 
+       - '"DNS setup is completed" not in mkdns_output.stderr'
 
    - name: get osimage name
      shell: lsdef -t osimage | grep install-compute | awk '{print $1}'
