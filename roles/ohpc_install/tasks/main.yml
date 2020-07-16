@@ -2,17 +2,59 @@
 
    - name: get OpenHPC Repo #hardcoded version # :(
      yum: name={{ openhpc_release_rpm }} state=present
+
+   - name: get repo creation rools
+     yum: 
+       name: [
+              "yum-utils",
+              "createrepo",
+             ]
+       state: latest
+     when: use_warewulf == false
+
+   - name: create OpenHPC local repo dir
+     file:
+       path: "{{ ohpc_repo_dir }}"
+       state: directory
+       mode: '0755'
+     when: use_warewulf == false
+
+   - name: download OpenHPC repo tarball for local use
+     unarchive: 
+       src: "{{ openhpc_repo_tarball }}"
+       dest: "{{ ohpc_repo_dir }}"
+       remote_src: yes
+     when: use_warewulf == false
+
+   - name: create local OpenHPC Repo
+     command: "{{ ohpc_repo_dir }}/make_repo.sh"
+     when: use_warewulf == false
+
+   - name: create local EPEL repo dir
+     file:
+       path: "{{ epel_repo_dir }}"
+       state: directory
+       mode: '0755'
+     when: use_warewulf == false
+
+   - name: download required EPEL packages
+     command: yumdownloader --destdir "{{ epel_repo_dir }}" fping qstat libconfuse python34 python34-libs
+     when: use_warewulf == false
+
+#This failed on initial run, works on the shell.
+   - name: create local EPEL repo
+     command: createrepo {{ epel_repo_dir }}/
  
-   - name: get xCAT Repo 
+   - name: get xCAT core Repo 
      get_url:
-        url: https://xcat.org/files/xcat/repos/yum/latest/xcat-core/xcat-core.repo
-        dest: /etc/yum.repos.d/
-        mode: '0440'
+       url: "{{ xCAT_core_repo }}"
+       dest: /etc/yum.repos.d/
+       mode: '0440'
      when: use_warewulf == false
  
    - name: get xCAT dependencies Repo 
      get_url:
-        url: https://xcat.org/files/xcat/repos/yum/xcat-dep/rh7/x86_64/xcat-dep.repo
+        url: "{{ xCAT_dep_repo }}"
         dest: /etc/yum.repos.d/
         mode: '0440'
      when: use_warewulf == false
