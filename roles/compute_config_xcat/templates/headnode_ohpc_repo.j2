@@ -1,0 +1,12 @@
+[OpenHPC-local]
+name=OpenHPC-1.3 - Base
+baseurl=http://{{ headnode_private_ip }}/{{ ohpc_repo_dir }}/CentOS_7
+gpgcheck=1
+gpgkey=http://{{ headnode_private_ip }}/{{ ohpc_repo_dir }}/CentOS_7/repodata/repomd.xml.key
+
+
+[OpenHPC-local-updates]
+name=OpenHPC-1.3.9 - Updates
+baseurl=http://{{ headnode_private_ip }}/{{ ohpc_repo_dir }}/CentOS_7/updates
+gpgcheck=1
+gpgkey=http://{{ headnode_private_ip }}/{{ ohpc_repo_dir }}/CentOS_7/updates/repodata/repomd.xml.key
