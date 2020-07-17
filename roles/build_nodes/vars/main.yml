@@ -1,0 +1,4 @@
+---
+
+base_provision_files: passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+ad_provision_files: krb5.keytab,krb5.conf,sssd.conf
