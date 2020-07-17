@@ -172,9 +172,9 @@
 # RabbitMQ
   rabbitmq_provision: false
   rabbitmq_user: "reggie"
-  rabbitmq_user_password: ""
+  rabbitmq_user_password: "reggie"
 
 # Celery
   celery_user: "reggie"
-  celery_user_password: ""
+  celery_user_password: "reggie"
   celery_vhost: "socketio"
