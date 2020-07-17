@@ -6,7 +6,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=always
-RestartSec=1
+RestartSec=5
 User=centos
 ExecStart=/usr/bin/env python3 /opt/rabbitmq_agents/ood_account_create.py
 
