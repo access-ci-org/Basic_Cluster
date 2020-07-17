@@ -20,7 +20,7 @@
 - name: Change ownership of directory
   file:
     path: "{{ user_register_app_path }}"
-    owner: "{{ RegUser_app_user }}"
+    owner: apache
     group: apache
     state: directory
     recurse: yes
@@ -42,7 +42,7 @@
 - name: Create log directory
   file:
     path: "{{ user_register_app_path }}/log"
-    owner: "{{ RegUser_app_user }}"
+    owner: apache
     group: apache
     state: directory
 
