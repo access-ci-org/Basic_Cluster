@@ -10,10 +10,6 @@
        include_tasks: list_and_add.yml
        with_items: "{{ gpu_nodes }}"
 
-     - name: blacklist nouveau on first boot
-       command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node {{ item.name }}
-       with_items: "{{ gpu_nodes }}"
-
      - name: set nodes bootloader
        command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
        with_items: "{{ gpu_nodes }}"
@@ -74,10 +70,6 @@
 
    - name: add nodes via wwnodescan - BOOT NODES NOW, IN ORDER
      shell: wwnodescan --listen={{ private_interface }} --ip={{ gpu_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ gpu_node_glob_bash }}
-     when: node_inventory_auto == true
-
-   - name: blacklist nouveau on first boot
-     command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node "{{ gpu_node_prefix }}*"
      when: node_inventory_auto == true
 
    - name: set files to provision
