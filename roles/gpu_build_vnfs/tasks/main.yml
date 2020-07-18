@@ -50,17 +50,17 @@
    - name: build nvidia kernel modules in the vnfs
      shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
      vars:
-       nvidia_kernel_build_cmd: "/root/nvidia_build/{{ nvidia_driver_installer }} -k {{ kernel_ver.stdout }} --kernel-install-path=/lib/modules/{{ kernel_ver.stdout }}/kernel/drivers/video -z -s -X"
+       nvidia_kernel_build_cmd: "/root/nvidia_build/{{ nvidia_driver_installer }} {{ nvidia_driver_args }}"
 
    - name: build cuda toolkit
      shell: chroot {{ gpu_chroot_loc }} {{ cuda_toolkit_build_cmd }}
      vars:
-       cuda_toolkit_build_cmd: "/root/nvidia_build/{{ cuda_toolkit_installer }} --noprompt --prefix=/export/cuda"
+       cuda_toolkit_build_cmd: "/root/nvidia_build/{{ cuda_toolkit_installer }} {{ cuda_toolkit_args }}"
 
    - name: build cuda samples
      shell: chroot {{ gpu_chroot_loc }} {{ cuda_samples_build_cmd }}
      vars:
-       cuda_samples_build_cmd: "/root/nvidia_build/{{ cuda_samples_installer }} --noprompt --prefix=/export/cuda/samples --cudaprefix=/export/cuda"
+       cuda_samples_build_cmd: "/root/nvidia_build/{{ cuda_samples_installer }} {{ cuda_samples_args }}"
 
 #     mount: path={{ item.path }} state=unmounted
    - name: unmount necessary bits
