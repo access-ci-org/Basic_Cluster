@@ -27,6 +27,8 @@
 # commented ^ out because ansible adds these entries to fstab!!!
    - name: mount necessary bits
      command: mount -o rw,bind "{{ item.src }}" "{{ item.path }}"
+     args:
+       warn: no
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
