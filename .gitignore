@@ -1,0 +1,6 @@
+# Allow site-specific ansible host_vars, keeping group_vars/all as the defaults
+/host_vars/
+# Ignore site-specific Nvidia/CUDA installers
+/roles/gpu_build_vnfs/files/*.run
+# Leave original Nvidia installer intact
+!/roles/gpu_build_vnfs/files/NVIDIA-Linux-x86_64-375.39.run
