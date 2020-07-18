@@ -84,7 +84,7 @@
    - { name: "gpu-compute-1", vnfs: '{{gpu_chroot}}', gpus: 4, gpu_type: "gtx_TitanX", cpus: 16, sockets: 2, corespersocket: 8,  mac: "0c:c4:7a:6e:9d:6e", ip: "10.2.255.47"}
  
   viz_nodes:
-   - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
+   - { name: "viz-node-0-0", vnfs: '{{gpu_chroot}}', gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
 
 #Slurm Accounting Variables - little need to change these
   slurm_acct_db: "slurmdb"
