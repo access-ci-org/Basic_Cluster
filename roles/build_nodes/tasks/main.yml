@@ -52,8 +52,6 @@
            line: "NodeName={{ item.name }} Name=gpu Type={{ item.gpu_type }} File=/dev/nvidia[0-{{ item.gpus - 1 }}]"
            insertafter: "^#######"
            state: present
-       - name: blacklist nouveau on first boot
-         command: wwsh -y object modify -s kargs='modprobe.blacklist=nouveau,quiet' -t node {{ item.name }}
        when: item.gpu_type is defined
        with_items: "{{ nodes }}"
 
@@ -82,8 +80,6 @@
      - name: add Active Directory files to provision for node glob
        command: wwsh -y provision set --fileadd={{ ad_provision_files }} {{ node_glob }}
        when: enable_active_directory == true
-
-     # need blacklist nouveau
 
      when: node_inventory_auto == true
 
