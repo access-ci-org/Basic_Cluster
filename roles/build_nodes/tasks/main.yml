@@ -16,7 +16,8 @@
        when: stateful_nodes == true
 
      - name: update pxeconfig to force node to boot from pxe
-       command: wwsh -y object modify -D bootlocal -t node {{ node_glob}}
+       command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
+       with_items: "{{ nodes }}"
        when: stateful_nodes == false
 
      - name: set files to provision
