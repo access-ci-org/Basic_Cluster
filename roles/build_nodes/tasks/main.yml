@@ -16,7 +16,7 @@
        when: stateful_nodes == true
 
      - name: update pxeconfig to force node to boot from pxe
-       command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}
+       command: wwsh -y object modify -D bootlocal -t node {{ node_glob}}
        when: stateful_nodes == false
 
      - name: set files to provision
@@ -41,25 +41,26 @@
        with_items: "{{ nodes }}"
 
      - block:
-       - name: remove node from gres.conf if it exists already
+       - name: remove gpu node from gres.conf if it exists already
          lineinfile:
            dest: /etc/slurm/gres.conf
            regexp: "^NodeName={{ item.name }} "
            state: absent
-       - name: add node info to slurm/gres.conf
+         with_items: "{{ nodes }}"
+       - name: add gpu node info to slurm/gres.conf
          lineinfile:
            dest: /etc/slurm/gres.conf
            line: "NodeName={{ item.name }} Name=gpu Type={{ item.gpu_type }} File=/dev/nvidia[0-{{ item.gpus - 1 }}]"
            insertafter: "^#######"
            state: present
+         with_items: "{{ nodes }}"
        when: item.gpu_type is defined
-       with_items: "{{ nodes }}"
 
      when: node_inventory_auto == false
 
    - block:
-     - name: add nodes via wwnodescan # this seemed to be the same command regardless of NAT, and NAT may be handled with wwsh node set --gateway instead
-       shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     - name: add nodes via wwnodescan
+       shell: wwnodescan --listen={{ private_interface }} --ip={{ ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ chroot }} {{ node_glob_bash }}
 
      - name: set node glob gateway in ww db
        command: wwsh -y node set --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }} {{ node_glob }} 
