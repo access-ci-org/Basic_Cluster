@@ -22,6 +22,7 @@
 
      - name: set files to provision
        command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files={{ base_provision_files }}
+       with_items: "{{ nodes }}"
      - name: add Active Directory files to provision
        command: wwsh -y provision set {{ item.name }} --fileadd={{ ad_provision_files }}
        with_items: "{{ nodes }}"
