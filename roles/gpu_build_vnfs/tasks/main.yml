@@ -13,11 +13,23 @@
      copy: src=/etc/resolv.conf dest="{{ gpu_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms gcc
+     yum:
+       packages: "{{ packages }}"
+       installroot:  "{{ gpu_chroot_loc }}"
+     vars:
+       packages:
+         - chrony
+         - kernel
+         - lmod-ohpc
+         - grub2
+         - glibc-devel
+         - glibc-headers
+         - kernel-devel
+         - kernel-headers
+         - dkms
+         - gcc
+         - ohpc-slurm-client
 #" for vim
-
-   - name: yum install slurm client into image
-     command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
 
    - name: create export dir
      file: path="{{ gpu_chroot_loc }}/export" state=directory

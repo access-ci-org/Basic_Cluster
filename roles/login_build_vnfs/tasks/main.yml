@@ -13,11 +13,23 @@
      copy: src=/etc/resolv.conf dest="{{ login_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ login_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms
+     yum:
+       packages: "{{ packages }}"
+       installroot: "{{ login_chroot_loc }}"
+     vars:
+       packages:
+         - chrony
+         - kernel
+         - lmod-ohpc
+         - grub2
+         - glibc-devel
+         - glibc-headers
+         - kernel-devel
+         - kernel-headers
+         - dkms
+         - ohpc-slurm-client
 #" for vim
 
-   - name: yum install slurm client into image
-     command: yum -y --installroot={{ login_chroot_loc }} groupinstall ohpc-slurm-client
 #" for vim
 #
 ##FIREWALL STUFF - DON'T LEAVE COMMENTED OUT
