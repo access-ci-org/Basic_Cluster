@@ -14,7 +14,7 @@
 
    - name: yum install into the image chroot
      yum:
-       packages: "{{ packages }}"
+       name: "{{ packages }}"
        installroot:  "{{ gpu_chroot_loc }}"
      vars:
        packages:
