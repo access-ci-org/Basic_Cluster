@@ -8,8 +8,30 @@
    - {role: compute_build_vnfs, tags: compute_build_vnfs}
    - {role: gpu_build_vnfs, tags: gpu_build_vnfs}
    - {role: login_build_vnfs, tags: login_build_vnfs}
-   - {role: compute_build_nodes, tags: compute_build_nodes}
-   - {role: gpu_build_nodes, tags: gpu_build_nodes}
-   - {role: login_build_nodes, tags: login_build_nodes}
-   - {role: viz_build_nodes, tags: viz_build_nodes}
+   # By default, compute and gpu nodes use an automatic inventory with a
+   # group of ansible string vars to define their chroots, names, ips, etc.
+   - { role: build_nodes,
+       node_glob: "{{ compute_node_glob }}",
+       node_glob_bash: "{{ compute_node_glob_bash }}",
+       node_inventory_auto: true,
+       ip_minimum: "{{ compute_ip_minimum }}",
+       chroot: "{{ compute_chroot }}",
+       tags: compute_build_nodes }
+   - { role: build_nodes,
+       node_glob: "{{ gpu_node_glob }}",
+       node_glob_bash: "{{ gpu_node_glob_bash }}",
+       node_inventory_auto: true,
+       ip_minimum: "{{ gpu_ip_minimum }}",
+       chroot: "{{ gpu_chroot }}",
+       tags: gpu_build_nodes }
+   # By default, login and viz nodes use a manual inventory with an ansible
+   # list of dicts to define their chroots, names, ips, etc.
+   - { role: build_nodes,
+       nodes: "{{ login_nodes }}",
+       node_inventory_auto: false,
+       tags: login_build_nodes }
+   - { role: build_nodes,
+       nodes: "{{ viz_nodes }}",
+       node_inventory_auto: false,
+       tags: viz_build_nodes }
    - {role: nodes_vivify, tags: nodes_vivify}

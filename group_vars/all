@@ -100,5 +100,7 @@
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
   gpu_node_glob: "{{ gpu_node_prefix }}[0-{{ num_gpu_nodes|int - 1}}]"
-  node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+  compute_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
   gpu_node_glob_bash: "{{ gpu_node_prefix }}{0..{{ num_gpu_nodes|int - 1}}}"
+  # to be deprecated:
+  node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
