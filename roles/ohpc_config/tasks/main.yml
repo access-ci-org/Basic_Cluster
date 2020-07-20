@@ -5,7 +5,24 @@
 #" for vim
 
    - name: enable tftp
-     lineinfile: dest=/etc/xinetd.d/tftp regexp="^(\s+)disable(\s+)= yes" line="\1disable\2= no" backrefs=yes
+     blockinfile: 
+       path: /etc/xinetd.d/tftp 
+       create: yes
+       block: |
+         service tftp
+         {
+         	socket_type		= dgram
+         	protocol		= udp
+         	wait			= yes
+         	user			= root
+         	server			= /usr/sbin/in.tftpd
+         	server_args		= -s /var/lib/tftpboot
+         	disable			= no
+         	per_source		= 11
+         	cps			= 100 2
+         	flags			= IPv4
+         }
+
 
    - name: enable httpd access to /srv/warewulf
      command: chcon -t httpd_sys_content_t -R /srv/warewulf
