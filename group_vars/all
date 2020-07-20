@@ -41,17 +41,17 @@
 
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
-  compute_template: "compute-nodes"
+  compute_template: "centos-8"
   gpu_template: "gpu-nodes"  
   login_template: "login-nodes"  
 
 # Chroot variables
   compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"
-  compute_chroot: centos7-compute
+  compute_chroot: centos8-compute
   gpu_chroot_loc: "/opt/ohpc/admin/images/{{ gpu_chroot }}"
-  gpu_chroot: centos7-gpu
+  gpu_chroot: centos8-gpu
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
-  login_chroot: centos7-login 
+  login_chroot: centos8-login 
 
 # Node Inventory method - true: automatic, or false: manual
 # Setting this to 'false' uses the list provided in the compute_nodes list below to add
