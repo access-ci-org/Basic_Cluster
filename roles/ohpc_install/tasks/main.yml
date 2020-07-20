@@ -1,19 +1,22 @@
 ---
 
    - name: install OpenHPC base, warewulf, slurm server, and compiler packages
-     yum:
+     dnf:
        name: [ 
                "ohpc-base",
                "ohpc-warewulf",
                "ohpc-slurm-server",
-               "lmod-defaults-gnu-openmpi-ohpc",
-               "openmpi-gnu-ohpc", 
-               "gnu-compilers-ohpc"
+               "lmod-defaults-gnu9-openmpi4-ohpc",
+               "lmod-ohpc",
+               "openmpi4-gnu9-ohpc", 
+               "gnu9-compilers-ohpc"
              ]
        state: latest
 
-   - name: yum update
-     yum: name=* state=latest update_cache=yes
+# Yum update is dangerous, as we've previously checked the kernel version...
+#  This needs more thought.
+#   - name: yum update
+#     yum: name=* state=latest update_cache=yes
 
    - name: add slurm user
      user: name=slurm state=present system=yes
@@ -35,20 +38,22 @@
 
    - name: insert rhel-xcbc WW template
      copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
- 
-   - name: fix the warewulf wwsh script... ARGH (line 29)
-     lineinfile: 
-       dest: /bin/wwsh
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
-       state: present
 
-   - name: fix the warewulf wwnodescan script... ARGH (line 96)
-     lineinfile: 
-       dest: /bin/wwnodescan
-       insertafter: '^\$ENV\{\"PATH\"\}'
-       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
-       state: present
+#I suspect this is unnecessary now 
+# Commenting to check.
+#   - name: fix the warewulf wwsh script... ARGH (line 29)
+#     lineinfile: 
+#       dest: /bin/wwsh
+#       insertafter: '^\$ENV\{\"PATH\"\}'
+#       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+#       state: present
+#
+#   - name: fix the warewulf wwnodescan script... ARGH (line 96)
+#     lineinfile: 
+#       dest: /bin/wwnodescan
+#       insertafter: '^\$ENV\{\"PATH\"\}'
+#       line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
+#       state: present
 
  
    - name: initialize slurmdb databases
