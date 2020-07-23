@@ -7,7 +7,7 @@
      yum: 
        name: [
               "yum-utils",
-              "createrepo",
+              "createrepo"
              ]
        state: latest
      when: use_warewulf == false
@@ -44,6 +44,9 @@
 #This failed on initial run, works on the shell.
    - name: create local EPEL repo
      command: createrepo {{ epel_repo_dir }}/
+
+   - name: create local repo http conf
+     template: src=local-repo.j2 dest=/etc/httpd/conf.d/local-repo.conf
  
    - name: get xCAT core Repo 
      get_url:
