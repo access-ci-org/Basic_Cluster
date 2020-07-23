@@ -83,3 +83,14 @@
        dest: ./cluster_root.pub
        flat: yes
      when: use_warewulf == true
+
+   - name: set headnode as nameserver
+     template: 
+       src: resolve.j2
+       dest: /etc/resolv.conf
+       mode: 0644
+     when: use_warewulf == false
+
+   - name: set local site def for dns server
+     command: chdef -t site nameservers={{ headnode_private_ip }} forwarders={{ headnode_dns_server }}
+     when: use_warewulf == false

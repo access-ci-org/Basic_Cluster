@@ -11,6 +11,7 @@
   headnode_private_ip: "10.0.0.1"
   headnode_public_ip: "192.168.56.4" #World-accessible IP for Ganglia, etc.
   build_kernel_ver: '3.10.0-1127.13.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  headnode_dns_server: "10.0.2.3"
 
 
 #Provisioning System: True for Warewulf, False for xCAT
