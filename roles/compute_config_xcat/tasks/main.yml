@@ -1,46 +1,95 @@
 ---
 
-  - name: install yum-utils
-    yum: 
-      name: yum-utils
-      state: present
-
   - name: disable CentOS repo
-    yum_repository:
-      name: CentOS\*
-      enabled: no
-      state: present
+    shell: rm /etc/yum.repos.d/CentOS-*
+    register: cmd_result
+    failed_when: 
+      - cmd_result.rc != 0 
+      - '"No such" not in cmd_result.stderr'
 
   - name: enable headnode OpenHPC Repo
     template: 
       src: headnode_ohpc_repo.j2
-      dest: /etc/yum/repos.d/local-OpenHPC.repo
+      dest: /etc/yum.repos.d/local-OpenHPC.repo
 
   - name: enable headnode EPEL Repo
     template: 
       src: headnode_epel_repo.j2
-      dest: /etc/yum/repos.d/local-EPEL.repo
+      dest: /etc/yum.repos.d/local-EPEL.repo
 
   - name: set excludedocs for rpm
-    shell: echo -e "%_excludedocs 1" >> /root/.rpmmacros
+    shell: echo -e '%_excludedocs 1' >> /root/.rpmmacros
 
   - name: yum install client packages
     yum:
       name: [
              "ohpc-base-compute",
              "ohpc-slurm-client",
-             "chronyd",
+             "chrony",
              "kernel",
-             "lmod-ohpc",
+             "lmod-ohpc"
             ]
       state: latest
 
-   - name: add headnode to compute chrony.conf
-     lineinfile: line="server {{ headnode_private_ip }}" dest=/etc/chrony.conf state=present
+  - name: add headnode to compute chrony.conf
+    lineinfile: 
+      path: /etc/chrony.conf 
+      line: "server {{ headnode_private_ip }}" 
+      state: present
 
-   - name: restart and enable chronyd
-     service:
-       name: chronyd
-       enabled: yes
-       state: restarted
+  - name: restart and enable chronyd
+    service:
+      name: chronyd
+      enabled: yes
+      state: restarted
 
+  - name: put NFS home mount in fstab
+    lineinfile: 
+      line: "{{ headnode_private_ip }}:/home /home nfs defaults 0 0" 
+      path: /etc/fstab 
+      state: present
+
+  - name: create /export 
+    file: 
+      path: /export
+      state: directory
+      mode: 0777
+
+  - name: put NFS opt mount in fstab
+    lineinfile: 
+      line: "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs defaults 0 0" 
+      path: /etc/fstab 
+      state: present
+
+  - name: put NFS opt mount in fstab 
+    lineinfile: 
+      line: "{{ headnode_private_ip }}:/export /export nfs defaults 0 0" 
+      path: /etc/fstab 
+      state: present
+
+  - name: restrict SSH to users with running jobs
+    lineinfile: 
+      line: "account    required     pam_slurm.so" 
+      path: /etc/pam.d/sshd
+      state: present
+
+  - name: mount NFS shares
+    command: mount -a
+
+  - name: copy munge.key over
+    copy: src=/etc/munge/munge.key dest=/etc/munge/munge.key
+ 
+  - name: copy slurm.conf over
+    copy: src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf
+ 
+  - name: enable munge
+    service:
+      name: munge
+      state: restarted
+      enabled: yes
+
+  - name: enable slurmd
+    service:
+      name: slurmd
+      state: restarted
+      enabled: yes
