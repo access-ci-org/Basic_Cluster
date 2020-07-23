@@ -1,6 +1,2 @@
 [headnode]
 xcbc-xcat ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
-
-[compute-nodes]
-compute-0 ansible_host=10.0.0.2 ansible_connection=ssh ansible_ssh_user=root
-
