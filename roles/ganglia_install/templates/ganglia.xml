@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Ganglia</short>
+  <description> Ganglia is a cluster monitoring software, providing a 
+  web frontend, which displays basic information on the current state
+  of the cluster hardware. This profile provides firewall holes for 
+  communication between gmetad and gmond on the compute nodes.
+  </description>
+  <port protocol="tcp" port="8649"/>
+  <port protocol="udp" port="8649"/>
+</service>

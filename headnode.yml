@@ -5,6 +5,7 @@
    - {role: pre_ohpc, tags: pre_ohpc}
    - {role: ohpc_install, tags: ohpc_install}
    - {role: ohpc_config, tags: ohpc_config}
+   - {role: ganglia_install, tags: ganglia_install}
    - {role: compute_build_vnfs, tags: compute_build_vnfs, when: use_warewulf == true}
    - {role: compute_build_bos, tags: compute_build_bos, when: use_warewulf == false}
    - {role: compute_define_xcat, tags: compute_define_xcat, when: use_warewulf == false}

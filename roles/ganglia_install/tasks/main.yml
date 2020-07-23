@@ -1,0 +1,110 @@
+---
+
+ - name: install ohpc-ganglia packages
+   yum: name=ohpc-ganglia state=installed
+
+ - name: sync files
+   command: wwsh file sync
+   when: use_warewulf == true
+
+ - name: find relevant chroot directories
+   shell: "find /opt/ohpc/admin/images/ -maxdepth 1 -mindepth 1 -type d"
+   register: chroot_dirs
+   when: use_warewulf == true
+
+ - name: install gmond into chroot image
+   command: yum -y --installroot={{ item }} install ganglia-gmond-ohpc
+   with_items:
+     - "{{ chroot_dirs.stdout_lines }}"
+   when: use_warewulf == true
+
+ - name: enable gmond in vnfs 
+   command: chroot '{{ item }}' systemctl enable gmond
+   with_items:
+     - "{{ chroot_dirs.stdout_lines }}"
+   when: use_warewulf == true
+
+ - name: add gmetad.conf to headnode
+   template: src=gmetad.conf.j2 dest=/etc/ganglia/gmetad.conf
+
+ - name: add gmond.conf to headnode
+   template: src=gmond.conf.j2 dest=/etc/ganglia/gmond.conf
+
+ - name: add gmond.conf to vnfs
+   template: src=gmond.conf.j2 dest={{item}}/etc/ganglia/gmond.conf
+   with_items:
+     - "{{ chroot_dirs.stdout_lines }}"
+   when: use_warewulf == true
+
+ - name: create /var/lib/ganglia in vnfs
+   file: 
+     path: "{{ item }}/var/lib/ganglia" 
+     state: directory 
+     owner: ganglia 
+     group: ganglia
+   with_items:
+     - "{{ chroot_dirs.stdout_lines }}"
+   when: use_warewulf == true
+
+ - name: rebuild the vnfs 
+   command: wwvnfs -y --chroot "{{ item }}"
+   with_items:
+     - "{{ chroot_dirs.stdout_lines }}"
+   when: use_warewulf == true
+
+ - name: allow httpd to network connect
+   seboolean: name=httpd_can_network_connect state=yes persistent=yes
+   when: use_warewulf == true
+
+ - name: add ganglia to firewalld services
+   template: src=ganglia.xml dest=/etc/firewalld/services/ganglia.xml
+
+ - name: reload firewalld
+   command: firewall-cmd --reload
+
+ - name: add ganglia to internal zone
+   firewalld:
+     zone: internal
+     service: "ganglia"
+     permanent: yes
+     immediate: yes
+     state: enabled
+
+ - name: ganglia httpd conf
+   template: src=ganglia-ohpc.conf.j2 dest=/etc/httpd/conf.d/ganglia-ohpc.conf
+
+#   template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+#
+#
+# - name: restart httpd
+#
+ - name: start service on headnode (gmetad)
+   service: name=gmetad state=restarted enabled=yes
+
+ - name: start service on headnode (gmond)
+   service: name=gmond state=restarted enabled=yes
+
+ - name: get compute node names (wwsh)
+   shell: wwsh node list | tail -n +3 | awk '{print $1}'
+   register: node_name_list
+   when: use_warewulf == true
+
+ - name: reboot computes (wwsh)
+   command: ssh {{ item }} "reboot"
+   with_items:
+     - "{{ node_name_list.stdout_lines }}"
+   ignore_errors: yes #since you get a 'connection closed by remote host'
+   when: use_warewulf == true
+
+ - name: wait for nodes to reboot
+   pause: prompt="Hit ENTER to continue once all compute nodes have rebooted with the new image!" 
+   when: use_warewulf == true
+
+# - name: get compute node names2 (wwsh)
+#   shell: wwsh node list | tail -n +3 | awk '{print $1}'
+#   register: node_name_list
+#
+# - name: start and enable service on computes (gmond)
+#   command: ssh {{ item }} 'systemctl enable gmond && systemctl start gmond'
+#   with_items:
+#     - "{{ node_name_list.stdout_lines }}"
