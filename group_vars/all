@@ -9,6 +9,7 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
+  headnode_public_ip: "192.168.56.4" #World-accessible IP for Ganglia, etc.
   build_kernel_ver: '3.10.0-1127.13.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 
@@ -36,6 +37,10 @@
   TenGb_netmask: "255.255.255.0"
 
   local_domain: "local"
+
+#Ganglia specific variables
+  ganglia_grid_name: "ExampleSite"
+  ganglia_public_name: "ganglia.localdomain"
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
