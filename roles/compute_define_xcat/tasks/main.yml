@@ -39,7 +39,7 @@
      register: mkdns_output
      failed_when: 
        - chdef_output.rc != 0 
-       - '"DNS setup is completed" not in mkdns_output.stderr'
+       - '"DNS setup is completed" not in mkdns_output.stdout'
 
    - name: get osimage name
      shell: lsdef -t osimage | grep install-compute | awk '{print $1}'
