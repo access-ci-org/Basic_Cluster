@@ -151,6 +151,11 @@
        persistent: yes
      when: use_warewulf == 'true'
 
+   - name: disable selinux for xCAT :(
+     selinux:
+       state: disabled
+     when: use_warewulf == 'false'
+
    - name: create /export dir for software
      file: path=/export state=directory owner=root group=root mode=0777
 
