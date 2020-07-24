@@ -15,6 +15,7 @@
                "MySQL-python",
                "epel-release",
                "wget",
+               "httpd",
                "tcpdump",
                "whois",
                "lsof",
@@ -131,8 +132,8 @@
 ##       - 'tftp'
 ##       - 'samba-client'
 ##
-##   - name: firewalld restart
-##     service: name=firewalld state=restarted
+   - name: firewalld restart
+     service: name=firewalld state=restarted
  
    - name: set up /etc/hosts
      template: src=hosts.j2 dest=/etc/hosts
