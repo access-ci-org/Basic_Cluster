@@ -3,5 +3,5 @@
    roles:
 
    - {role: compute_config_xcat, tags: compute_config_xcat, when: use_warewulf == falsei, vars: { users_only: "false" } }
-   - {role: compute_config_xcat, tags: compute_config_users, when: use_warewulf == false, vars: { users_only: "true" } }
+   - {role: compute_config_xcat, tags: compute_sync_users, when: use_warewulf == false, vars: { users_only: "true" } }
    - {role: compute_ganglia_xcat, tags: compute_ganglia_xcat, when: use_warewulf == false}
