@@ -171,5 +171,5 @@
      service: name=chronyd state=restarted enabled=yes
 
    - name: start start
-     service: name=mariadb state=restarted
+     service: name=mariadb state=restarted enabled=yes
 
