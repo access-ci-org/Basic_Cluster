@@ -1,95 +1,124 @@
 ---
 
-  - name: disable CentOS repo
-    shell: rm /etc/yum.repos.d/CentOS-*
-    register: cmd_result
-    failed_when: 
-      - cmd_result.rc != 0 
-      - '"No such" not in cmd_result.stderr'
+  - name: base compute config tasks
+    block:
 
-  - name: enable headnode OpenHPC Repo
-    template: 
-      src: headnode_ohpc_repo.j2
-      dest: /etc/yum.repos.d/local-OpenHPC.repo
+    - name: disable CentOS repo
+      shell: rm /etc/yum.repos.d/CentOS-*
+      register: cmd_result
+      failed_when: 
+        - cmd_result.rc != 0 
+        - '"No such" not in cmd_result.stderr'
 
-  - name: enable headnode EPEL Repo
-    template: 
-      src: headnode_epel_repo.j2
-      dest: /etc/yum.repos.d/local-EPEL.repo
+    - name: enable headnode OpenHPC Repo
+      template: 
+        src: headnode_ohpc_repo.j2
+        dest: /etc/yum.repos.d/local-OpenHPC.repo
 
-  - name: set excludedocs for rpm
-    shell: echo -e '%_excludedocs 1' >> /root/.rpmmacros
+    - name: enable headnode EPEL Repo
+      template: 
+        src: headnode_epel_repo.j2
+        dest: /etc/yum.repos.d/local-EPEL.repo
 
-  - name: yum install client packages
-    yum:
-      name: [
-             "ohpc-base-compute",
-             "ohpc-slurm-client",
-             "chrony",
-             "kernel",
-             "lmod-ohpc"
-            ]
-      state: latest
+    - name: set excludedocs for rpm
+      shell: echo -e '%_excludedocs 1' >> /root/.rpmmacros
 
-  - name: add headnode to compute chrony.conf
-    lineinfile: 
-      path: /etc/chrony.conf 
-      line: "server {{ headnode_private_ip }}" 
-      state: present
+    - name: yum install client packages
+      yum:
+        name: [
+               "ohpc-base-compute",
+               "ohpc-slurm-client",
+               "chrony",
+               "kernel",
+               "lmod-ohpc"
+              ]
+        state: latest
 
-  - name: restart and enable chronyd
-    service:
-      name: chronyd
-      enabled: yes
-      state: restarted
+    - name: add headnode to compute chrony.conf
+      lineinfile: 
+        path: /etc/chrony.conf 
+        line: "server {{ headnode_private_ip }}" 
+        state: present
 
-  - name: put NFS home mount in fstab
-    lineinfile: 
-      line: "{{ headnode_private_ip }}:/home /home nfs defaults 0 0" 
-      path: /etc/fstab 
-      state: present
+    - name: restart and enable chronyd
+      service:
+        name: chronyd
+        enabled: yes
+        state: restarted
 
-  - name: create /export 
-    file: 
-      path: /export
-      state: directory
-      mode: 0777
+    - name: put NFS home mount in fstab
+      lineinfile: 
+        line: "{{ headnode_private_ip }}:/home /home nfs defaults 0 0" 
+        path: /etc/fstab 
+        state: present
 
-  - name: put NFS opt mount in fstab
-    lineinfile: 
-      line: "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs defaults 0 0" 
-      path: /etc/fstab 
-      state: present
+    - name: create /export 
+      file: 
+        path: /export
+        state: directory
+        mode: 0777
 
-  - name: put NFS opt mount in fstab 
-    lineinfile: 
-      line: "{{ headnode_private_ip }}:/export /export nfs defaults 0 0" 
-      path: /etc/fstab 
-      state: present
+    - name: put NFS opt mount in fstab
+      lineinfile: 
+        line: "{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs defaults 0 0" 
+        path: /etc/fstab 
+        state: present
 
-  - name: restrict SSH to users with running jobs
-    lineinfile: 
-      line: "account    required     pam_slurm.so" 
-      path: /etc/pam.d/sshd
-      state: present
+    - name: put NFS opt mount in fstab 
+      lineinfile: 
+        line: "{{ headnode_private_ip }}:/export /export nfs defaults 0 0" 
+        path: /etc/fstab 
+        state: present
 
-  - name: mount NFS shares
-    command: mount -a
+    - name: restrict SSH to users with running jobs
+      lineinfile: 
+        line: "account    required     pam_slurm.so" 
+        path: /etc/pam.d/sshd
+        state: present
 
-  - name: copy munge.key over
-    copy: src=/etc/munge/munge.key dest=/etc/munge/munge.key
+    - name: mount NFS shares
+      command: mount -a
+
+    - name: copy munge.key over
+      copy: src=/etc/munge/munge.key dest=/etc/munge/munge.key
  
-  - name: copy slurm.conf over
-    copy: src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf
+    - name: copy slurm.conf over
+      copy: src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf
  
-  - name: enable munge
-    service:
-      name: munge
-      state: restarted
-      enabled: yes
+    - name: enable munge
+      service:
+        name: munge
+        state: restarted
+        enabled: yes
 
-  - name: enable slurmd
-    service:
-      name: slurmd
-      state: restarted
-      enabled: yes
+    - name: enable slurmd
+      service:
+        name: slurmd
+        state: restarted
+        enabled: yes
+    when: users_only != "true"
+
+# Grab users on headnode via getent and awk to filter out system users
+  - name: gather list of users
+    local_action: 
+      module: shell
+      cmd: getent passwd | awk -F ':' '$3 >= 1000 && $3 < 65534 {print $1 ":" $3 }' 
+    run_once: true
+    register: raw_users
+
+#  - debug:
+#      var: raw_users
+#
+#  - debug:
+#      var: "{{ raw_users.stdout_lines[0] | regex_replace('^(.*):.*$','\\1') }}"
+
+# filter via regex_replace on the "username:uid" line we got above, send those into the user module
+#  It's not pretty, but it was easier than getting out a list of users in a proper yaml dict.
+  - name: create user on computes
+    user: 
+      name: "{{ item | regex_replace('^(.*):.*$','\\1') }}"
+      uid: "{{ item | regex_replace('^.*:(.*)$','\\1') }}"
+      create_home: no
+      state: present
+    with_items: 
+      - "{{ raw_users.stdout_lines }}"
