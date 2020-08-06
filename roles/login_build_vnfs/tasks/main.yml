@@ -45,13 +45,13 @@
      copy: src=cluster_root.pub dest={{ login_chroot_loc }}/root/.ssh/authorized_keys
 
    - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ login_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on login image enabled 
      command: chroot '{{ login_chroot_loc }}' systemctl enable chronyd

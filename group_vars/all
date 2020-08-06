@@ -20,6 +20,14 @@
   gpu_ip_minimum: "10.0.0.128" #This could be more clever, like compute_ip_minimum + num_nodes...
   enable_compute_NAT: true
 
+# Optional network vars
+  ib_network: "10.3.1.0"
+  ib_netmask: "255.255.255.0"
+  headnode_ib_ip: "10.3.1.254"
+
+#Storage mount interface  
+  mount_ip: "{{ headnode_ib_ip }}"
+
 #slurm.conf variables
   cluster_name: "xcbc-example"
 #  gres_types: "gpu"
