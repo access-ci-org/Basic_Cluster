@@ -115,10 +115,10 @@
    - name: put NFS opt mount info in image
      lineinfile: line="{{ mount_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
-   - name: chronyd on compute image enabled 
+   - name: chronyd on gpu image enabled 
      command: chroot '{{ gpu_chroot_loc }}' systemctl enable chronyd
 
-   - name: add headnode to compute chrony.conf
+   - name: add headnode to gpu chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
 
    - name: wwimport file (gres.conf)
