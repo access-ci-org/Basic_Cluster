@@ -80,6 +80,11 @@
        state: started
        enabled: yes
 
+
+   - name: wait for 30s to let slurmdbd fully start
+     wait_for:
+       timeout: 30
+
    - name: load sacctmgr config
      command: sacctmgr -i load /etc/slurm/sacctmgr-heirarchy.cfg
 
