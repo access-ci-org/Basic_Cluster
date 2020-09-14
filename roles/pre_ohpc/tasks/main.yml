@@ -38,7 +38,7 @@
  #otherwise, do a dnf update --skip-broken, dnf update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
-     dnf: name={{ openhpc_release_rpm }} state=present
+     dnf: name={{ openhpc_release_rpm }} state=present disable_gpg_check=yes
  
    - name: install epel-based dependencies
      dnf: 
