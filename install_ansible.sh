@@ -4,7 +4,7 @@ dnf -y install python38-devel python38-setuptools gcc libffi-devel openssl-devel
 pip3 install virtualenv
 mkdir -p $HOME/ansible_env
 cd $HOME/ansible_env
-virtualenv ansible
+python3 -m virtualenv ansible
 source $HOME/ansible_env/ansible/bin/activate 
 git clone --single-branch --branch stable-2.9 https://github.com/ansible/ansible.git --recursive ./ansible_source
 #pexpect has to be 3.3 because new 4.01 version only
