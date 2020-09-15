@@ -48,6 +48,7 @@
        name: "{{ openhpc_release_rpm }}" 
        state: present
        installroot: "{{ compute_chroot_loc }}"
+       disable_gpg_check: yes
 
    - name: dnf install into the image chroot
      dnf:
@@ -86,6 +87,9 @@
 
    - name: slurmd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable slurmd
+
+   - name: munge on compute image enabled 
+     command: chroot '{{ compute_chroot_loc }}' systemctl enable munge
 
    - name: sssd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable sssd
