@@ -9,9 +9,11 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s9" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
+
   headnode_public_ip: "192.168.56.4" #World-accessible IP for Ganglia, etc.
   build_kernel_ver: '3.10.0-1127.13.1.el7.x86_64' # `uname -r` at build time... for wwbootstrap
   headnode_dns_server: "10.0.2.3"
+  dhcpd_enabled: true
 
 
 #Provisioning System: True for Warewulf, False for xCAT
@@ -24,6 +26,7 @@
   ohpc_repo_dir: "/opt/ohpc/ohpc_repo"
   epel_repo_dir: "/opt/ohpc/epel_repo"
 
+
 #Private network Info
   private_network: "10.0.0.0"  
   private_network_mask: "24"
@@ -33,15 +36,22 @@
   gpu_ip_minimum: "10.0.0.128" #This could be more clever, like compute_ip_minimum + num_nodes...
   enable_compute_NAT: true
 
-#option 10Gb network info
+# Optional network vars
   TenGb_network: "10.0.2.0"
   TenGb_netmask: "255.255.255.0"
-
+  ib_network: "10.3.1.0"
+  ib_netmask: "255.255.255.0"
+  headnode_ib_ip: "10.3.1.254"
+  
   local_domain: "local"
 
 #Ganglia specific variables
   ganglia_grid_name: "ExampleSite"
   ganglia_public_name: "ganglia.localdomain"
+
+#Storage mount interface  
+  mount_ip: "{{ headnode_ib_ip }}"
+
 
 #slurm.conf variables
   cluster_name: "xcbc-example"
@@ -60,7 +70,9 @@
   nvidia_driver_installer: "NVIDIA-Linux-x86_64-387.26.run"
   cuda_toolkit_installer: "cuda-linux.9.1.85-23083092.run"
   cuda_samples_installer: "cuda-samples.9.1.85-23083092-linux.run"
-
+  nvidia_driver_args: "-k {{ kernel_ver.stdout }} --kernel-install-path=/lib/modules/{{ kernel_ver.stdout }}/kernel/drivers/video -z -s -X"
+  cuda_toolkit_args: "--noprompt --prefix=/export/cuda"
+  cuda_samples_args: "--noprompt --prefix=/export/cuda/samples --cudaprefix=/export/cuda"
 
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
@@ -106,7 +118,7 @@
    - { name: "gpu-compute-1", vnfs: '{{gpu_chroot}}', gpus: 4, gpu_type: "gtx_TitanX", cpus: 16, sockets: 2, corespersocket: 8,  mac: "0c:c4:7a:6e:9d:6e", ip: "10.2.255.47"}
  
   viz_nodes:
-   - { name: "viz-node-0-0", vnfs: gpu_chroot, gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
+   - { name: "viz-node-0-0", vnfs: '{{gpu_chroot}}', gpus: 2, gpu_type: nvidia_gtx_780, cpus: 8, sockets: 2, corespersocket: 4,  mac: "foo", ip: "bar"}
 
 #Slurm Accounting Variables - little need to change these
   slurm_acct_db: "slurmdb"
@@ -115,9 +127,14 @@
   slurmdb_sql_pass: "password" #could force this to be a hash... 
   slurmdb_sql_user: slurm
 
+# Active Directory Integration
+  enable_active_directory: false
+
 #automatic variables for internal use
 # Don't edit these!
   compute_node_glob: "{{ compute_node_prefix }}[0-{{ num_compute_nodes|int - 1}}]"
   gpu_node_glob: "{{ gpu_node_prefix }}[0-{{ num_gpu_nodes|int - 1}}]"
+  compute_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
+  gpu_node_glob_bash: "{{ gpu_node_prefix }}{0..{{ num_gpu_nodes|int - 1}}}"
+  # to be deprecated:
   node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"
-  gpu_node_glob_bash: "{{ compute_node_prefix }}{0..{{ num_compute_nodes|int - 1}}}"

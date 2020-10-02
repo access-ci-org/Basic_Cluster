@@ -43,7 +43,18 @@
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ compute_chroot_loc }} install chrony kernel lmod-ohpc grub2 freeipmi ipmitool ohpc-slurm-client 
+     yum:
+       name: "{{ packages }}"
+       installroot: "{{ compute_chroot_loc }}"
+     vars:
+       packages:
+         - chrony
+         - kernel
+         - lmod-ohpc
+         - grub2
+         - freeipmi
+         - ipmitool
+         - ohpc-slurm-client
 #" for vim
 
    - name: copy ssh keys over
@@ -53,13 +64,13 @@
      copy: src=/etc/slurm/slurm.conf dest={{ compute_chroot_loc }}/etc/slurm/slurm.conf
 
    - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /export nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/export /export nfs nfsvers=3 0 0" dest={{ compute_chroot_loc }}/etc/fstab state=present
 
    - name: chronyd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable chronyd
@@ -69,6 +80,10 @@
 
    - name: slurmd on compute image enabled 
      command: chroot '{{ compute_chroot_loc }}' systemctl enable slurmd
+
+   - name: sssd on compute image enabled 
+     command: chroot '{{ compute_chroot_loc }}' systemctl enable sssd
+     when: enable_active_directory == true
 
    - name: wwimport file into image (passwd)
      command: wwsh file import /etc/passwd
@@ -84,6 +99,16 @@
 
    - name: wwimport file into image (munge)
      command: wwsh file import /etc/munge/munge.key
+
+   - name: import Active Directory files into image
+     block:
+       - name: wwimport file into image (krb5.keytab)
+         command: wwsh file import /etc/krb5.keytab
+       - name: wwimport file into image (krb5.conf)
+         command: wwsh file import /etc/krb5.conf
+       - name: wwimport file into image (sssd.conf)
+         command: wwsh file import /etc/sssd/sssd.conf
+     when: enable_active_directory == true
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}

@@ -106,6 +106,6 @@ NodeName=compute-0 Sockets=1 CoresPerSocket=1 State=UNKNOWN
 NodeName=compute-1 Sockets=1 CoresPerSocket=1 State=UNKNOWN
 #NodeName=gpu-compute-1 Gres=gpu:gtx_TitanX:4 Sockets=2 CoresPerSocket=8 State=UNKNOWN
 # PARTITIONS
-#PartitionName=high Nodes=compute-[0-1] Default=YES MaxTime=INFINITE State=UP PriorityTier=10
-#PartitionName=gpu  Nodes=gpu-compute-1 Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
-PartitionName=low  Nodes=compute-[0-1] Default=YES MaxTime=2-00:00:00 State=UP 
+#PartitionName=high Nodes={{ compute_node_glob }} Default=YES MaxTime=INFINITE State=UP PriorityTier=10
+#PartitionName=gpu  Nodes={{ gpu_node_glob }} Default=YES MaxTime=INFINITE State=UP PriorityTier=5 AllowGroups=slurmusers
+PartitionName=low  Nodes={{ compute_node_glob }} Default=YES MaxTime=2-00:00:00 State=UP 

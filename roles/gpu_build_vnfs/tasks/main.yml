@@ -13,11 +13,23 @@
      copy: src=/etc/resolv.conf dest="{{ gpu_chroot_loc }}/etc/resolv.conf" #"
 
    - name: yum install into the image chroot
-     command: yum -y --installroot={{ gpu_chroot_loc }} install chrony kernel lmod-ohpc grub2 glibc-devel glibc-headers kernel-devel kernel-headers dkms gcc
+     yum:
+       name: "{{ packages }}"
+       installroot:  "{{ gpu_chroot_loc }}"
+     vars:
+       packages:
+         - chrony
+         - kernel
+         - lmod-ohpc
+         - grub2
+         - glibc-devel
+         - glibc-headers
+         - kernel-devel
+         - kernel-headers
+         - dkms
+         - gcc
+         - ohpc-slurm-client
 #" for vim
-
-   - name: yum install slurm client into image
-     command: yum -y --installroot={{ gpu_chroot_loc }} groupinstall ohpc-slurm-client
 
    - name: create export dir
      file: path="{{ gpu_chroot_loc }}/export" state=directory
@@ -27,6 +39,8 @@
 # commented ^ out because ansible adds these entries to fstab!!!
    - name: mount necessary bits
      command: mount -o rw,bind "{{ item.src }}" "{{ item.path }}"
+     args:
+       warn: no
      with_items:
       - { src: /proc/, path: "{{ gpu_chroot_loc }}/proc/" }
       - { src: /dev/,  path: "{{ gpu_chroot_loc }}/dev/"  }
@@ -50,17 +64,17 @@
    - name: build nvidia kernel modules in the vnfs
      shell: chroot {{ gpu_chroot_loc }} {{ nvidia_kernel_build_cmd }}
      vars:
-       nvidia_kernel_build_cmd: "/root/nvidia_build/{{ nvidia_driver_installer }} -k {{ kernel_ver.stdout }} --kernel-install-path=/lib/modules/{{ kernel_ver.stdout }}/kernel/drivers/video -z -s -X"
+       nvidia_kernel_build_cmd: "/root/nvidia_build/{{ nvidia_driver_installer }} {{ nvidia_driver_args }}"
 
    - name: build cuda toolkit
      shell: chroot {{ gpu_chroot_loc }} {{ cuda_toolkit_build_cmd }}
      vars:
-       cuda_toolkit_build_cmd: "/root/nvidia_build/{{ cuda_toolkit_installer }} --noprompt --prefix=/export/cuda"
+       cuda_toolkit_build_cmd: "/root/nvidia_build/{{ cuda_toolkit_installer }} {{ cuda_toolkit_args }}"
 
    - name: build cuda samples
      shell: chroot {{ gpu_chroot_loc }} {{ cuda_samples_build_cmd }}
      vars:
-       cuda_samples_build_cmd: "/root/nvidia_build/{{ cuda_samples_installer }} --noprompt --prefix=/export/cuda/samples --cudaprefix=/export/cuda"
+       cuda_samples_build_cmd: "/root/nvidia_build/{{ cuda_samples_installer }} {{ cuda_samples_args }}"
 
 #     mount: path={{ item.path }} state=unmounted
    - name: unmount necessary bits
@@ -93,18 +107,18 @@
      copy: src=cluster_root.pub dest={{ gpu_chroot_loc }}/root/.ssh/authorized_keys
 
    - name: put NFS home mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/opt/ohpc/pub /opt/ohpc/pub-master nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
    - name: put NFS opt mount info in image
-     lineinfile: line="{{ headnode_private_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
+     lineinfile: line="{{ mount_ip }}:/export /share nfs nfsvers=3 0 0" dest={{ gpu_chroot_loc }}/etc/fstab state=present
 
-   - name: chronyd on compute image enabled 
+   - name: chronyd on gpu image enabled 
      command: chroot '{{ gpu_chroot_loc }}' systemctl enable chronyd
 
-   - name: add headnode to compute chrony.conf
+   - name: add headnode to gpu chrony.conf
      lineinfile: line="server {{ headnode_private_ip }}" dest={{ gpu_chroot_loc }}/etc/chrony.conf state=present
 
    - name: wwimport file (gres.conf)
@@ -124,6 +138,16 @@
 
    - name: wwimport file (munge)
      command: wwsh file import /etc/munge/munge.key
+
+   - name: import Active Directory files into image
+     block:
+       - name: wwimport file into image (krb5.keytab)
+         command: wwsh file import /etc/krb5.keytab
+       - name: wwimport file into image (krb5.conf)
+         command: wwsh file import /etc/krb5.conf
+       - name: wwimport file into image (sssd.conf)
+         command: wwsh file import /etc/sssd/sssd.conf
+     when: enable_active_directory == true
 
    - name: build bootstrap image
      shell: wwbootstrap {{ build_kernel_ver }}

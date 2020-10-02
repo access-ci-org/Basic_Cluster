@@ -1,0 +1,103 @@
+---
+   - block:
+
+     - name: add node to ww db
+       include_tasks: list_and_add.yml
+       with_items: "{{ nodes }}"
+
+     - name: set node gateway in ww db
+       command: wwsh -y node set {{ item.name }} --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }}
+       with_items: "{{ nodes }}"
+       when: enable_compute_NAT == true
+
+     - name: provision stateful node
+       include_tasks: provision_stateful_node.yml
+       with_items: "{{ nodes }}"
+       when: stateful_nodes == true
+
+     - name: update pxeconfig to force node to boot from pxe
+       command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
+       with_items: "{{ nodes }}"
+       when: stateful_nodes == false
+
+     - name: set files to provision
+       command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files={{ base_provision_files }}
+       with_items: "{{ nodes }}"
+     - name: add Active Directory files to provision
+       command: wwsh -y provision set {{ item.name }} --fileadd={{ ad_provision_files }}
+       with_items: "{{ nodes }}"
+       when: enable_active_directory == true
+
+     - name: remove node from slurm.conf if it exists already
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         regexp: "^NodeName={{ item.name }} "
+         state: absent
+       with_items: "{{ nodes }}"
+     - name: add node to slurm.conf
+       lineinfile:
+         dest: /etc/slurm/slurm.conf
+         line: "NodeName={{ item.name }} Sockets={{ item.sockets }} CoresPerSocket={{ item.corespersocket }}{% if item.gpu_type is defined %} Gres=gpu:{{ item.gpu_type }}:{{ item.gpus }}{% endif %} State=UNKNOWN"
+         insertbefore: "^# PARTITIONS"
+         state: present
+       with_items: "{{ nodes }}"
+
+     - block:
+       - name: remove gpu node from gres.conf if it exists already
+         lineinfile:
+           dest: /etc/slurm/gres.conf
+           regexp: "^NodeName={{ item.name }} "
+           state: absent
+         with_items: "{{ nodes }}"
+       - name: add gpu node info to slurm/gres.conf
+         lineinfile:
+           dest: /etc/slurm/gres.conf
+           line: "NodeName={{ item.name }} Name=gpu Type={{ item.gpu_type }} File=/dev/nvidia[0-{{ item.gpus - 1 }}]"
+           insertafter: "^#######"
+           state: present
+         with_items: "{{ nodes }}"
+       when: item.gpu_type is defined
+
+     when: node_inventory_auto == false
+
+   - block:
+     - name: add nodes via wwnodescan - BOOT NODES {{ node_glob }} NOW, IN ORDER
+       shell: wwnodescan --listen={{ private_interface }} --ip={{ ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ chroot }} {{ node_glob_bash }}
+
+     - name: set node glob gateway in ww db
+       command: wwsh -y node set --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }} {{ node_glob }} 
+       when: enable_compute_NAT == true
+
+     - name: provision stateful node glob
+       include_tasks: provision_stateful_node.yml
+       with_items: 
+           - "{ name: {{ node_glob }} }"
+       when: stateful_nodes == true
+
+     - name: update pxeconfig to force node glob to boot from pxe
+       command: wwsh -y object modify -D bootlocal -t node {{ node_glob }}
+       when: stateful_nodes == false
+
+     - name: set files to provision for node glob
+       command: wwsh -y provision set --vnfs={{ chroot }} --bootstrap={{ build_kernel_ver }} --files={{ base_provision_files }} {{ node_glob }}
+     - name: add Active Directory files to provision for node glob
+       command: wwsh -y provision set --fileadd={{ ad_provision_files }} {{ node_glob }}
+       when: enable_active_directory == true
+
+     when: node_inventory_auto == true
+
+   - name: wwsh file sync
+     command: wwsh file sync
+
+   - name: restart dhcp if required
+     service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
+
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
+
+   - name: wwsh pxe update
+     command: wwsh -v pxe update
+     register: command_result
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"

@@ -6,7 +6,7 @@
 #     with_items: "{{ viz_nodes }}"
 
    - name: add node to ww db
-     command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ private_interface }}
+     include_tasks: list_and_add.yml
      with_items: "{{ viz_nodes }}"
 
    - name: set nodes bootloader
@@ -25,7 +25,16 @@
      command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
      with_items: "{{ viz_nodes }}"
 #" for vim
-  
+
+   - name: set files to provision
+     command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
+     with_items: "{{ viz_nodes }}"
+
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     with_items: "{{ viz_nodes }}"
+     when: enable_active_directory == true
+
    - name: remove node from slurm.conf if it exists already # to avoid duplication!
      lineinfile:
        dest: /etc/slurm/slurm.conf
@@ -45,9 +54,19 @@
      command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network,slurm.conf
      with_items: "{{ viz_nodes }}"
 
-   - name: restart dhcp
-     service: name=dhcpd state=restarted
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     with_items: "{{ viz_nodes }}"
+     when: enable_active_directory == true
+
+   - name: restart dhcp if required
+     service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
  
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
+
    - name: update pxeconfig to let node boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ item.name }}
      with_items: "{{ compute_nodes }}"
@@ -55,4 +74,4 @@
    - name: wwsh pxe update
      command: wwsh -v pxe update
      register: command_result
-     failed_when: "'Building Pxelinux' not in command_result.stdout"
+     failed_when: "'Building iPXE' not in command_result.stdout and 'Building Pxelinux' not in command_result.stdout"

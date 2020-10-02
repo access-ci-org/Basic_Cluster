@@ -1,0 +1,12 @@
+---
+
+- name: set node bootloader
+  command: wwsh -y object modify -s bootloader=sda -t node {{ item.name }}
+- name: set node partitions
+  command: wwsh -y object modify -s diskpartition=sda -t node {{ item.name }}
+- name: format partitions
+  command: wwsh -y object modify -s diskformat=sda1,sda2,sda3 -t node {{ item.name }}
+- name: define filesystems
+  command: wwsh -y object modify -s filesystems="{{ sda1 }},{{ sda2 }},{{ sda3 }}" -t node {{ item.name }}
+- name: update pxeconfig to let node boot from local disk
+  command: wwsh -y object modify -s bootlocal=EXIT -t node {{ item.name }}

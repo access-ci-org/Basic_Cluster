@@ -13,11 +13,11 @@
 #       msg: "Quick fail for test!"
 
    - block:
-     - name: add node to ww db
-       command: wwsh -y node new {{ item.name }} --ipaddr={{ item.ip }} --hwaddr={{ item.mac }} -D {{ compute_private_nic }}
+     - name: add missing node to ww db
+       include_tasks: list_and_add.yml
        with_items: "{{ compute_nodes }}"
   
-     - name: add node to ww db
+     - name: set node gateway in ww db
        command: wwsh -y node set {{ item.name }} --gateway={{ headnode_private_ip }} -D {{ compute_private_nic }}
        with_items: "{{ compute_nodes }}"
        when: enable_compute_NAT == true
@@ -47,6 +47,11 @@
        command: wwsh -y provision set {{ item.name }} --vnfs={{ item.vnfs }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
        with_items: "{{ compute_nodes }}"
 
+     - name: add Active Directory files to provision
+       command: wwsh -y provision set {{ item.name }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+       with_items: "{{ compute_nodes }}"
+       when: enable_active_directory == true
+
      - name: remove node from slurm.conf if it exists already # to avoid duplication!
        lineinfile:
          dest: /etc/slurm/slurm.conf
@@ -65,16 +70,20 @@
      when: node_inventory_auto == false
 
    - name: add nodes via wwnodescan, no NAT - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
      when: node_inventory_auto == true and enable_compute_NAT != true
 
    - name: add nodes via wwnodescan, NAT enabled - BOOT NODES NOW, IN ORDER
-     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ private_interface }} --netmask=255.255.255.0 --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
+     shell: wwnodescan --listen={{ private_interface }} --ip={{ compute_ip_minimum }} --netdev={{ compute_private_nic }} --netmask={{ private_network_long_netmask }} --bootstrap={{ build_kernel_ver }} --vnfs={{ compute_chroot }} {{ node_glob_bash }}
      when: node_inventory_auto == true and enable_compute_NAT == true
 
    - name: set files to provision
      command: wwsh -y provision set {{ compute_node_glob }} --vnfs={{ compute_chroot }} --bootstrap={{ build_kernel_ver }} --files=passwd,group,shadow,munge.key,slurm.conf,dynamic_hosts,network
      when: node_inventory_auto == true
+
+   - name: add Active Directory files to provision
+     command: wwsh -y provision set {{ compute_node_glob }} --fileadd=krb5.keytab,krb5.conf,sssd.conf
+     when: node_inventory_auto == true and enable_active_directory == true
 
    - name: sync files #also generates dynamic hosts on headnode!
      command: wwsh file sync
@@ -85,8 +94,13 @@
 #   - name: wait for compute nodes to boot
 #     local_action: wait_for host={{ last_node }} state=started delay=30 timeout=600
 
-   - name: restart dhcp
+   - name: restart dhcp if required
      service: name=dhcpd state=restarted enabled=yes
+     when: dhcpd_enabled == true
+
+   - name: disable dhcp if required
+     service: name=dhcpd state=stopped enabled=no
+     when: dhcpd_enabled == false
 
    - name: update pxeconfig to force node to boot from pxe
      command: wwsh -y object modify -D bootlocal -t node {{ compute_node_glob}}

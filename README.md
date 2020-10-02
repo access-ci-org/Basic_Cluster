@@ -20,3 +20,5 @@ None of these Ansible roles actually touch the compute nodes directly - at most,
 trigger a reboot. 
 
 A more detailed description is available in the /doc folder.
+
+[![NSF-1548562](https://img.shields.io/badge/NSF-1548562-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1548562)
