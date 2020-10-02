@@ -1,5 +1,89 @@
 ---
 
+   - name: get OpenHPC Repo #hardcoded version # :(
+     yum: name={{ openhpc_release_rpm }} state=present
+
+   - name: get repo creation rools
+     yum: 
+       name: [
+              "yum-utils",
+              "createrepo"
+             ]
+       state: latest
+     when: use_warewulf == false
+
+   - name: create OpenHPC local repo dir
+     file:
+       path: "{{ ohpc_repo_dir }}"
+       state: directory
+       mode: '0755'
+     when: use_warewulf == false
+
+   - name: download OpenHPC repo tarball for local use
+     unarchive: 
+       src: "{{ openhpc_repo_tarball }}"
+       dest: "{{ ohpc_repo_dir }}"
+       remote_src: yes
+     when: use_warewulf == false
+
+   - name: create local OpenHPC Repo
+     command: "{{ ohpc_repo_dir }}/make_repo.sh"
+     when: use_warewulf == false
+
+   - name: create local EPEL repo dir
+     file:
+       path: "{{ epel_repo_dir }}"
+       state: directory
+       mode: '0755'
+     when: use_warewulf == false
+
+   - name: download required EPEL packages
+     command: yumdownloader --destdir "{{ epel_repo_dir }}" fping qstat libconfuse python34 python34-libs
+     when: use_warewulf == false
+
+#This failed on initial run, works on the shell.
+   - name: create local EPEL repo
+     command: createrepo {{ epel_repo_dir }}/
+
+   - name: create local repo http conf
+     template: src=local-repo.j2 dest=/etc/httpd/conf.d/local-repo.conf
+ 
+   - name: get xCAT core Repo 
+     get_url:
+       url: "{{ xCAT_core_repo }}"
+       dest: /etc/yum.repos.d/
+       mode: '0440'
+     when: use_warewulf == false
+ 
+   - name: get xCAT dependencies Repo 
+     get_url:
+        url: "{{ xCAT_dep_repo }}"
+        dest: /etc/yum.repos.d/
+        mode: '0440'
+     when: use_warewulf == false
+
+   - name: create ISO storage location
+     file:
+        path: /opt/iso/
+        state: directory
+        mode: '0755'
+     when: use_warewulf == false
+
+   - name: get CentOS ISO Checksum
+     shell: wget -q -O - "{{ CentOS_checksums_url }}" | grep "{{ CentOS_iso_version }}" | cut -d' ' -f 1
+     register: centos_iso_sha256sum
+
+   - name: check checksum output
+     debug:
+       var: centos_iso_sha256sum
+
+   - name: get CentOS ISO
+     get_url:
+        url: "{{ CentOS_iso_url }}"
+        dest: /opt/iso/
+        checksum: "sha256:{{ centos_iso_sha256sum.stdout }}"
+     when: use_warewulf == false
+ 
    - name: install OpenHPC base, warewulf, slurm server, and compiler packages
      yum:
        name: [ 
@@ -11,6 +95,22 @@
                "gnu-compilers-ohpc"
              ]
        state: latest
+     when: use_warewulf == true
+
+#ohpc-base ohpc-slurm-server lmod-defaults-gnu-openmpi-ohpc openmpi-gnu-ohpc gnu-compilers-ohpc xCAT
+
+   - name: install OpenHPC base, xCAT, slurm server, and compiler packages
+     yum:
+       name: [ 
+               "ohpc-base",
+               "ohpc-slurm-server",
+               "lmod-defaults-gnu-openmpi-ohpc",
+               "openmpi-gnu-ohpc", 
+               "gnu-compilers-ohpc",
+               "xCAT"
+             ]
+       state: latest
+     when: use_warewulf == false
 
    - name: yum update
      yum: name=* state=latest update_cache=yes
@@ -35,6 +135,8 @@
 
    - name: insert rhel-xcbc WW template
      copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
+     when: use_warewulf == true
+
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
@@ -42,6 +144,8 @@
        insertafter: '^\$ENV\{\"PATH\"\}'
        line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
        state: present
+     when: use_warewulf == true
+
 
    - name: fix the warewulf wwnodescan script... ARGH (line 96)
      lineinfile: 
@@ -49,8 +153,8 @@
        insertafter: '^\$ENV\{\"PATH\"\}'
        line: "delete @ENV{'PATH', 'IFS', 'CDPATH', 'ENV', 'BASH_ENV'};"
        state: present
+     when: use_warewulf == true
 
- 
    - name: initialize slurmdb databases
      mysql_db:
        name: "{{ slurm_acct_db }}"

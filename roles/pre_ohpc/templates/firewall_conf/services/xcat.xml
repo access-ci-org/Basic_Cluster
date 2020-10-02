@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>xCATd</short>
+  <description> 
+  Additional ports required for xCAT Headnode-compute node communication.
+  </description>
+  <port protocol="tcp" port="3001"/>
+  <port protocol="udp" port="3001"/>
+  <port protocol="tcp" port="3002"/>
+  <port protocol="udp" port="3002"/>
+  <port protocol="tcp" port="3003"/>
+  <port protocol="udp" port="7"/>
+  <port protocol="tcp" port="657"/>
+  <port protocol="udp" port="657"/>
+  <port protocol="tcp" port="782"/>
+  <port protocol="tcp" port="1058"/>
+  <port protocol="tcp" port="4011"/>
+  <port protocol="tcp" port="300"/>
+  <port protocol="tcp" port="623"/>
+  <port protocol="udp" port="623"/>
+</service>

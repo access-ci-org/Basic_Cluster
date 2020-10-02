@@ -1,0 +1,7 @@
+#TODO: generate this during compute_define_xcat 
+[compute-nodes]
+compute-0 ansible_host=10.0.0.2 ansible_connection=ssh ansible_ssh_user=root
+compute-1 ansible_host=10.0.0.3 ansible_connection=ssh ansible_ssh_user=root
+
+[gpu-nodes]
+compute-1 ansible_host=10.0.0.3 ansible_connection=ssh ansible_ssh_user=root

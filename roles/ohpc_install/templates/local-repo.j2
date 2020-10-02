@@ -1,0 +1,14 @@
+AliasMatch ^{{ ohpc_repo_dir }}(.*)$ "{{ ohpc_repo_dir }}$1"
+<Directory "{{ ohpc_repo_dir }}">
+    Options Indexes FollowSymLinks Includes MultiViews
+    AllowOverride None
+    Require all granted
+</Directory>
+
+AliasMatch ^{{ epel_repo_dir }}(.*)$ "{{ epel_repo_dir }}$1"
+<Directory "{{ epel_repo_dir }}">
+    Options Indexes FollowSymLinks Includes MultiViews
+    AllowOverride None
+    Require all granted
+</Directory>
+

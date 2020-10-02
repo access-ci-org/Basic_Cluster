@@ -15,6 +15,7 @@
                "MySQL-python",
                "epel-release",
                "wget",
+               "httpd",
                "tcpdump",
                "whois",
                "lsof",
@@ -26,6 +27,7 @@
                "chrony",
                "pciutils",
                "rsync",
+               "mariadb-server",
                "bash-completion",
                "libselinux-python",
                "libsemanage-python",
@@ -37,9 +39,6 @@
 #       - "lua"  # testing; this could fix the lmod-ohpc issue?
  #otherwise, do a yum update --skip-broken, yum update...
 
-   - name: get OpenHPC Repo #hardcoded version # :(
-     yum: name={{ openhpc_release_rpm }} state=present
- 
    - name: install fail2ban # separate b/c it's in epel
      yum: name=fail2ban state=latest 
 
@@ -53,6 +52,8 @@
 
    - template: src=firewall_conf/services/slurm.xml dest=/etc/firewalld/services/slurm.xml
  
+   - template: src=firewall_conf/services/xcat.xml dest=/etc/firewalld/services/xcat.xml
+
    - template: src=firewall_conf/firewalld.conf dest=/etc/firewalld/firewalld.conf
 
    - template: src=firewall_conf/zones/internal.xml dest=/etc/firewalld/zones/internal.xml
@@ -131,8 +132,8 @@
 ##       - 'tftp'
 ##       - 'samba-client'
 ##
-##   - name: firewalld restart
-##     service: name=firewalld state=restarted
+   - name: firewalld restart
+     service: name=firewalld state=restarted
  
    - name: set up /etc/hosts
      template: src=hosts.j2 dest=/etc/hosts
@@ -148,6 +149,12 @@
        name: use_nfs_home_dirs
        state: yes
        persistent: yes
+     when: use_warewulf == 'true'
+
+   - name: disable selinux for xCAT :(
+     selinux:
+       state: disabled
+     when: use_warewulf == 'false'
 
    - name: create /export dir for software
      file: path=/export state=directory owner=root group=root mode=0777
@@ -162,4 +169,7 @@
  
    - name: enable and restart chrony
      service: name=chronyd state=restarted enabled=yes
+
+   - name: start start
+     service: name=mariadb state=restarted enabled=yes
 

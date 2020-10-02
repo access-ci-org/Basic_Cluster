@@ -1,0 +1,23 @@
+---
+  
+  - name: install gmond
+    yum:
+      name: ganglia-gmond-ohpc
+      state: latest
+
+  - name: add gmond.conf to vnfs
+    template: src=gmond.conf.j2 dest=/etc/ganglia/gmond.conf
+
+  - name: create /var/lib/ganglia in vnfs
+    file: 
+      path: "/var/lib/ganglia" 
+      state: directory 
+      owner: ganglia 
+      group: ganglia
+
+  - name: start gmond service
+    service: 
+      name: gmond 
+      state: restarted 
+      enabled: yes
+

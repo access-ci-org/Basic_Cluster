@@ -1,0 +1,34 @@
+---
+
+   - name: check current kernel version
+     shell: uname -r | sed "s/.$(uname -m)//"
+     register: running_kernel_version
+
+   - name: check most recent installed kernel version
+     shell: yum list installed | grep 'kernel\.' | tail -n 1 | awk '{print $2}'
+     register: installed_kernel_version
+     args:
+       warn: false
+
+#   - fail:
+#       msg: "Most recently installed kernel is not currently loaded version! Consider rebooting before building the vnfs"
+#     when: running_kernel_version.stdout != installed_kernel_version.stdout
+
+   - fail:
+       msg: "Loaded kernel does not match the build_kernel_ver in group_vars/all"
+     when: running_kernel_version.stdout not in build_kernel_ver
+
+   - name: remove old vnfs if it exists
+     file: 
+       path: "{{ compute_chroot_loc }}"
+       state: absent
+
+   - name: make os image based on ISO
+     command: copycds /opt/iso/{{ CentOS_iso_version }}
+  
+   - name: check xCAT images
+     command: lsdef -t osimage
+     register: xcat_img_list
+
+   - debug:
+       var: xcat_img_list
