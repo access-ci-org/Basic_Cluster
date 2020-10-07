@@ -38,7 +38,7 @@
      when: use_warewulf == false
 
    - name: download required EPEL packages
-     command: yumdownloader --destdir "{{ epel_repo_dir }}" fping qstat libconfuse python34 python34-libs
+     command: yumdownloader --destdir "{{ epel_repo_dir }}" fping qstat libconfuse python34 python34-libs dkms
      when: use_warewulf == false
 
 #This failed on initial run, works on the shell.
