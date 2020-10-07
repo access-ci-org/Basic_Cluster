@@ -2,6 +2,15 @@
  - hosts: compute-nodes
    roles:
 
-   - {role: compute_config_xcat, tags: compute_config_xcat, when: use_warewulf == falsei, vars: { users_only: "false" } }
+# GPU nodes may be considered general compute nodes for the purposes of
+#   this stateful xCAT build!
+   - {role: compute_config_xcat, tags: compute_config_xcat, when: use_warewulf == false, vars: { users_only: "false" } }
    - {role: compute_config_xcat, tags: compute_sync_users, when: use_warewulf == false, vars: { users_only: "true" } }
    - {role: compute_ganglia_xcat, tags: compute_ganglia_xcat, when: use_warewulf == false}
+
+# This role installs GPU drivers and the CUDA toolkit, on select nodes
+#   defined in inventory/nodes
+ - hosts: gpu-nodes
+   roles:
+
+   - {role: gpu_config_xcat, tags: gpu_config_xcat, when: use_warewulf == false, vars: { users_only: "false" } }
