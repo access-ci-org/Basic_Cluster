@@ -30,7 +30,8 @@
                "ohpc-slurm-client",
                "chrony",
                "kernel",
-               "lmod-ohpc"
+               "lmod-ohpc",
+               "ipmitool"
               ]
         state: latest
 
