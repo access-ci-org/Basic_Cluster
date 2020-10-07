@@ -33,12 +33,6 @@
   - name: reboot
     reboot:
 
-  - name: wait for finished boot
-    wait_for_connection:
-      timeout: 600
-      delay: 180
-      sleep: 20
- 
   - name: re-gather facts
     setup:
 
