@@ -10,7 +10,7 @@
     src: config.j2
     dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
 
-- name: Check if environment is properly setup, and install python packages if not
+- name: Setup the venv for rabbitmq agents
   pip:
     requirements: requirements.txt
     virtualenv: venv
@@ -24,6 +24,14 @@
   loop:
     - { name: "ohpc_account", desc: "Service to create an account on OHPC" }
     - { name: "slurm_account", desc: "Service to create a SLURM user and account" }
+    - { name: "get-next-uid-gid", desc: "Service to create a bright user account" }
+    - { name: "dir_verify", desc: "Service to verify directories are created" }
+    - { name: "git_commit", desc: "Service to commit new user ldap files to git" }
+    - { name: "subscribe_mail_lists", desc: "Service to subscribe the users to mailing list" }
+    - { name: "notify_user", desc: "Service to notify user about successful account creation" }
+    - { name: "task_manager", desc: "Service to manage message flow between above rabbitmq agents" }
+    - { name: "user_reg_logger", desc: "Service to store the request object passed during account request" }
+    - { name: "user_reg_event_logger", desc: "Service to log all messages passed during the account creation" }
 
 - name: Add Vhost in RabbitMQ
   rabbitmq_vhost:
@@ -48,3 +56,11 @@
   loop:
     - ohpc_account_agent
     - slurm_account_agent
+    - get-next-uid-gid_agent
+    - dir_verify_agent
+    - git_commit_agent
+    - subscribe_mail_lists_agent
+    - notify_user_agent
+    - task_manager_agent
+    - user_reg_logger_agent
+    - user_reg_event_logger_agent
