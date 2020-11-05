@@ -170,9 +170,16 @@
   user_create_script_repo: "https://gitlab.rc.uab.edu/tr27p/ohpc_user_create.git"
 
 # RabbitMQ
-  rabbitmq_provision: false
+  rabbitmq_provision: true
   rabbitmq_user: "reggie"
   rabbitmq_user_password: "reggie"
+  rabbitmq_host: "master"
+  rabbitmq_exchange: "RegUsr"
+  rabbitmq_vhost: "adduser"
+  rabbitmq_port: "5672"
+  rabbitmq_agents_loc: "/cm/shared/rabbitmq_agents"
+  rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
+  rabbitmq_agents_version: "feat-cod-rmq"
 
 # Celery
   celery_user: "reggie"
