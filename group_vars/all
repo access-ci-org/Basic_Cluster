@@ -68,7 +68,7 @@
 
 #OpenOnDemand
   ood_nodename: "ood"
-  ood_version: 1.5
+  ood_version: 1.6
   ood_private_ip: "10.1.1.11"
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
 
@@ -172,16 +172,9 @@
 # RabbitMQ
   rabbitmq_provision: false
   rabbitmq_user: "reggie"
-  rabbitmq_user_password: ""
-  rabbitmq_host: "ohpc"
-  rabbitmq_exchange: "RegUsr"
-  rabbitmq_vhost: "adduser"
-  rabbitmq_port: "5672"
-  rabbitmq_agents_loc: "/opt/rabbitmq_agents"
-  rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
-  rabbitmq_agents_version: "develop"
+  rabbitmq_user_password: "reggie"
 
 # Celery
   celery_user: "reggie"
-  celery_user_password: ""
+  celery_user_password: "reggie"
   celery_vhost: "socketio"

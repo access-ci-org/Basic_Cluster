@@ -1,10 +1,21 @@
-LoadModule proxy_uwsgi_module modules/mod_proxy_uwsgi.so
-
 ProxyPass /socket.io/ http://127.0.0.1:8000/socket.io/
 ProxyPassReverse /socket.io/ http://127.0.0.1:8000/socket.io/
 
-ProxyPass /register http://127.0.0.1:8000/register/
+ProxyPass /register http://127.0.0.1:8000/
+ProxyPassReverse /register http://127.0.0.1:8000/
+
+ProxyPass /static http://127.0.0.1:8000/static
+ProxyPassReverse /static http://127.0.0.1:8000/static
+
 <Location /register>
+        AuthType Basic
+        AuthName "Private"
+        AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
+        RequestHeader unset Authorization
+        Require valid-user
+</Location>
+
+<Location "/static/">
         AuthType Basic
         AuthName "Private"
         AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"

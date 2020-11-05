@@ -6,7 +6,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=always
-RestartSec=1
+RestartSec=5
 User=centos
 WorkingDirectory={{ rabbitmq_agents_loc }}
 Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin"

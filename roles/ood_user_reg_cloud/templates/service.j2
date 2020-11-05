@@ -3,11 +3,14 @@ Description=uWSGI server for flask user registration
 After=network.target
 
 [Service]
-User={{ RegUser_app_user }}
+Type=simple
+User=apache
 Group=apache
+Restart=always
+RestartSec=5
 WorkingDirectory={{ user_register_app_path }}
 Environment="PATH={{ user_register_app_path }}/venv/bin"
-ExecStart={{ user_register_app_path }}/venv/bin/uwsgi --ini {{ user_register_app }}.ini
+ExecStart={{ user_register_app_path }}/venv/bin/gunicorn -k gevent -c {{ user_register_app }}.ini wsgi:application
 
 [Install]
 WantedBy=multi-user.target
