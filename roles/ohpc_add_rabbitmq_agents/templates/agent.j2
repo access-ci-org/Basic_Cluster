@@ -9,7 +9,7 @@ Restart=always
 RestartSec=1
 User=centos
 WorkingDirectory={{ rabbitmq_agents_loc }}
-Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin:$PATH"
+Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin:{{ lookup('env','PATH') }}"
 ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python {{ item.name }}.py
 
 [Install]
