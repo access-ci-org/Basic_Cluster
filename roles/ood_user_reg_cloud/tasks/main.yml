@@ -51,10 +51,9 @@
     src: celery.service.j2
     dest: "/etc/systemd/system/celery.service"
 
-- name: Start celery.service
-  service:
+- name: Enable celery.service
+  systemd:
     name: celery.service
-    state: started
     enabled: yes
 
 - name: Put apache config file in place
@@ -100,14 +99,12 @@
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
   ignore_errors: yes
 
-- name: Restart apache
-  service:
+- name: Enable apache service
+  systemd:
     name: httpd24-httpd
-    state: restarted
     enabled: yes
 
-- name: Start and enable flask app uwsgi service
-  service:
+- name: Enable flask app uwsgi service
+  systemd:
     name: "{{ user_register_app }}"
-    state: restarted
     enabled: yes
