@@ -1,0 +1,121 @@
+---
+# cod login-image build 
+- name: clone the default image to build a login image
+  command: cmsh -c "softwareimage; clone default-image login-image; commit --wait"
+
+- name: create a new node category for the image, called login
+  command: cmsh -c "category; clone default login; set softwareimage login-image; roles; assign login; commit --wait"
+
+- name: Add software to the image
+  command: yum -y --installroot=/cm/images/login-image install {{ item }}
+  loop:
+    - ansible
+    - git
+    - rh-git29
+    - vim
+    - bash-completion
+    - python3
+    - python3-devel
+    - shorewall
+    - nfs-utils
+
+#- name: Clone the prod CRI_XCBC ansible scripts to the chroot location
+#  git: 
+#    repo: https://github.com/uabrc/CRI_XCBC.git #{{ prod_CRI_XCBC_repo }} 
+#    dest: /cm/images/login-image/prod_CRI_XCBC  #{{ prod_CRI_XCBC_path }}
+#    version: {{ prod_CRI_XCBC_version }}
+
+- name: Clone the dev CRI_XCBC ansible scripts to the chroot location
+  git: 
+    repo: https://github.com/jprorama/CRI_XCBC.git
+    dest: /cm/images/login-image/CRI_XCBC
+    version: {{ CRI_XCBC_version }}
+
+- name: Create a symlink for munge.key before enabling munge service
+  command: ln -s /cm/shared/apps/slurm/var/munge/keys/munge.key /cm/images/login-image/etc/munge/munge.key
+
+- name: Mount dirs required for ansible scripts to function
+  command: mount -o bind /{{ item }} /cm/images/login-image/{{ item }}
+  loop:
+    - dev
+    - proc
+    - sys
+    - home
+
+- name: clone chname to allow chroot env to be created with a desired hostname.
+  command: git clone https://github.com/4the1appdevs/chname.git /cm/shared/apps/chname
+
+- name: Install chname to allow chroot env to be created with a desired hostname.
+  command: cd /cm/shared/apps/chname && make install
+
+- name: Enter chroot env for login image with hostname OOD
+  command: chname ood chroot /cm/images/login-image /bin/bash
+
+## preparation for ood_user_reg
+#- name: Install Copr plugin for yum
+#  yum: name=yum-plugin-copr state=present update_cache=true
+#  when: enable_copr == true
+#
+#- name: enable Copr Repos
+#  shell: yum -y copr enable "{{ item.repo_name }}"
+#  with_items: "{{ copr_repos }}"
+#  when: enable_copr == true and inventory_hostname in item.host
+
+- name: Run the Ansible roles related to login image
+  command: ansible-playbook -c local -i /CRI_XCBC/hosts -l `hostname -s` /CRI_XCBC/site-build.yaml -b -t {{ item }}
+  loop:
+    - ood
+    - ood_jupyter
+    - ood_vnc_form
+    - ood_add_rstudio
+    - ood_matlab
+    - ood_sas
+    - ood_firewall_and_services
+    - ood_shib_sso
+    - ood_user_reg_cloud
+
+- name: Run the Ansible role related to self-reg
+  command: ansible-playbook -c local -i /CRI_XCBC/hosts -l `hostname -s` /CRI_XCBC/site-ops.yaml -b -t ood_user_reg_ops
+
+- name: enable munge service in login image chroot env
+  command: systemctl enable munge.service
+
+- name: Exit chroot env for login image
+  command: exit
+
+# cod login node deploy
+- name: Change login001 category to login
+  command: cmsh -c "device; use login001; set category login; commit"
+
+- name: Set DHCP on BOOTIF device
+  command: cmsh -c "device; use login001; interfaces; use bootif; set dhcp yes; commit"
+
+#- name: Add an extra interface to login from externalnet
+#  command: cmsh -c "device; use login001; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
+
+#- name: Set DHCP on the new interface added above
+#  command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
+
+## Non-provisioning interfaces are inactive unless they are explicitly brought up
+#- name: Set external interface eth1 to come up during install.
+#  command: cmsh -c "device; use login001; interfaces; use eth1; set BringUpDuringInstall yes; commit"
+
+- name: Make sure tftp systemd service is running on head node
+  systemd:
+    state: started
+    name: tftpd
+
+# Port security is not enabled on internal ports, by default from Heat template
+# So this step and the next would not be necessary.
+#- name: Get BOOTIF interface ID in openstack
+#  command: openstack port list | grep -w "login001_internal_port" | awk '{ print $2 }'
+#  register: eth0_id
+#
+#- name: Remove port security
+#  command: openstack port set {{ eth0_id }} {{ item }}
+#  loop:
+#    - --no-security-group
+#    - --disable-port-security
+
+- name: Reboot login001 to pick up the new image
+  command: cmsh -c "device; use login001; reboot"
