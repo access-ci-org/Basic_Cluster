@@ -11,7 +11,6 @@
   loop:
     - ansible
     - git
-    - rh-git29
     - vim
     - bash-completion
     - python3
