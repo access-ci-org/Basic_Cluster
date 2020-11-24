@@ -45,7 +45,7 @@
   command: git clone https://github.com/4the1appdevs/chname.git /cm/shared/apps/chname
 
 - name: Install chname to allow chroot env to be created with a desired hostname.
-  command: cd /cm/shared/apps/chname && make install
+  command: make -C /cm/shared/apps/chname install 
 
 - name: Enter chroot env for login image with hostname OOD
   command: chname ood chroot /cm/images/login-image /bin/bash
