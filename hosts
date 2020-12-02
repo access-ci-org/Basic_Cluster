@@ -15,3 +15,6 @@ c[0:9]
 
 [compute:vars]
 sshgroup=compute
+
+[chroot]
+/cm/images/login-image	ansible_connection=chroot
