@@ -51,9 +51,6 @@
 - name: Run the Ansible roles related to login image
   command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
 
-- name: enable munge service in login image chroot env
-  command: systemctl enable munge.service
-
 # cod login node deploy
 - name: Change login001 category to login
   command: cmsh -c "device; use login001; set category login; commit"
