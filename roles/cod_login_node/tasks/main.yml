@@ -51,9 +51,6 @@
 - name: Run the Ansible roles related to login image
   command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
 
-- name: Run the Ansible role related to self-reg
-  command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-ops.yaml -b -t ood_user_reg_ops
-
 - name: enable munge service in login image chroot env
   command: systemctl enable munge.service
 
