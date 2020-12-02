@@ -18,20 +18,16 @@
     - shorewall
     - nfs-utils
 
-#- name: Clone the prod CRI_XCBC ansible scripts to the chroot location
-#  git: 
-#    repo: https://github.com/uabrc/CRI_XCBC.git #{{ prod_CRI_XCBC_repo }} 
-#    dest: /cm/images/login-image/prod_CRI_XCBC  #{{ prod_CRI_XCBC_path }}
-#    version: {{ prod_CRI_XCBC_version }}
-
-- name: Clone the dev CRI_XCBC ansible scripts to the chroot location
-  git: 
-    repo: https://github.com/jprorama/CRI_XCBC.git
-    dest: /cm/images/login-image/CRI_XCBC
-    version: {{ CRI_XCBC_version }}
-
 - name: Create a symlink for munge.key before enabling munge service
   command: ln -s /cm/shared/apps/slurm/var/munge/keys/munge.key /cm/images/login-image/etc/munge/munge.key
+
+- name: Create a directory for CRI_XCBC in the login-image chroot path
+  file:
+    path: "{{ bright_cod_login_chroot_loc }}/CRI_XCBC"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Mount dirs required for ansible scripts to function
   command: mount -o bind /{{ item }} /cm/images/login-image/{{ item }}
@@ -40,6 +36,7 @@
     - proc
     - sys
     - home
+    - CRI_XCBC
 
 - name: clone chname to allow chroot env to be created with a desired hostname.
   command: git clone https://github.com/4the1appdevs/chname.git /cm/shared/apps/chname
