@@ -49,7 +49,7 @@
 #  when: enable_copr == true and inventory_hostname in item.host
 
 - name: Run the Ansible roles related to login image
-  command: ansible-playbook -c local -i /CRI_XCBC/hosts -l `hostname -s` /CRI_XCBC/site-build.yaml -b -t {{ item }}
+  command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-build.yaml -b -t {{ item }}
   loop:
     - ood
     - ood_jupyter
@@ -62,7 +62,7 @@
     - ood_user_reg_cloud
 
 - name: Run the Ansible role related to self-reg
-  command: ansible-playbook -c local -i /CRI_XCBC/hosts -l `hostname -s` /CRI_XCBC/site-ops.yaml -b -t ood_user_reg_ops
+  command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-ops.yaml -b -t ood_user_reg_ops
 
 - name: enable munge service in login image chroot env
   command: systemctl enable munge.service
