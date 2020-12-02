@@ -67,9 +67,6 @@
 - name: enable munge service in login image chroot env
   command: systemctl enable munge.service
 
-- name: Exit chroot env for login image
-  command: exit
-
 # cod login node deploy
 - name: Change login001 category to login
   command: cmsh -c "device; use login001; set category login; commit"
