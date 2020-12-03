@@ -73,17 +73,5 @@
     state: started
     name: tftpd
 
-# Port security is not enabled on internal ports, by default from Heat template
-# So this step and the next would not be necessary.
-#- name: Get BOOTIF interface ID in openstack
-#  command: openstack port list | grep -w "login001_internal_port" | awk '{ print $2 }'
-#  register: eth0_id
-#
-#- name: Remove port security
-#  command: openstack port set {{ eth0_id }} {{ item }}
-#  loop:
-#    - --no-security-group
-#    - --disable-port-security
-
 - name: Reboot login001 to pick up the new image
   command: cmsh -c "device; use login001; reboot"
