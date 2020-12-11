@@ -38,16 +38,6 @@
     - home
     - CRI_XCBC
 
-## preparation for ood_user_reg
-#- name: Install Copr plugin for yum
-#  yum: name=yum-plugin-copr state=present update_cache=true
-#  when: enable_copr == true
-#
-#- name: enable Copr Repos
-#  shell: yum -y copr enable "{{ item.repo_name }}"
-#  with_items: "{{ copr_repos }}"
-#  when: enable_copr == true and inventory_hostname in item.host
-
 - name: Run the Ansible roles related to login image
   command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
 
@@ -63,10 +53,6 @@
 
 - name: Set DHCP on the new interface added above
   command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
-
-## Non-provisioning interfaces are inactive unless they are explicitly brought up
-#- name: Set external interface eth1 to come up during install.
-#  command: cmsh -c "device; use login001; interfaces; use eth1; set BringUpDuringInstall yes; commit"
 
 - name: Make sure tftp systemd service is running on head node
   systemd:
