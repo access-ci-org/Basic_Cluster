@@ -58,11 +58,11 @@
 - name: Set DHCP on BOOTIF device
   command: cmsh -c "device; use login001; interfaces; use bootif; set dhcp yes; commit"
 
-#- name: Add an extra interface to login from externalnet
-#  command: cmsh -c "device; use login001; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
+- name: Add an extra interface to login from externalnet
+  command: cmsh -c "device; use login001; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
 
-#- name: Set DHCP on the new interface added above
-#  command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
+- name: Set DHCP on the new interface added above
+  command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
 
 ## Non-provisioning interfaces are inactive unless they are explicitly brought up
 #- name: Set external interface eth1 to come up during install.
