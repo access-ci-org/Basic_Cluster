@@ -6,6 +6,9 @@
 - name: create a new node category for the image, called login
   command: cmsh -c "category; clone default login; set softwareimage login-image; roles; assign login; commit --wait"
 
+- name: Change default gateway for the login category to access internet
+  command: cmsh -c "category; use login; set defaultgateway 192.168.200.254; commit"
+
 - name: Add software to the image
   command: yum -y --installroot=/cm/images/login-image install {{ item }}
   loop:
