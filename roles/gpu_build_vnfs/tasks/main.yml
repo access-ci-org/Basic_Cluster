@@ -29,6 +29,8 @@
          - dkms
          - gcc
          - ohpc-slurm-client
+#         - libpsm2 # Needed for Intel Infinipath
+#         - libpsm2-devel # Needed for compiling MPI with Infinipath support
 #" for vim
 
    - name: create export dir

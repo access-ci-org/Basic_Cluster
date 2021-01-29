@@ -55,6 +55,8 @@
          - freeipmi
          - ipmitool
          - ohpc-slurm-client
+#         - libpsm2 # Needed for Intel Infinipath 
+#         - libpsm2-devel # Needed for compiling MPI for Intel Infinipath
 #" for vim
 
    - name: copy ssh keys over

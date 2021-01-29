@@ -31,7 +31,9 @@
                "libsemanage-python",
                "policycoreutils",
                "NetworkManager",
-               "NetworkManager-glib",            
+               "NetworkManager-glib",
+               # "libpsm2", # Needed for intel Infinipath
+               # "libpsm2-devel", # Needed for compiling MPI with Infinipath support           
              ]
        state: latest
 #       - "lua"  # testing; this could fix the lmod-ohpc issue?
