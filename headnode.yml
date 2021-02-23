@@ -35,3 +35,4 @@
        node_inventory_auto: false,
        tags: viz_build_nodes }
    - {role: nodes_vivify, tags: nodes_vivify}
+   - {role: ood_install, tags: ood_install}
