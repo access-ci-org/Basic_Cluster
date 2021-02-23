@@ -1,0 +1,56 @@
+---
+
+   - name: install OOD repo and CentOS SCL
+     yum:
+       name: 
+        - "centos-release-scl"
+        - "https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm"
+       state: latest
+
+   - name: install OOD packages
+     yum:
+       name: 
+        - "ondemand"
+        - "ondemand-selinux"
+       state: latest
+
+#This should be 'off' when on a host that is mounting homedirs over NFS
+   - name: selinux ondemand_manage_user_home_dir yes
+     seboolean: 
+       name: ondemand_manage_user_home_dir
+       state: on
+       persistent: yes
+     when: headnode_local_homedirs == true
+
+   - name: selinux ondemand_use_slurm yes
+     seboolean: 
+       name: ondemand_use_slurm
+       state: on
+       persistent: yes
+
+#   - name: allow http for OOD
+#     firewalld:
+#       zone: public
+#       permanent: yes
+#       service: http
+#       state: enabled
+#
+#   - name: allow https for OOD
+#     firewalld:
+#       zone: public
+#       permanent: yes
+#       service: https
+#       state: enabled
+   - fail:
+
+   - name: start and enable httpd24 server
+     service: 
+       name: httpd24-httpd
+       state: started
+       enabled: yes
+
+   - name: ood_portal.yml template
+     template: src=ood_portal.yml.j2 dest=/etc/ood/config/ood_portal.yml
+
+   - name: update the apache config
+     command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
