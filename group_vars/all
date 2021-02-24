@@ -181,8 +181,14 @@
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
   rabbitmq_agents_service_user: "root"
+  rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
+  rc_users_ldap_repo_loc: "~/git/rc-users"
+
 
 # Celery
   celery_user: "reggie"
   celery_user_password: "reggie"
   celery_vhost: "socketio"
+
+#ClusteronDemand CoD
+  cod_deploy: true
