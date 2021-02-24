@@ -8,7 +8,9 @@ Type=simple
 Restart=always
 RestartSec=5
 User=centos
-ExecStart=/usr/bin/env python3 /opt/rabbitmq_agents/ood_account_create.py
+WorkingDirectory={{ rabbitmq_agents_loc }}
+Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin"
+ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python ood_account_create.py
 
 [Install]
 WantedBy=multi-user.target
