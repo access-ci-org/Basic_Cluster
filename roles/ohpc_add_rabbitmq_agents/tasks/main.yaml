@@ -10,6 +10,64 @@
     src: config.j2
     dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
 
+- name: Setup the venv for rabbitmq agents
+  pip:
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ rabbitmq_agents_loc }}"
+
+- name: Install dev agents service files
+  template:
+    src: agent.j2
+    dest: "/etc/systemd/system/{{ item | basename | splitext | first }}_agent.service"
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/dev_rmq_agents/*.py', wantlist=True) }}"
+  when: not cod_deploy
+
+- name: Install prod agents service files
+  template:
+    src: agent.j2
+    dest: "/etc/systemd/system/{{ item | basename | splitext | first}}_agent.service"
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/prod_rmq_agents/*.py', wantlist=True) }}"
+  when: cod_deploy | bool
+
+- name: Add Vhost in RabbitMQ
+  rabbitmq_vhost:
+    name: "{{ rabbitmq_vhost }}"
+    state: present
+
+- name: Add User in RabbitMQ
+  rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_user_password }}"
+    vhost: "{{ rabbitmq_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+- name: Start and enable dev agent services
+  service:
+    name: "{{ item | basename | splitext | first }}_agent.service"
+    state: started
+    enabled: yes
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/dev_rmq_agents/*.py', wantlist=True) }}"
+  when: not cod_deploy
+
+- name: Start and enable prod agent services
+  service:
+    name: "{{ item | basename | splitext | first }}_agent.service"
+    state: started
+    enabled: yes
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/prod_rmq_agents/*.py', wantlist=True) }}"
+  when: cod_deploy | bool
+=======
+
+- name: Install rabbitmq agents config file
+  template:
+    src: config.j2
+    dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
+
 
 - name: Install mail template as mail_config file
   template:

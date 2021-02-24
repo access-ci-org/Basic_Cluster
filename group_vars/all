@@ -181,6 +181,7 @@
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
   rabbitmq_agents_service_user: "root"
+  cod_deploy: false
   
   # rabbit_config
   mail_server: "localhost"
@@ -196,7 +197,6 @@
   user_dirs: ['/home', '/data/user', '/data/scratch']
   rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
   rc_users_ldap_repo_loc: "~/git/rc-users"
-
 
 # Celery
   celery_user: "reggie"
