@@ -14,7 +14,7 @@
 
 - name: Create .agent_db dir for sqlite DB if not present
   file:
-    path: /cm/shared/rabbitmq_agents/.agent_db
+    path: "{{ rabbitmq_agents_loc }}/prod_rmq_agents/.agent_db"
     state: directory
     owner: root
     group: root
