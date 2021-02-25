@@ -1,0 +1,9 @@
+import sys
+import os
+
+sys.path.append("{{ user_register_app_path }}")
+os.environ['FLASK_CONFIG'] = 'production'
+from run import app as application
+
+if __name__ == "__main__":
+    application.run(host="0.0.0.0")

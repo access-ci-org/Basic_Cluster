@@ -1,0 +1,113 @@
+---
+- name: Install packages via yum
+  yum:
+    name:
+      - python3-pip
+      - python3-devel
+    state: latest
+
+- name: Remove existing user register app install
+  file:
+    path: "{{ user_register_app_path }}"
+    state: absent
+
+- name: Clone user register app form from gitlab
+  git:
+    repo: "{{ user_register_app_repo }}"
+    dest: "{{ user_register_app_path }}"
+    version: "{{ user_register_app_tag }}"
+
+- name: Change ownership of directory
+  file:
+    path: "{{ user_register_app_path }}"
+    owner: apache
+    group: apache
+    state: directory
+    recurse: yes
+
+- name: Install requirements in virtualenv
+  pip:
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ user_register_app_path }}"
+
+- name: Install gunicorn in virtualenv
+  pip:
+    name: gunicorn
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ user_register_app_path }}"
+
+- name: Create log directory
+  file:
+    path: "{{ user_register_app_path }}/log"
+    owner: apache
+    group: apache
+    state: directory
+
+- name: Copy Celery service template
+  template:
+    src: celery.service.j2
+    dest: "/etc/systemd/system/celery.service"
+
+- name: Start celery.service
+  service:
+    name: celery.service
+    state: started
+    enabled: yes
+
+- name: Put apache config file in place
+  template:
+    src: user-reg_conf.j2
+    dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
+
+- name: Put wsgi file in place
+  template:
+    src: wsgi.j2
+    dest: "{{ user_register_app_path }}/wsgi.py"
+
+- name: Put gunicorn config file in place
+  template:
+    src: ini.j2
+    dest: "{{ user_register_app_path }}/{{ user_register_app }}.ini"
+
+- name: Create gunicorn system service
+  template:
+    src: service.j2
+    dest: "/etc/systemd/system/{{ user_register_app }}.service"
+
+- name: Enable user registration redirect
+  replace:
+    path: /etc/ood/config/ood_portal.yml
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+    backup: yes
+  with_items:
+      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'" }
+      - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
+      - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
+
+- name: Stage regex file for ood
+  copy:
+    src: uab_ood_auth.regex
+    dest: /opt/ood/ood_auth_map/bin/uab_ood_auth.regex
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Build the updated Apache config
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes
+
+- name: Restart apache
+  service:
+    name: httpd24-httpd
+    state: restarted
+    enabled: yes
+
+- name: Start and enable flask app uwsgi service
+  service:
+    name: "{{ user_register_app }}"
+    state: restarted
+    enabled: yes

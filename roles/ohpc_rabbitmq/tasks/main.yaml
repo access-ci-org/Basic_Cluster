@@ -1,0 +1,68 @@
+---
+- fail:
+    msg: Please specify password for rabbitmq user
+  when: rabbitmq_user_password == "" or celery_user_password == ""
+
+- name: Import RabbitMQ signing key
+  rpm_key:
+    state: present
+    key: https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+
+- name: Add RabbitMQ bintray repository
+  yum_repository:
+    name: bintray-rabbitmq-rpm
+    description: RabbitMQ (CentOS 7)
+    baseurl: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/v3.8.x/el/7/
+    gpgcheck: no
+    enabled: yes
+
+- name: Install Erlang
+  yum:
+    name: https://bintray.com/rabbitmq-erlang/rpm/download_file?file_path=erlang%2F22%2Fel%2F7%2Fx86_64%2Ferlang-22.3.4.2-1.el7.x86_64.rpm
+    state: present
+
+- name: Install RabbitMQ Server
+  yum:
+    name: rabbitmq-server
+    state: present
+
+- name: Start and enable RabbitMQ Server
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes
+
+- name: Add RabbitMQ user
+  rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_user_password }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+# the user_reg feature makes use of celery for task managment in flask
+# this requires a communication channel dedicated to celery in RabbitMQ
+- name: Add Vhost in celery
+  rabbitmq_vhost:
+    name: "{{ celery_vhost }}"
+    state: present
+
+- name: Add User in celery
+  rabbitmq_user:
+    user: "{{ celery_user }}"
+    password: "{{ celery_user_password }}"
+    vhost: "{{ celery_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+# jpr: this may be redundant for ohpc
+# also, we should know what ports to open. ;)
+- name: Turn off firewalld
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no

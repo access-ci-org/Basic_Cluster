@@ -1,0 +1,7 @@
+---
+- hosts: headnode
+  roles:
+    - { name: 'ohpc_install_cloud'}
+    - { name: 'compute_build_nodes_cloud', tags: 'compute_build_nodes_cloud' }
+    - { name: 'nodes_vivify_cloud', tags: 'nodes_vivify_cloud' }
+    - { name: 'cod_rabbitmq_agents_cloud', tags: 'cod_rabbitmq_agents_cloud' }

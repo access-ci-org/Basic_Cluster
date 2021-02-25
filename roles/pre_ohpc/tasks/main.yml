@@ -16,6 +16,7 @@
      yum:
        state: latest
        name:
+         - "python3"
          - "MySQL-python"
          - "epel-release"
          - "wget" 
@@ -100,7 +101,7 @@
 
 # Changing it temporarily to stop
    - name: firewalld restart # to load new slurm service
-     service: name=firewalld state=stopped
+     service: name=firewalld state=stopped enabled=false
 
 ## This section seems to be redundant 
 ##   - name: add interface to internal zone firewall-cmd

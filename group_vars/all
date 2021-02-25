@@ -7,8 +7,8 @@
 # Headnode Info
   public_interface: "eth0" # NIC that allows access to the public internet
   private_interface: "eth1" #NIC that allows access to compute nodes
-  headnode_private_ip: "10.1.1.1"
-  build_kernel_ver: '3.10.0-957.1.3.el7.x86_64' # `uname -r` at build time... for wwbootstrap
+  headnode_private_ip: "10.1.1.10"
+  build_kernel_ver: '3.10.0-957.12.2.el7.x86_64' # `uname -r` at build time... for wwbootstrap
 
 #Private network Info
   private_network: "10.1.1.0"  
@@ -24,7 +24,7 @@
 
 # sacct user list
   cluster_users:
-    - vagrant   # include each username on separate line as a list
+    - centos   # include each username on separate line as a list
 
 #Stateful compute or not?
   stateful_nodes: false
@@ -56,7 +56,7 @@
   login_chroot: centos7-login 
 
 # Node Inventory method - automatic, or manual
-  node_inventory_auto: true
+  node_inventory_auto: false
 
 #Node naming variables - no need to change
   compute_node_prefix: "c"
@@ -68,8 +68,8 @@
 
 #OpenOnDemand
   ood_nodename: "ood"
-  ood_version: 1.5
-  ood_ip_addr: 10.1.1.254
+  ood_version: 1.6
+  ood_private_ip: "10.1.1.11"
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
   ood_sys_apps_dir: "/var/www/ood/apps/sys"
 
@@ -174,8 +174,9 @@
   enable_shib: false
 
 # User Registration
-  enable_user_reg: false
+  enable_user_reg: true
   user_register_app: "flask_user_reg"
+  user_register_app_tag: "v0.1"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_repo: "https://gitlab.rc.uab.edu/mmoo97/flask_user_reg.git"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
@@ -184,8 +185,43 @@
   RegUser_app_user_passwd: "qweasd"
 
 # User Create Scripts
-  enable_user_create_scripts: false
+  enable_user_create_scripts: true
   user_create_scripts: "ohpc_user_create"
   user_create_scripts_path: "/opt/{{ user_create_scripts }}"
   user_create_script_repo: "https://gitlab.rc.uab.edu/tr27p/ohpc_user_create.git"
 
+# RabbitMQ
+  rabbitmq_provision: true
+  rabbitmq_user: "reggie"
+  rabbitmq_user_password: "reggie"
+  rabbitmq_host: "master"
+  rabbitmq_exchange: "RegUsr"
+  rabbitmq_vhost: "adduser"
+  rabbitmq_port: "5672"
+  rabbitmq_agents_loc: "/cm/shared/rabbitmq_agents"
+  rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
+  rabbitmq_agents_version: "feat-cod-rmq"
+  rabbitmq_agents_service_user: "root"
+  
+  # rabbit_config
+  mail_server: "localhost"
+  admin_email: "root@localhost"
+  sender: "ROOT@LOCALHOST"
+  sender_alias: "Services"
+  subject: "New User Account"
+  info_url: "https://www.google.com"
+  mail_list: "root@localhost"
+  mail_list_bcc: "cmsupport@localhost"
+
+  delay: "5" #time delay to let account creation finish to avoid concurrency
+  user_dirs: ['/home', '/data/user', '/data/scratch']
+  rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
+  rc_users_ldap_repo_loc: "~/git/rc-users"
+
+# Celery
+  celery_user: "reggie"
+  celery_user_password: "reggie"
+  celery_vhost: "socketio"
+
+#ClusteronDemand CoD
+  cod_deploy: true

@@ -1,0 +1,15 @@
+---
+- hosts: headnode
+  roles:
+    - { name: 'pre_ohpc', tags: 'pre_ohpc' }
+    - { name: 'ohpc_install', tags: 'ohpc_install' }
+    - { name: 'ohpc_config_build', tags: 'ohpc_config' }
+    - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild' }
+    - { name: 'ohpc_jupyter', tags: 'ohpc_jupyter', when: jupyter_provision}
+    - { name: 'ohpc_matlab', tags: 'ohpc_matlab', when: matlab_provision }
+    - { name: 'ohpc_sas', tags: 'ohpc_sas', when: sas_provision }
+    - { name: 'ohpc_rabbitmq', tags: 'ohpc_rabbitmq', when: enable_user_reg }
+    - { name: 'ohpc_add_rstudio', tags: 'ohpc_add_rstudio', when: rstudio_provision }
+    - { name: 'ohpc_user_reg', tags: 'ohpc_user_reg', when: enable_user_reg }
+    - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }
+    - { name: 'ohpc_add_rabbitmq_agents', tags: 'ohpc_add_rabbitmq_agents', when: enable_user_reg }

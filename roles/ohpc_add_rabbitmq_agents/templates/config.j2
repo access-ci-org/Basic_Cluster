@@ -1,0 +1,28 @@
+Exchange = "{{ rabbitmq_exchange }}"
+User = "{{ rabbitmq_user }}"
+Password = "{{ rabbitmq_user_password }}"
+VHost = "{{ rabbitmq_vhost }}"
+Server = "{{ rabbitmq_host }}"
+Port = {{ rabbitmq_port }}
+
+
+# time delay to let account creation finish 
+# to avoid concurrency with downstream agents
+Delay = {{ delay }}
+
+# dir_verify agent config
+User_dirs = {{ user_dirs }}
+
+# git_commit agent config
+rc_users_ldap_repo_loc = "{{ rc_users_ldap_repo_loc }}"
+
+# Config related to email
+Server = "{{ mail_server }}"
+Admin_email = "{{ admin_email }}"
+Sender = "{{ sender }}"
+Sender_alias = "{{ sender_alias }}"
+Subject = "{{ subject }}"
+Info_url = "{{ info_url }}"
+Mail_list = "{{ mail_list }}"
+Mail_list_bcc = "{{ mail_list_bcc }}"
+

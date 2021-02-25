@@ -1,5 +1,5 @@
 ---
-- hosts: ohpc
+- hosts: headnode
   roles:
     - { name: 'pre_ohpc', tags: 'pre_ohpc' }
     - { name: 'ohpc_install', tags: 'ohpc_install' }

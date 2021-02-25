@@ -5,6 +5,16 @@
     name: httpd24-httpd
     enabled: yes
 
+- name: install the latest version of Python
+  yum:
+    name: python
+    state: latest
+
+- name: install the latest version of firewalld
+  yum:
+    name: firewalld
+    state: latest
+
 - name: Open port http/s
   firewalld:
     service: http

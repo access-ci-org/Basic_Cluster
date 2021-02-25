@@ -1,0 +1,29 @@
+---
+- name: Clone the git repo to the machine
+  git: 
+    repo: "{{ rabbitmq_agents_repo }}"
+    dest: "{{ rabbitmq_agents_loc }}"
+    version: "{{ rabbitmq_agents_version }}"
+
+- name: Install rabbitmq agents config file
+  template:
+    src: config.j2
+    dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
+
+- name: Check if environment is properly setup, and install python packages if not
+  pip:
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ rabbitmq_agents_loc }}"
+
+- name: Install agents as service
+  template:
+    src: ood_account_agent.j2
+    dest: "/etc/systemd/system/ood_account_agent.service"
+
+- name: Start and enable agent service
+  service:
+    name: ood_account_agent.service
+    state: started
+    enabled: yes
