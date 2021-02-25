@@ -181,7 +181,6 @@
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
   rabbitmq_agents_service_user: "root"
-  cod_deploy: false
   
   # rabbit_config
   mail_server: "localhost"
