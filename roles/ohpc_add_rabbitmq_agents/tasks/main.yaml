@@ -9,8 +9,8 @@
   file:
     path: "{{ rabbitmq_agents_loc }}/prod_rmq_agents/.agent_db"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ rabbitmq_agents_service_user }}"
+    group: "{{ rabbitmq_agents_service_user }}"
     mode: '0755'
 
 - name: Install rabbitmq agents config file
