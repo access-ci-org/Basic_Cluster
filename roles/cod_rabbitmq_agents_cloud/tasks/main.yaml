@@ -1,0 +1,38 @@
+---
+- name: Change the default min UID and GID to replicate prod
+  replace:
+    path: /etc/login.defs
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.line }}"
+  loop:
+    - { regexp: '^UID_MIN\s*1000', line: 'UID_MIN\t\t\t10000' }
+    - { regexp: '^GID_MIN\s*1000', line: 'GID_MIN\t\t\t10000' }
+
+- name: Create a user with id 10000
+  command: cmsh -c "user; add test1; set id 10001; set email test1@localhost; set commonname test1; commit"
+  when: cod_deploy
+
+- name: Create .agent_db dir for sqlite DB if not present
+  file:
+    path: "{{ rabbitmq_agents_loc }}/prod_rmq_agents/.agent_db"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Clone the repo where user ldap files are recorded
+  git:
+    repo: "{{ rc_users_ldap_repo }}"
+    dest: "{{ rc_users_ldap_repo_loc }}"
+  ignore_errors: yes 
+  register: result
+
+- debug:
+    msg: "{{ result }}"
+  when: result.failed == 'true' or result.rc is defined
+
+- name: "Action needed:"
+  fail:
+    msg: "You need to upload the ssh key to {{ rc_users_ldap_repo }}"
+  when:  result.failed == 'true' or result.rc is defined
+
