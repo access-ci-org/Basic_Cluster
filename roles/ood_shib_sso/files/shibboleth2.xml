@@ -11,7 +11,7 @@
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults entityID="https://testshib.dev.rc.uab.edu:8080/shibboleth"
-        REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+        REMOTE_USER="eppn uid uid uid" 
         cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1">
 
         <!--
