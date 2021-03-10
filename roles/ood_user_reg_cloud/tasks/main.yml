@@ -25,6 +25,11 @@
     state: directory
     recurse: yes
 
+- name: Copy Self-Reg app variables file
+  template:
+    src: vars.j2
+    dest: "{{ user_register_app_path }}"
+
 - name: Install requirements in virtualenv
   pip:
     requirements: requirements.txt
