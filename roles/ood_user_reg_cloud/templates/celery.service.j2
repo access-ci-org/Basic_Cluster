@@ -7,7 +7,7 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=5
-User=centos
+User={{ celery_user }}
 WorkingDirectory={{ user_register_app_path }} 
 Environment="PATH={{ user_register_app_path }}/venv/bin"
 ExecStart={{ user_register_app_path }}/venv/bin/celery -A tasks worker --loglevel=info --concurrency=4
