@@ -2,11 +2,8 @@
 - name: Change the default min UID and GID to replicate prod
   replace:
     path: /etc/login.defs
-    regexp: "{{ item.regexp }}"
-    replace: "{{ item.line }}"
-  loop:
-    - { regexp: '^UID_MIN\s*1000', line: 'UID_MIN\t\t\t10000' }
-    - { regexp: '^GID_MIN\s*1000', line: 'GID_MIN\t\t\t10000' }
+    regexp: '^((U|G)ID_MIN)\s*1000$'
+    replace: '\1\t\t\t10000'
 
 - name: Create a user with id 10000
   command: cmsh -c "user; add test1; set id 10001; set email test1@localhost; set commonname test1; commit"
