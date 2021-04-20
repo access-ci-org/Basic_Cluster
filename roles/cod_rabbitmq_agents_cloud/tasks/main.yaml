@@ -6,8 +6,9 @@
   ignore_errors: yes
   register: result
 
-- debug:
-    msg: "{{ result }}"
+- name: Error message
+  debug:
+    msg: "{{ result.stderr_lines }}"
   when: result.failed == 'true' or result.rc is defined
 
 - name: "Action needed:"
