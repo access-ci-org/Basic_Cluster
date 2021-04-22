@@ -22,13 +22,13 @@
      user: name=slurm state=present system=yes
 
    - name: create slurm.conf
-     template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf
+     template: src=slurm_conf.j2 dest=/etc/slurm/slurm.conf owner=slurm
 
    - name: create slurmdbd.conf
-     template: src=slurmdbd_conf.j2 dest=/etc/slurm/slurmdbd.conf
+     template: src=slurmdbd_conf.j2 dest=/etc/slurm/slurmdbd.conf mode='600' owner=slurm 
 
    - name: put the sacctmgr config in /etc/slurm
-     copy: src=xcbc-example.cfg dest=/etc/slurm/sacctmgr-heirarchy.cfg
+     copy: src=xcbc-example.cfg dest=/etc/slurm/sacctmgr-heirarchy.cfg owner=slurm
 
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf

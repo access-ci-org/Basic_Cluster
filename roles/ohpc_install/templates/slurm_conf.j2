@@ -87,8 +87,6 @@ JobAcctGatherFrequency=30
 #
 AccountingStorageType=accounting_storage/slurmdbd
 AccountingStorageHost={{ inventory_hostname }}
-#AccountingStorageLoc=/var/log/slurmacct.log
-AccountingStorageLoc={{ slurm_acct_db }}
 AcctGatherNodeFreq=30
 AccountingStorageEnforce=associations,limits
 AccountingStoragePort={{ slurmdb_storage_port }}
