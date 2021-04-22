@@ -43,15 +43,15 @@
    - name: install epel-based dependencies
      dnf: 
        name: [
-               "fail2ban",
                "whois",
              ]
        state: latest
+#               "fail2ban", breaks python38 used for ansible; I should maybe switch ansible to python 3.6 instead?
 
    - name: enable CentOS PowerTools repo
      ini_file:
-      path: /etc/yum.repos.d/CentOS-PowerTools.repo
-      section: PowerTools
+      path: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+      section: powertools
       option: enabled
       value: 1
       mode: '0644'
