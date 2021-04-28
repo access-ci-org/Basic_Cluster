@@ -12,6 +12,8 @@
        name: 
         - "ondemand"
         - "ondemand-selinux"
+        - "mod_authnz_pam"
+        - "python-websockify"
        state: latest
 
 #This should be 'off' when on a host that is mounting homedirs over NFS
@@ -41,7 +43,7 @@
 #       permanent: yes
 #       service: https
 #       state: enabled
-   - fail:
+#   - fail:
 
    - name: start and enable httpd24 server
      service: 
@@ -49,8 +51,36 @@
        state: started
        enabled: yes
 
+   - name: cluster.yml template
+     file: 
+       state: directory
+       path: /etc/ood/config/clusters.d/
+
+   - template: 
+       src: cluster.yml.j2 
+       dest: /etc/ood/config/clusters.d/{{ cluster_name }}.yml
+
    - name: ood_portal.yml template
      template: src=ood_portal.yml.j2 dest=/etc/ood/config/ood_portal.yml
+   
+   - name: configure ood pam authentication
+     copy:
+       src: /usr/lib64/httpd/modules/mod_authnz_pam.so
+       dest: /opt/rh/httpd24/root/usr/lib64/httpd/modules/
+   
+   - copy:
+       src: /etc/pam.d/sshd
+       dest: /etc/pam.d/ood-webapp
+   
+   - lineinfile:
+       path: /opt/rh/httpd24/root/etc/httpd/conf.modules.d/55-authnz_pam.conf
+       create: yes
+       line: 'LoadModule authnz_pam_module modules/mod_authnz_pam.so'
+   
+   - file:
+       dest: /etc/shadow
+       group: apache
+       mode: 0640
 
    - name: update the apache config
      command: /opt/ood/ood-portal-generator/sbin/update_ood_portal

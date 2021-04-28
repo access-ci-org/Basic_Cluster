@@ -16,6 +16,7 @@
   ssl_cert_file_path: "/etc/pki/tls/certs/ood-selfsigned.crt"
   ssl_cert_key_file_path: "/etc/pki/tls/private/ood-selfsigned.key"
   ssl_chain_file_path: ""
+  public_servername: "js-169-202.jetstream-cloud.org" #Publicly accessible URL
 
 #Private network Info
   private_network: "10.0.0.0"  
