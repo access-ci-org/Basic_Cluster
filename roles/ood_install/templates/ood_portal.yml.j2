@@ -14,7 +14,7 @@
 #     servername: 'www.example.com'
 # Default: null (don't use name-based Virtual Host)
 #servername: null
-servername: "{{ ansible_hostname }}"
+servername: "{{ public_servername }}"
 
 # The server name used for rewrites
 # Example:
@@ -217,14 +217,14 @@ host_regex: '({{ compute_node_prefix }}|{{ gpu_node_prefix}})\d+'
 # Example:
 #     node_uri: '/node'
 # Default: null (disable this feature)
-#node_uri: null
+node_uri: '/node'
 
 # Sub-uri used to reverse proxy to backend web server running on node that
 # ONLY uses *relative* URI paths
 # Example:
 #     rnode_uri: '/rnode'
 # Default: null (disable this feature)
-#rnode_uri: null
+rnode_uri: '/node'
 
 #
 # Per-user NGINX Passenger apps
