@@ -14,6 +14,7 @@
         - "ondemand-selinux"
         - "mod_authnz_pam"
         - "python-websockify"
+        - "selinux-policy-devel"
        state: latest
 
 #This should be 'off' when on a host that is mounting homedirs over NFS
@@ -29,6 +30,37 @@
        name: ondemand_use_slurm
        state: on
        persistent: yes
+
+   - name: create tmpdir for semodule build
+     file:
+       state: directory
+       path: /tmp/ood_sebuild
+ 
+   - name: copy ood.te to tmp builddir
+     copy:
+       dest: /tmp/ood_sebuild
+       src: ood.te
+
+# This make command will compile a local.te file in the current
+# directory. If you did not specify a "pp" file, the make file
+# will compile all "te" files in the current directory.  After
+# you compile your te file into a "pp" file, you need to install
+# it using the semodule command.
+
+   - name: compile the policy package
+     command: make -f /usr/share/selinux/devel/Makefile ood.pp
+     args:
+       chdir: /tmp/ood_sebuild
+
+   - name: install the ood semodule
+     command: semodule -i ood.pp
+     args:
+       chdir: /tmp/ood_sebuild
+
+   - name: clean up after semodule build
+     file:
+       path: /tmp/ood_sebuild
+       state: absent
 
 #   - name: allow http for OOD
 #     firewalld:
@@ -84,3 +116,8 @@
 
    - name: update the apache config
      command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+
+   - name: restart the httpd24 server
+     service: 
+       name: httpd24-httpd
+       state: restarted
