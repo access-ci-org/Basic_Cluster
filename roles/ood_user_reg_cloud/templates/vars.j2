@@ -1,6 +1,6 @@
 id = "{{ celery_user }}"
 password = "{{ celery_user_password }}"
-key = "{{ celery_user_key }}"
+key = "{{ user_register_app_key }}" 
 broker_url =  'amqp://' + id + ':' + password + '@{{ rabbitmq_host }}:5672/'
 message_queue =  broker_url + 'socketio'
 default_referrer = "/pun/sys/dashboard"
