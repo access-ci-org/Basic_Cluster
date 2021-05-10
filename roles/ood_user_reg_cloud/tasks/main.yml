@@ -56,9 +56,9 @@
     name: celery.service
     enabled: yes
 
-- name: Put apache config file in place
+- name: Put apache config file in place (user-reg_conf_shib.j2 in case of shib or user-reg_conf.j2 in case of basicauth)
   template:
-    src: user-reg_conf.j2
+    src: user-reg_conf_shib.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
 
 - name: Put wsgi file in place
