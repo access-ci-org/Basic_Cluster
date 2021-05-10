@@ -158,6 +158,7 @@
   user_register_app_tag: "v0.1"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_repo: "https://gitlab.rc.uab.edu/mmoo97/flask_user_reg.git"
+  user_register_app_key: "1234"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
   RegUser_app_user_full_name: "RegUser of user register app"
@@ -201,7 +202,6 @@
   celery_user: "reggie"
   celery_user_password: "reggie"
   celery_vhost: "socketio"
-  celery_user_key: "1234"
 
 #ClusteronDemand CoD
   cod_deploy: true
