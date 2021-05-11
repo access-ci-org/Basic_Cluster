@@ -12,13 +12,20 @@
     - "https://packagecloud.io/rabbitmq/erlang/gpgkey"
     - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
 
-- name: Add RabbitMQ bintray repository
+- name: Add Erlang repository
   yum_repository:
-    name: bintray-rabbitmq-rpm
-    description: RabbitMQ (CentOS 7)
-    baseurl: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/v3.8.x/el/7/
-    gpgcheck: no
+    name: rabbitmq_erlang
+    description: Erlang (CentOS 7)
+    baseurl: https://packagecloud.io/rabbitmq/erlang/el/7/$basearch
+    repo_gpgcheck: yes
+    gpgcheck: yes
     enabled: yes
+    gpgkey:
+      - https://packagecloud.io/rabbitmq/erlang/gpgkey
+      - https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+    sslverify: yes
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    metadata_expire: 300
 
 - name: Install Erlang
   yum:
