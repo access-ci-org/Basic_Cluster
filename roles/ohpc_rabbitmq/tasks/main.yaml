@@ -27,6 +27,19 @@
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
     metadata_expire: 300
 
+- name: Add Rabbitmq server repository
+  yum_repository:
+    name: rabbitmq_server
+    description: Rabbitmq Server (CentOS 7)
+    baseurl: https://packagecloud.io/rabbitmq/rabbitmq-server/el/7/$basearch
+    repo_gpgcheck: yes
+    gpgcheck: yes
+    enabled: yes
+    gpgkey: https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey
+    sslverify: yes
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    metadata_expire: 300
+
 - name: Install Erlang
   yum:
     name: https://bintray.com/rabbitmq-erlang/rpm/download_file?file_path=erlang%2F22%2Fel%2F7%2Fx86_64%2Ferlang-22.3.4.2-1.el7.x86_64.rpm
