@@ -6,7 +6,11 @@
 - name: Import RabbitMQ signing key
   rpm_key:
     state: present
-    key: https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc
+    key: "{{ item }}"
+  loop:
+    - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc"
+    - "https://packagecloud.io/rabbitmq/erlang/gpgkey"
+    - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey"
 
 - name: Add RabbitMQ bintray repository
   yum_repository:
