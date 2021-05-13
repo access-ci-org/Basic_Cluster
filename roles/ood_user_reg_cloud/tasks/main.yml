@@ -67,11 +67,6 @@
     src: user-reg_conf.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
 
-- name: Put wsgi file in place
-  template:
-    src: wsgi.j2
-    dest: "{{ user_register_app_path }}/wsgi.py"
-
 - name: Put gunicorn config file in place
   template:
     src: ini.j2
@@ -111,7 +106,7 @@
     state: restarted
     enabled: yes
 
-- name: Start and enable flask app uwsgi service
+- name: Start and enable flask app gunicorn service
   service:
     name: "{{ user_register_app }}"
     state: restarted
