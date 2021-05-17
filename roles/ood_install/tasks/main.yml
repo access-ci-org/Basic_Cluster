@@ -14,6 +14,21 @@
         - "ondemand-selinux"
        state: latest
 
+   - name: Add TurboVNC repo
+     get_url:
+       url: https://turbovnc.org/pmwiki/uploads/Downloads/TurboVNC.repo
+       dest: /etc/yum.repos.d/
+       mode: '0644'
+       owner: root
+       group: root
+
+   - name: Install web app dependencies
+     yum:
+       name:
+        - "python-websockify"
+        - "turbovnc"
+        - "netcat"
+
 #This should be 'off' when on a host that is mounting homedirs over NFS
    - name: selinux ondemand_manage_user_home_dir yes
      seboolean: 
