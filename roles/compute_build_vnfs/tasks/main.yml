@@ -42,6 +42,35 @@
    - name: copy resolv.conf into image
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
+   - block:
+
+     - name: Add TurboVNC repo
+       get_url:
+         url: https://turbovnc.org/pmwiki/uploads/Downloads/TurboVNC.repo
+         dest: /etc/yum.repos.d/
+         mode: '0644'
+         owner: root
+         group: root
+
+     - name: yum groupinstall Xfce
+       command: yum --installroot={{ compute_chroot_loc }} -y groupinstall Xfce
+       
+     - name: yum groupinstall X Window system
+       command: yum --installroot={{ compute_chroot_loc }} -y groupinstall "X Window system" 
+
+     - name: yum install into the image chroot
+       yum:
+         name: "{{ ood_packages }}"
+         installroot: "{{ compute_chroot_loc }}"
+       vars:
+         ood_packages:
+           - "python-websockify"
+           - "turbovnc"
+           - "netcat"
+           - "xorg-x11-fonts-misc"
+
+     when: ood_install == true
+
    - name: yum install into the image chroot
      yum:
        name: "{{ packages }}"
