@@ -12,6 +12,7 @@
   dhcpd_enabled: true
 
 #OOD Variables
+  ood_install: true #Turn OOD install on or off
   headnode_local_homedirs: true # true unless mounting user homedirs from NFS
   ssl_cert_file_path: "/etc/pki/tls/certs/ood-selfsigned.crt"
   ssl_cert_key_file_path: "/etc/pki/tls/private/ood-selfsigned.key"
