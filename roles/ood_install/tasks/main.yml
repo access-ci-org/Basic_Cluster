@@ -31,6 +31,12 @@
        state: on
        persistent: yes
 
+   - name: selinux ondemand_use_torque yes
+     seboolean: 
+       name: ondemand_use_torque
+       state: on
+       persistent: yes
+
    - name: create tmpdir for semodule build
      file:
        state: directory
@@ -116,6 +122,11 @@
 
    - name: update the apache config
      command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+
+   - name: update the bc_desktop app form
+     template:
+       dest: /var/www/ood/apps/sys/bc_desktop/form.yml
+       src: bc_desktop_form.j2
 
    - name: restart the httpd24 server
      service: 
