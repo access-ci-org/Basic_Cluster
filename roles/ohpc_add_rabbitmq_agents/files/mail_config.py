@@ -1,4 +1,4 @@
-{% raw %}import rabbit_config as rcfg
+import rabbit_config as rcfg
 
 Head = f"""From: {rcfg.Sender_alias} <{rcfg.Sender}>
 To: <{{{{ to }}}}>
@@ -25,4 +25,4 @@ Whole_mail = Head + Body
 
 UserReportHead = f"""From: {rcfg.Sender_alias} <{rcfg.Sender}>
 To: <{rcfg.Admin_email}>
-Subject: RC Account Creation Report: {{{{ fullname }}}}, {{{{ username }}}} """{% endraw %}
+Subject: RC Account Creation Report: {{{{ fullname }}}}, {{{{ username }}}} """
