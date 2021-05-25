@@ -7,7 +7,7 @@
         - "https://yum.osc.edu/ondemand/1.8/ondemand-release-web-1.8-1.noarch.rpm"
        state: latest
 
-   - name: install OOD packages
+   - name: install OOD packages and dependencies
      yum:
        name: 
         - "ondemand"
@@ -15,6 +15,8 @@
         - "mod_authnz_pam"
         - "python-websockify"
         - "selinux-policy-devel"
+        - "httpd24-httpd"
+        - "httpd24"
        state: latest
 
    - name: Add TurboVNC repo
@@ -97,6 +99,17 @@
 #       service: https
 #       state: enabled
 #   - fail:
+
+
+#Edit the httpd24 config to listen only on the public interface
+# /opt/rh/httpd24/root/etc/httpd/conf
+#
+   - name: set httpd24 to listen on public nic
+     lineinfile:
+       path: /opt/rh/httpd24/root/etc/httpd/conf/httpd.conf
+       line: "Listen {{ public_ip }}:80"
+       regexp: '^Listen'
+       state: present
 
    - name: start and enable httpd24 server
      service: 

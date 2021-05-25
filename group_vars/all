@@ -18,6 +18,7 @@
   ssl_cert_key_file_path: "/etc/pki/tls/private/ood-selfsigned.key"
   ssl_chain_file_path: ""
   public_servername: "js-169-202.jetstream-cloud.org" #Publicly accessible URL
+  public_ip: "192.168.56.101" #Publicly accessible IP for httpd24-httpd
 
 #Private network Info
   private_network: "10.0.0.0"  
