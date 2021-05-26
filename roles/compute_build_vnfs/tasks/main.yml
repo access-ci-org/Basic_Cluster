@@ -42,6 +42,23 @@
    - name: copy resolv.conf into image
      copy: src=/etc/resolv.conf dest="{{ compute_chroot_loc }}/etc/resolv.conf" #"
 
+   - name: yum install into the image chroot
+     yum:
+       name: "{{ packages }}"
+       installroot: "{{ compute_chroot_loc }}"
+     vars:
+       packages:
+         - chrony
+         - kernel
+         - lmod-ohpc
+         - lmod-defaults-gnu-openmpi-ohpc
+         - grub2
+         - freeipmi
+         - ipmitool
+         - ohpc-slurm-client
+#         - libpsm2 # Needed for Intel Infinipath 
+#         - libpsm2-devel # Needed for compiling MPI for Intel Infinipath
+#" for vim
    - block:
 
      - name: Add TurboVNC repo
@@ -69,24 +86,11 @@
            - "netcat"
            - "xorg-x11-fonts-misc"
 
+     - name: disable firewalld
+       command: chroot '{{ compute_chroot_loc }}' systemctl disable firewalld
+
      when: ood_install == true
 
-   - name: yum install into the image chroot
-     yum:
-       name: "{{ packages }}"
-       installroot: "{{ compute_chroot_loc }}"
-     vars:
-       packages:
-         - chrony
-         - kernel
-         - lmod-ohpc
-         - grub2
-         - freeipmi
-         - ipmitool
-         - ohpc-slurm-client
-#         - libpsm2 # Needed for Intel Infinipath 
-#         - libpsm2-devel # Needed for compiling MPI for Intel Infinipath
-#" for vim
 
    - name: copy ssh keys over
      copy: src=cluster_root.pub dest={{ compute_chroot_loc }}/root/.ssh/authorized_keys

@@ -7,9 +7,11 @@ require {
 	class process setfscreate;
 	class dir search;
 	class file read;
+	class file ioctl;
+	class file open;
 }
 
 #============= ood_pun_t ==============
 allow ood_pun_t default_context_t:dir search;
 allow ood_pun_t self:process setfscreate;
-allow ood_pun_t user_home_t:file read;
+allow ood_pun_t user_home_t:file { ioctl read open };
