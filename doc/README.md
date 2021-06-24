@@ -195,7 +195,7 @@ Installation of the XCBC Tools and Dependencies
 
 ####Please note - this is meant to be run as the root user!
 
-0\. ```yum install git vim bash-completion```
+0\. ```yum install git vim bash-completion python2-pip```
 
 Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
