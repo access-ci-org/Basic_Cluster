@@ -25,6 +25,11 @@
     state: directory
     recurse: yes
 
+- name: Copy Self-Reg app variables file
+  template:
+    src: vars.j2
+    dest: "{{ user_register_app_path }}/vars.py"
+
 - name: Install requirements in virtualenv
   pip:
     requirements: requirements.txt
@@ -60,11 +65,6 @@
   template:
     src: user-reg_conf_shib.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
-
-- name: Put wsgi file in place
-  template:
-    src: wsgi.j2
-    dest: "{{ user_register_app_path }}/wsgi.py"
 
 - name: Put gunicorn config file in place
   template:
@@ -104,7 +104,8 @@
     name: httpd24-httpd
     enabled: yes
 
-- name: Enable flask app uwsgi service
-  systemd:
+
+- name: Start and enable flask app gunicorn service
+  service:
     name: "{{ user_register_app }}"
     enabled: yes

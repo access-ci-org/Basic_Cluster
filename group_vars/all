@@ -157,6 +157,7 @@
   user_register_app: "flask_user_reg"
   user_register_app_tag: "master"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
+  user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
