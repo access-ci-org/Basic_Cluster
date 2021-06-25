@@ -1,0 +1,29 @@
+ProxyPass /socket.io/ http://127.0.0.1:8000/socket.io/
+ProxyPassReverse /socket.io/ http://127.0.0.1:8000/socket.io/
+
+ProxyPass /register http://127.0.0.1:8000/
+ProxyPassReverse /register http://127.0.0.1:8000/
+
+ProxyPass /static http://127.0.0.1:8000/static
+ProxyPassReverse /static http://127.0.0.1:8000/static
+
+<Location /register>
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        Require valid-user
+        RequestHeader set REMOTE_USER expr=%{REMOTE_USER}
+        RewriteCond %{IS_SUBREQ} ^false$
+        RewriteCond %{LA-U:displayName} (.+)
+        RewriteRule . - [E=displayName:%1]
+        RequestHeader set REMOTE_USER_DISPLAYNAME %{displayName}e
+        RewriteCond %{IS_SUBREQ} ^false$
+        RewriteCond %{LA-U:mail} (.+)
+        RewriteRule . - [E=mail:%1]
+        RequestHeader set REMOTE_USER_MAIL %{mail}e
+</Location>
+
+<Location "/static/">
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        Require valid-user
+</Location>
