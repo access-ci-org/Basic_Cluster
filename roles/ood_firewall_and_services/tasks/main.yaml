@@ -1,7 +1,6 @@
 ---
 - name: Enable http service
   systemd:
-    state: started
     name: httpd24-httpd
     enabled: yes
 
@@ -32,4 +31,5 @@
     state: permissive
 
 - name: Set SELinux to permissive mode without reboot
-  command: setenforce 0
+  selinux:
+    state: disabled
