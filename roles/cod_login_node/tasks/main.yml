@@ -1,5 +1,14 @@
 ---
-# cod login-image build 
+- name: Enable Lmod
+  replace:
+    path: "/cm/images/default-image/etc/sysconfig/modules/lmod/{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  loop:
+    - { path: 'cm-lmod-init.sh', regexp: 'LMOD=.*$', replace: 'LMOD=1'}
+    - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
+
+# cod login-image build
 - name: clone the default image to build a login image
   command: cmsh -c "softwareimage; clone default-image login-image; commit --wait"
 
@@ -8,6 +17,9 @@
 
 - name: Change default gateway for the login category to access internet
   command: cmsh -c "category; use login; set defaultgateway 192.168.200.254; commit"
+
+- name: Config for slurm-submit role
+  command: cmsh -c "configurationoverlay; use slurm-submit; append categories login; commit"
 
 - name: Add software to the image
   command: yum -y --installroot=/cm/images/login-image install {{ item }}
