@@ -42,8 +42,8 @@
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
   compute_template: "rocky-8"
-  gpu_template: "gpu-nodes"  
-  login_template: "login-nodes"  
+  gpu_template: "rocky-8"  
+  login_template: "rocky-8"  
 
 # Chroot variables
   compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"
