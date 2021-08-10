@@ -8,7 +8,7 @@
   public_interface: "enp0s3" # NIC that allows access to the public internet
   private_interface: "enp0s8" #NIC that allows access to compute nodes
   headnode_private_ip: "10.0.0.1"
-  build_kernel_ver: '4.18.0-193.6.3.el8_2.x86_64' # `uname -r` at build time... for wwbootstrap
+  build_kernel_ver: '4.18.0-305.3.1.el8_4.x86_64' # `uname -r` at build time... for wwbootstrap
   dhcpd_enabled: true
 
 #Private network Info
@@ -41,17 +41,17 @@
 
 # WW Template Names for wwmkchroot
   template_path: "/usr/libexec/warewulf/wwmkchroot/"
-  compute_template: "centos-8"
+  compute_template: "rocky-8"
   gpu_template: "gpu-nodes"  
   login_template: "login-nodes"  
 
 # Chroot variables
   compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"
-  compute_chroot: centos8-compute
+  compute_chroot: rocky8-compute
   gpu_chroot_loc: "/opt/ohpc/admin/images/{{ gpu_chroot }}"
-  gpu_chroot: centos8-gpu
+  gpu_chroot: rocky8-gpu
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
-  login_chroot: centos8-login 
+  login_chroot: rocky8-login 
 
 # Node Inventory method - true: automatic, or false: manual
 # Setting this to 'false' uses the list provided in the compute_nodes list below to add
