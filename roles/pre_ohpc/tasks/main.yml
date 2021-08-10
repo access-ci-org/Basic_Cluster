@@ -33,9 +33,6 @@
                "NetworkManager",
              ]
        state: latest
-#               "NetworkManager-glib",  not available in CentOS 8; hopefully no longer needed...
-#       - "lua"  # testing; this could fix the lmod-ohpc issue?
- #otherwise, do a dnf update --skip-broken, dnf update...
 
    - name: get OpenHPC Repo #hardcoded version # :(
      dnf: name={{ openhpc_release_rpm }} state=present disable_gpg_check=yes
@@ -48,9 +45,9 @@
        state: latest
 #               "fail2ban", breaks python38 used for ansible; I should maybe switch ansible to python 3.6 instead?
 
-   - name: enable CentOS PowerTools repo
+   - name: enable Rocky PowerTools repo
      ini_file:
-      path: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+      path: /etc/yum.repos.d/Rocky-PowerTools.repo
       section: powertools
       option: enabled
       value: 1
