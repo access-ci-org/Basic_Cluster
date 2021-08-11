@@ -210,3 +210,12 @@
 
 #ClusteronDemand CoD
   cod_deploy: true
+
+# Lmod
+  lmod_loc: "/opt/ohpc/admin/lmod/lmod"
+  lmod_archive_loc: "{{ cluster_shared_folder }}/rc/lmod"
+  lmod_module_tracking_loc: "{{ lmod_loc }}/tools/tracking_module_usage"
+  lmod_db: "lmod"
+  lmod_db_user: "lmod"
+  lmod_db_passwd: "password"
+  lmod_db_host: "ohpc"
