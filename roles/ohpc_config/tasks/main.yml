@@ -59,7 +59,7 @@
      command: wwinit ssh_keys
      args:
        chdir: /root/
-       creates: /etc/warewulf/vnfs/ssh/ssh_host_key.pub
+       creates: /etc/warewulf/vnfs/ssh/ssh_host_rsa_key.pub
 
 #need to copy these to localhost first!
    - name: copy key back to management machine
