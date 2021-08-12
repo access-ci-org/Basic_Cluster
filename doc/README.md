@@ -142,16 +142,16 @@ in Virtualbox, to be sure you substitute the correct device names below!
 (Typically, they show up as something like enp0s3,enp0s8, etc. - it pays to
 double-check!)
 
-The NAT ip address will be used sparingly in the following documentation, but will
-be called ```$public-nic```. Virtualbox assigns these as 10.0.x.15, where x begins
-at 2 for the 1st VM, 3 for the 2nd, etc.
+The NAT device, along with its IP, will be used sparingly in the following documentation, 
+but will be called ```$public-nic```. Virtualbox assigns the IP address as 10.0.x.15,
+where x begins at 2 for the 1st VM, 3 for the 2nd, etc.
 
+For the device of the host-only network, it will be referred to as ```$host-nic```.
 Save the ip address of the interface on the host-only network - 
-you'll use this as the address for the headnode in the ansible scripts, 
-and it will be referred to as ```$host-nic```
+you'll use this as the address for the headnode in the ansible scripts.
 
-The ip address for the internal nic was set earlier, and will be referred to 
-either as 10.0.0.1 or ```$internal-nic```
+The device for the Internal Network will be referred to as ```$internal-nic```. The
+IP address created earlier will be relevant throughout this documentation.
 
 Make sure that the host-only and internal adapters are not set as default
 routes - ```ip route show``` should not list them as default! 
