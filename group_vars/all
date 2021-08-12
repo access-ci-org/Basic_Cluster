@@ -22,7 +22,7 @@
   private_network_mask: "24"
   private_network_long_netmask: "255.255.255.0"
   compute_ip_minimum: "10.0.0.2"
-  compute_ip_maximum: "10.0.0.255"
+  compute_ip_maximum: "10.0.0.254"
   gpu_ip_minimum: "10.0.0.128" #This could be more clever, like compute_ip_minimum + num_nodes...
   enable_compute_NAT: true
 
