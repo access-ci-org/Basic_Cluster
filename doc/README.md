@@ -216,25 +216,6 @@ run `ssh-keygen`, to create a local set of ssh keys, followed by
 
 3\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
 
- The script creates a python virtualenv named “ansible” in
- ```${HOME}/ansible_env/ansible```, in order to avoid polluting
- the system python installation. The ansible source code is cloned into
- ```${HOME}/ansible_env/ansible_source```.
-
-### Prepare your shell session
-
-The next two steps prepare your shell for using the ansible playbooks,
-by source two files containing environment variables - one for a
-python virtualenv, and one for the local installation of ansible.
-
-4\. `source ${HOME}/ansible_env/ansible/bin/activate`
-
-Loads the ansible virtualenv into the current session.
-
-5\. `source ${HOME}/ansible_env/ansible_source/hacking/env-setup `
-
-Loads the ansible environment variables into the current session.
-
 Defining Cluster Parameters
 ---------------------------
 
