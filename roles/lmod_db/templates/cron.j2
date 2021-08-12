@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd {{ lmod_module_tracking_loc }}
+
+for i in /var/log/moduleUsage.log-*; do
+  ./store_module_data $i
+  if [ "$?" -eq 0 ]; then
+    mv $i {{ lmod_archive_loc }}
+  fi
+done

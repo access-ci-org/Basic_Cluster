@@ -1,0 +1,99 @@
+---
+- name: Install necessary packages
+  yum:
+    state: present
+    name: mariadb
+
+- name: Install necessary packages
+  pip:
+    state: present
+    name: mysql-python
+
+- name: Install necessary packages
+  pip:
+    state: present
+    name: mysqlclient
+    executable: pip3
+
+- name: Update SitePackge.lua
+  copy:
+    src: SitePackage.lua
+    dest: "{{ lmod_loc }}/libexec/SitePackage.lua"
+
+- name: Import file in warewulf
+  import_tasks: warewulf_steps.yaml
+  when: not cod_deploy
+
+- name: Clone Lmod repo
+  git:
+    repo: https://github.com/TACC/Lmod.git
+    dest: /tmp/lmod
+
+- name: Copy module tracking folder
+  copy:
+    src: /tmp/lmod/contrib/tracking_module_usage/
+    dest: "{{ lmod_module_tracking_loc }}"
+    remote_src: yes
+
+- name: Remove lmod repo
+  file:
+    path: /tmp/lmod
+    state: absent
+
+- name: Create module archive directory
+  file:
+    path: "{{ lmod_archive_loc }}"
+    state: directory
+
+- name: Update rsyslog.d
+  lineinfile:
+    path: /etc/rsyslog.conf
+    line: '\$IncludeConfig /etc/rsyslog.d/\*.conf)'
+    backup: yes
+
+- name: Put rsyslog config file in place
+  copy:
+    src: moduleTracking.conf
+    dest: /etc/rsyslog.d/moduleTracking.conf
+
+- name: Set up log rotate for module usage
+  copy:
+    src: moduleUsage
+    dest: /etc/logrotate.d/moduleUsage
+
+- name: Set up module tracking database user
+  mysql_user:
+    name: "{{ lmod_db_user }}"
+    password: "{{ lmod_db_passwd }}"
+    priv: "{{ lmod_db }}.*:ALL"
+    state: present
+
+- name: Setup config file for module tracking
+  command: ./conf_create --dbhost="localhost" --dbuser="{{ lmod_db_user }}" --passwd="{{ lmod_db_passwd }}" --dbname="{{ lmod_db }}"
+  args:
+    chdir: "{{ lmod_module_tracking_loc }}"
+
+- name: Setup database
+  command: ./createDB.py
+  args:
+    chdir: "{{ lmod_module_tracking_loc }}"
+
+- name: Modify store db script
+  lineinfile:
+    path: "{{ lmod_module_tracking_loc }}/store_module_data"
+    line: "    dataT['syshost'] = syshost(dataT['host'])"
+    state: absent
+    backup: yes
+
+- name: Setup cron job script
+  template:
+    src: cron.j2
+    dest: /etc/cron.daily/module_to_db
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
