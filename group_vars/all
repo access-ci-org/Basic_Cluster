@@ -218,4 +218,4 @@
   lmod_db: "lmod"
   lmod_db_user: "lmod"
   lmod_db_passwd: "password"
-  lmod_db_host: "ohpc"
+  lmod_db_host_machine: "ohpc"
