@@ -86,13 +86,20 @@
     state: absent
     backup: yes
 
-- name: Setup cron job script
+- name: Setup script for cron job
   template:
     src: cron.j2
-    dest: /etc/cron.daily/module_to_db
-    owner: root
-    group: root
+    dest: "{{ lmod_module_tracking_loc }}/module_to_db"
+    owner: "{{ lmod_cron_user }}"
+    group: "{{ lmod_cron_user }}"
     mode: 0755
+
+- name: Setup cron job
+  cron:
+    name: "Insert module usage into db"
+    job: "{{ lmod_module_tracking_loc }}/module_to_db"
+    user: "{{ lmod_cron_user }}"
+    special_time: daily
 
 - name: Restart rsyslog
   service:
