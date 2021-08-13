@@ -28,6 +28,7 @@
   git:
     repo: https://github.com/TACC/Lmod.git
     dest: /tmp/lmod
+    version: "{{ lmod_version }}"
 
 - name: Copy module tracking folder
   copy:
