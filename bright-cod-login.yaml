@@ -1,0 +1,4 @@
+---
+- hosts: headnode
+  roles:
+    - { name: 'cod_login_node', tags: 'cod_login_node' }

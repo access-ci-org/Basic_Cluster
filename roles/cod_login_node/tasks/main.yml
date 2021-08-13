@@ -1,0 +1,78 @@
+---
+- name: Enable Lmod
+  replace:
+    path: "/cm/images/default-image/etc/sysconfig/modules/lmod/{{ item.path }}"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  loop:
+    - { path: 'cm-lmod-init.sh', regexp: 'LMOD=.*$', replace: 'LMOD=1'}
+    - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
+
+# cod login-image build
+- name: clone the default image to build a login image
+  command: cmsh -c "softwareimage; clone default-image login-image; commit --wait"
+
+- name: create a new node category for the image, called login
+  command: cmsh -c "category; clone default login; set softwareimage login-image; roles; assign login; commit --wait"
+
+- name: Change default gateway for the login category to access internet
+  command: cmsh -c "category; use login; set defaultgateway 192.168.200.254; commit"
+
+- name: Config for slurm-submit role
+  command: cmsh -c "configurationoverlay; use slurm-submit; append categories login; commit"
+
+- name: Add software to the image
+  command: yum -y --installroot=/cm/images/login-image install {{ item }}
+  loop:
+    - ansible
+    - git
+    - vim
+    - bash-completion
+    - python3
+    - python3-devel
+    - shorewall
+    - nfs-utils
+
+- name: Create a symlink for munge.key before enabling munge service
+  command: ln -s /cm/shared/apps/slurm/var/munge/keys/munge.key /cm/images/login-image/etc/munge/munge.key
+
+- name: Create a directory for CRI_XCBC in the login-image chroot path
+  file:
+    path: "{{ bright_cod_login_chroot_loc }}/CRI_XCBC"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Mount dirs required for ansible scripts to function
+  command: mount -o bind /{{ item }} /cm/images/login-image/{{ item }}
+  loop:
+    - dev
+    - proc
+    - sys
+    - home
+    - CRI_XCBC
+
+- name: Run the Ansible roles related to login image
+  command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
+
+# cod login node deploy
+- name: Change login001 category to login
+  command: cmsh -c "device; use login001; set category login; commit"
+
+- name: Set DHCP on BOOTIF device
+  command: cmsh -c "device; use login001; interfaces; use bootif; set dhcp yes; commit"
+
+- name: Add an extra interface to login from externalnet
+  command: cmsh -c "device; use login001; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
+
+- name: Set DHCP on the new interface added above
+  command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
+
+- name: Make sure tftp systemd service is running on head node
+  systemd:
+    state: started
+    name: tftpd
+
+- name: Reboot login001 to pick up the new image
+  command: cmsh -c "device; use login001; reboot"
