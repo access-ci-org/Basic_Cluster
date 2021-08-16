@@ -80,6 +80,19 @@ Initial Setup On VirtualBox
 Create (at least) two VM’s - one to be the headnode, and one to be a
 compute node.
 
+Configure the network interfaces on the headnode. There are three: 
+
+ 1. NAT:  this provides connection to the outside world.
+ The default IP for your NAT IP address will appear as 10.0.x.15, where x
+ begins at 2 for the 1st VM, 3 for the 2nd, etc.
+
+ 2. Host-only:  this provides a connection to the host computer of the VM,
+ primarily for the use of ssh to control the VM via some other terminal.
+ The default IP address for your host-only network will appear as 192.168.56.x.
+ 
+ 3. Internal:  this connects the host node to the compute nodes. It is setup
+ by you manually later.
+
 For the headnode, activate three network interfaces, attached to NAT,
 Internal Network, and Host-only. (For hardware you would require only
 two, but having both NAT and host-only simplifies configuration on the
@@ -91,32 +104,12 @@ on Virtualbox configured with the internal DHCP server on.
 The default network is 192.168.56.0, but feel free to change this as you 
 prefer. (To Remove?)
 
-Configure the network interfaces on the
-headnode. There are three: 
-
- 1\. NAT:  this provides connection to the outside world.
- The default IP for your NAT IP address will appear as 10.0.x.15, where x
- begins at 2 for the 1st VM, 3 for the 2nd, etc.
-
- 2\. Host-only:  this provides a connection to the host computer of the VM,
- primarily for the use of ssh to control the VM via some other terminal.
- The default IP address for your host-only network will appear as 192.168.56.x.
- 
- 3\. Internal:  this connects the host node to the compute nodes. It is setup
- by you manually later.
-
 The host-only network is for an ssh connection into the main host. You could also use
 this as the interface for the headnode in an ansible inventory file, and
 run these roles against the headnode remotely. 
 Use the DHCP server provided by Virtualbox; you will find the ip address given to
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
-
-The default IP for your NAT IP address will appear as 10.0.x.15, where x
-begins at 2 for the 1st VM, 3 for the 2nd, etc.
-The default IP address for your host-only network will appear as 192.168.56.x.
-The Internal IP is one that you will have to configure yourself; therefore, you pick
-how the IP will look.
 
 For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
