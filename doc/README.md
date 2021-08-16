@@ -93,12 +93,15 @@ prefer. (To Remove?)
 
 Configure the network interfaces on the
 headnode. There are three: 
+
  1\. NAT:  this provides connection to the outside world.
  The default IP for your NAT IP address will appear as 10.0.x.15, where x
  begins at 2 for the 1st VM, 3 for the 2nd, etc.
+
  2\. Host-only:  this provides a connection to the host computer of the VM,
  primarily for the use of ssh to control the VM via some other terminal.
  The default IP address for your host-only network will appear as 192.168.56.x.
+ 
  3\. Internal:  this connects the host node to the compute nodes. It is setup
  by you manually later.
 
