@@ -5,6 +5,7 @@ broker_url =  'amqp://' + id + ':' + password + '@{{ rabbitmq_host }}:5672/'
 message_queue =  broker_url + 'socketio'
 default_referrer = "/pun/sys/dashboard"
 cors_allowed_origins= "{{ cors_allowed_origins }}"
+rabbitmq_agents_loc= "{{ rabbitmq_agents_loc }}"
 username_key = ["REMOTE_USER"]
 fullname_key = ["REMOTE_USER_DISPLAYNAME"]
 email_key = ["REMOTE_USER_MAIL"]
