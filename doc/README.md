@@ -150,7 +150,7 @@ For the device of the host-only network, it will be referred to as ```$host-nic`
 Save the ip address of the interface on the host-only network - 
 you'll use this as the address for the headnode in the ansible scripts.
 
-The device for the Internal Network will be referred to as ```$internal-nic```. The
+The device for the internal network will be referred to as ```$internal-nic```. The
 IP address created earlier will be relevant throughout this documentation.
 
 Make sure that the host-only and internal adapters are not set as default
