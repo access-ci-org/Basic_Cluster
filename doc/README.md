@@ -91,11 +91,16 @@ on Virtualbox configured with the internal DHCP server on.
 The default network is 192.168.56.0, but feel free to change this as you 
 prefer. (To Remove?)
 
-1\.  Configure the network interfaces on the
-headnode. There are three: one for NAT, which provides connection to the 
-outside world, one for a host-only network,
-and one for the internal network, which connects to
-compute nodes.
+Configure the network interfaces on the
+headnode. There are three: 
+ 1\. NAT:  this provides connection to the outside world.
+ The default IP for your NAT IP address will appear as 10.0.x.15, where x
+ begins at 2 for the 1st VM, 3 for the 2nd, etc.
+ 2\. Host-only:  this provides a connection to the host computer of the VM,
+ primarily for the use of ssh to control the VM via some other terminal.
+ The default IP address for your host-only network will appear as 192.168.56.x.
+ 3\. Internal:  this connects the host node to the compute nodes. It is setup
+ by you manually later.
 
 The host-only network is for an ssh connection into the main host. You could also use
 this as the interface for the headnode in an ansible inventory file, and
@@ -104,10 +109,9 @@ Use the DHCP server provided by Virtualbox; you will find the ip address given t
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
 
-Use the `ip a` command represent the device names and IPs that are connected to them.
-The default IP for your NAT device should look like 10.0.x.15, where x
+The default IP for your NAT IP address will appear as 10.0.x.15, where x
 begins at 2 for the 1st VM, 3 for the 2nd, etc.
-The default IP for your host-only network should look like 192.168.56.x.
+The default IP address for your host-only network will appear as 192.168.56.x.
 The Internal IP is one that you will have to configure yourself; therefore, you pick
 how the IP will look.
 
