@@ -89,7 +89,7 @@ In this configuration, the assumption is that there is a host-only network
 on Virtualbox configured with the internal DHCP server on. 
 (Under File-\>Preferences-\>Networking-\>Host-only Networks).
 The default network is 192.168.56.0, but feel free to change this as you 
-prefer.
+prefer. (To Remove?)
 
 1\.  Configure the network interfaces on the
 headnode. There are three: one for NAT, which provides connection to the 
@@ -104,6 +104,12 @@ Use the DHCP server provided by Virtualbox; you will find the ip address given t
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
 
+Use the `ip a` command represent the device names and IPs that are connected to them.
+The default IP for your NAT device should look like 10.0.x.15, where x
+begins at 2 for the 1st VM, 3 for the 2nd, etc.
+The default IP for your host-only network should look like 192.168.56.x.
+The Internal IP is one that you will have to configure yourself; therefore, you pick
+how the IP will look.
 
 For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
@@ -126,7 +132,7 @@ Don't touch the 'NAT' interface, other than to check the 'Always Connect' box un
 'Configure->General'. The same goes for the 'host-only' network.
 
 Configure the internal network interface to have address 10.0.0.1, netmask /24 and gateway 
-0.0.0.0 - the headnode will act as router for the compute nodes.
+0.0.0.0 - the headnode will act as router for the compute nodes. (To remove?)
 
 /24 is important, so that Warewulf will see the compute nodes as existing on
 the same network as the headnode interface!!! Don't forget to also check the
@@ -144,7 +150,7 @@ double-check!)
 
 The NAT ip address will be used sparingly in the following documentation, but will
 be called ```$public-nic```. Virtualbox assigns these as 10.0.x.15, where x begins
-at 2 for the 1st VM, 3 for the 2nd, etc.
+at 2 for the 1st VM, 3 for the 2nd, etc. (To remove?)
 
 Save the ip address of the interface on the host-only network - 
 you'll use this as the address for the headnode in the ansible scripts, 
