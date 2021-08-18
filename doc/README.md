@@ -332,7 +332,7 @@ These are added to the SLURM configuration file as needed
     tutorial.
 
 #### GPU Necessities
--   ```nvidia_driver_installer: "NVIDIA-Linux-x86_64-375.39.run"```
+-   ```nvidia_driver_installer: "NVIDIA-Linux-x86_64-387.26.run"```
 
     Contains the full name of
     the NVIDIA driver installer. This should be downloaded and placed
