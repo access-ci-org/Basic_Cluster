@@ -415,7 +415,7 @@ Note the inventory file in
 headnode ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
 ```
 
-Make sure that the hostname of your headnode matches the entry on that line! Either
+Make sure that the hostname of your headnode matches the entry on that second line! Either
 edit the inventory file, or change the hostname via:
 ```hostnamectl set-hostname headnode```.
 
