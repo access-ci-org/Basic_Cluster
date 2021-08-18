@@ -1,4 +1,4 @@
-Simple playbooks to install OpenHPC version 1.0 using Ansible. 
+Simple playbooks to install OpenHPC version 2.0 using Ansible. 
 
 See the doc/README.md for a tutorial on using these scripts in a VirtualBox environment.
 
