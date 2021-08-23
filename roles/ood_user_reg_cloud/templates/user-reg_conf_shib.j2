@@ -13,6 +13,7 @@ ProxyPassReverse /static http://127.0.0.1:8000/static
         Require valid-user
         RewriteCond %{IS_SUBREQ} ^false$
         RewriteCond %{LA-U:REMOTE_USER} "^([a-z]+)@samltest.id$"
+        RewriteRule . - [E=RU:%1]
         RequestHeader set REMOTE_USER %{RU}e
         RewriteCond %{IS_SUBREQ} ^false$
         RewriteCond %{LA-U:displayName} (.+)
