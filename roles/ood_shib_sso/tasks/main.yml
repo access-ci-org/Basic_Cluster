@@ -34,11 +34,6 @@
     src: shibboleth2.xml
     dest: /etc/shibboleth/shibboleth2.xml
 
-- name: add saml-to-ood user map file
-  copy:
-    src: ood-user-mapfile
-    dest: /etc/ood/ood-user-mapfile
-
 - name: update ood portal config with user mapfile
   replace:
     path: /etc/ood/config/ood_portal.yml
