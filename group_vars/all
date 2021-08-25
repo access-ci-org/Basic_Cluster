@@ -20,6 +20,8 @@
 
 #slurm.conf variables
   cluster_name: "ohpc"
+  slurm_bin_path: "/bin"
+  slurm_conf_path: "/etc/slurm/slurm.conf"
 #  gres_types: "gpu"
 
 # sacct user list
@@ -54,6 +56,8 @@
   gpu_chroot: centos7-gpu
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
   login_chroot: centos7-login 
+  bright_cod_login_chroot_loc: "/cm/images/{{ bright_cod_login_chroot }}"
+  bright_cod_login_chroot: login-image
 
 # Node Inventory method - automatic, or manual
   node_inventory_auto: false
@@ -155,9 +159,10 @@
 # User Registration
   enable_user_reg: true
   user_register_app: "flask_user_reg"
-  user_register_app_tag: "v0.1"
+  user_register_app_tag: "master"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
-  user_register_app_repo: "https://gitlab.rc.uab.edu/mmoo97/flask_user_reg.git"
+  user_register_app_key: "1234"
+  user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
   RegUser_app_user_full_name: "RegUser of user register app"
@@ -181,7 +186,8 @@
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
   rabbitmq_agents_service_user: "root"
-  
+  rabbitmq_agents_db_path: ".agent_db"
+
   # rabbit_config
   mail_server: "localhost"
   admin_email: "root@localhost"
@@ -204,3 +210,14 @@
 
 #ClusteronDemand CoD
   cod_deploy: true
+
+# Lmod
+  lmod_loc: "/opt/ohpc/admin/lmod/lmod"
+  lmod_archive_loc: "{{ cluster_shared_folder }}/rc/lmod"
+  lmod_module_tracking_loc: "{{ lmod_loc }}/tools/tracking_module_usage"
+  lmod_version: "8.5.9"
+  lmod_cron_user: "root"
+  lmod_db: "lmod"
+  lmod_db_user: "lmod"
+  lmod_db_passwd: "password"
+  lmod_db_host_machine: "ohpc"

@@ -1,0 +1,10 @@
+---
+- name: Setup rsyslog
+  template:
+    src: rsyslog.j2
+    dest: /etc/rsyslog.d/
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted

@@ -25,6 +25,11 @@
     state: directory
     recurse: yes
 
+- name: Copy Self-Reg app variables file
+  template:
+    src: vars.j2
+    dest: "{{ user_register_app_path }}/vars.py"
+
 - name: Install requirements in virtualenv
   pip:
     requirements: requirements.txt
@@ -51,21 +56,15 @@
     src: celery.service.j2
     dest: "/etc/systemd/system/celery.service"
 
-- name: Start celery.service
-  service:
+- name: Enable celery.service
+  systemd:
     name: celery.service
-    state: started
     enabled: yes
 
 - name: Put apache config file in place (user-reg_conf_shib.j2 in case of shib or user-reg_conf.j2 in case of basicauth)
   template:
     src: user-reg_conf_shib.j2
     dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg.conf"
-
-- name: Put wsgi file in place
-  template:
-    src: wsgi.j2
-    dest: "{{ user_register_app_path }}/wsgi.py"
 
 - name: Put gunicorn config file in place
   template:
@@ -100,14 +99,13 @@
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
   ignore_errors: yes
 
-- name: Restart apache
-  service:
+- name: Enable apache service
+  systemd:
     name: httpd24-httpd
-    state: restarted
     enabled: yes
 
-- name: Start and enable flask app uwsgi service
+
+- name: Start and enable flask app gunicorn service
   service:
     name: "{{ user_register_app }}"
-    state: restarted
     enabled: yes
