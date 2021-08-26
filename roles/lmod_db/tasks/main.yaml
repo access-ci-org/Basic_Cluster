@@ -75,7 +75,7 @@
     chdir: "{{ lmod_module_tracking_loc }}"
 
 - name: Setup database
-  command: ./createDB.py
+  command: ./createDB.py --dbname="{{ lmod_db }}"
   args:
     chdir: "{{ lmod_module_tracking_loc }}"
 
