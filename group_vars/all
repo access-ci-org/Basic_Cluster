@@ -163,6 +163,7 @@
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
+  cors_allowed_origins: "https://testshib.dev.rc.uab.edu"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
   RegUser_app_user_full_name: "RegUser of user register app"
