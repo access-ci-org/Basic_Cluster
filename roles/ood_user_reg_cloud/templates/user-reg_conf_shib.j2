@@ -11,11 +11,18 @@ ProxyPassReverse /static http://127.0.0.1:8000/static
         AuthType shibboleth
         ShibRequestSetting requireSession 1
         Require valid-user
-        RequestHeader set REMOTE_USER expr=%{REMOTE_USER}
         RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:displayName} (.+)
-        RewriteRule . - [E=displayName:%1]
-        RequestHeader set REMOTE_USER_DISPLAYNAME %{displayName}e
+        RewriteCond %{LA-U:REMOTE_USER} "^([a-z]+)@samltest.id$"
+        RewriteRule . - [E=RU:%1]
+        RequestHeader set REMOTE_USER %{RU}e
+        RewriteCond %{IS_SUBREQ} ^false$
+        RewriteCond %{LA-U:givenName} (.+)
+        RewriteRule . - [E=givenName:%1]
+        RewriteCond %{IS_SUBREQ} ^false$
+        RewriteCond %{LA-U:sn} (.+)
+        RewriteRule . - [E=sn:%1]
+        SetEnv space " "
+        RequestHeader set REMOTE_USER_DISPLAYNAME %{givenName}e%{space}e%{sn}e        
         RewriteCond %{IS_SUBREQ} ^false$
         RewriteCond %{LA-U:mail} (.+)
         RewriteRule . - [E=mail:%1]
