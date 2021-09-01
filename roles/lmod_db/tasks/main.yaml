@@ -83,6 +83,7 @@
   command: ./createDB.py --dbname="{{ lmod_db }}"
   args:
     chdir: "{{ lmod_module_tracking_loc }}"
+  ignore_errors: yes
 
 - name: Modify store db script
   lineinfile:
