@@ -90,7 +90,6 @@
     path: "{{ lmod_module_tracking_loc }}/store_module_data"
     regexp: "syshost\\(dataT"
     line: "    dataT['syshost'] = dataT['host']"
-    state: absent
     backup: yes
 
 - name: Setup script for cron job
