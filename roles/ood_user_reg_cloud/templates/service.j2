@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=apache
-Group=apache
+User={{ RegUser_app_user }}
+Group={{ RegUser_app_user }}
 Restart=always
 RestartSec=5
 WorkingDirectory={{ user_register_app_path }}
