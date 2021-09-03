@@ -46,9 +46,9 @@
 
 - name: Create log directory
   file:
-    path: "{{ user_register_app_path }}/log"
-    owner: apache
-    group: apache
+    path: "/var/log/{{ user_register_app }}"
+    owner: "{{ RegUser_app_user }}"
+    group: "{{ RegUser_app_user }}"
     state: directory
 
 - name: Copy Celery service template
