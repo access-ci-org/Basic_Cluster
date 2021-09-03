@@ -146,10 +146,10 @@ spew = False
 #
 
 #errorlog = '-'
-errorlog = '{{ user_register_app_path }}/log/gunicorn_err.log'
+errorlog = '/var/log/{{ user_register_app }}/gunicorn_err.log'
 loglevel = 'info'
 #accesslog = '-'
-accesslog = '{{ user_register_app_path }}/log/gunicorn_access.log'
+accesslog = '/var/log/{{ user_register_app }}/gunicorn_access.log'
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
 #
