@@ -20,8 +20,8 @@
 - name: Change ownership of directory
   file:
     path: "{{ user_register_app_path }}"
-    owner: apache
-    group: apache
+    owner: root
+    group: root
     state: directory
     recurse: yes
 
