@@ -1,0 +1,7 @@
+/var/log/{{ user_register_app }}/*log {
+  missingok
+  copytruncate
+  notifempty
+  size 1M
+  compress
+}
