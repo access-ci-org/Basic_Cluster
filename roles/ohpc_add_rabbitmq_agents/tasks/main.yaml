@@ -1,50 +1,77 @@
 ---
 - name: Clone the git repo to the machine
   git: 
-    repo: https://github.com/uabrc/rabbitmq_agents.git
-    dest: /opt/rabbitmq_agents
-    version: develop
+    repo: "{{ rabbitmq_agents_repo }}"
+    dest: "{{ rabbitmq_agents_loc }}"
+    version: "{{ rabbitmq_agents_version }}"
 
-- name: Make a copy of rabbit config example file
+- name: Create .agent_db dir for sqlite DB if not present
+  file:
+    path: "{{ rabbitmq_agents_loc }}/prod_rmq_agents/.agent_db"
+    state: directory
+    owner: "{{ rabbitmq_agents_service_user }}"
+    group: "{{ rabbitmq_agents_service_user }}"
+    mode: '0755'
+
+- name: Install rabbitmq agents config file
+  template:
+    src: config.j2
+    dest: "{{ rabbitmq_agents_loc }}/rabbit_config.py"
+
+- name: Install mail template as mail_config file
   copy:
-    src: /opt/rabbitmq_agents/rabbit_config.py.example
-    dest: /opt/rabbitmq_agents/rabbit_config.py
-    remote_src: yes
+    src: mail_config.py
+    dest: "{{ rabbitmq_agents_loc }}/mail_config.py"
 
-- name: Add rabbitmq password in the rabbit_config file
-  replace:
-    path: /opt/rabbitmq_agents/rabbit_config.py
-    regexp: 'CHANGE_IT_TO_YOUR_OWN_PASSWORD'
-    replace: '{{ rabbitmq_user_password }}'
-    backup: yes
-
-- name: Check if environment is properly setup, and install python packages if not
+- name: Setup the venv for rabbitmq agents
   pip:
-    requirements: /opt/rabbitmq_agents/requirements.txt
-    executable: pip3
+    requirements: requirements.txt
+    virtualenv: venv
+    virtualenv_command: /usr/bin/python3 -m venv
+    chdir: "{{ rabbitmq_agents_loc }}"
 
-- name: Run the ohpc_account_create agent in the background
-  shell: cd /opt/rabbitmq_agents; nohup python ohpc_account_create.py </dev/null >/dev/null 2>&1 & 
+- name: Install dev agents service files
+  template:
+    src: agent.j2
+    dest: "/etc/systemd/system/{{ item | basename | splitext | first }}_agent.service"
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/dev_rmq_agents/*.py', wantlist=True) }}"
+  when: not cod_deploy
 
-#- name: Run the slurm_account_create agent in the background
-#  shell: cd /opt/rabbitmq_agents; nohup python slurm_agent.py </dev/null >/dev/null 2>&1 &
+- name: Install prod agents service files
+  template:
+    src: agent.j2
+    dest: "/etc/systemd/system/{{ item | basename | splitext | first}}_agent.service"
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/prod_rmq_agents/*.py', wantlist=True) }}"
+  when: cod_deploy | bool
 
-- name: Copy service files to the machine.
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/systemd/system/{{ item }}"
-  with_items:
-    - ohpc_account.service
-    - slurm_account.service
+- name: Add Vhost in RabbitMQ
+  rabbitmq_vhost:
+    name: "{{ rabbitmq_vhost }}"
+    state: present
 
-- name: Start ohpc_account.service
+- name: Add User in RabbitMQ
+  rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_user_password }}"
+    vhost: "{{ rabbitmq_vhost }}"
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+- name: Start and enable dev agent services
   service:
-    name: ohpc_account.service
+    name: "{{ item | basename | splitext | first }}_agent.service"
     state: started
     enabled: yes
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/dev_rmq_agents/*.py', wantlist=True) }}"
+  when: not cod_deploy
 
-- name: Start slurm_account.service
+- name: Start and enable prod agent services
   service:
-    name: slurm_account.service
+    name: "{{ item | basename | splitext | first }}_agent.service"
     state: started
     enabled: yes
+  loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/prod_rmq_agents/*.py', wantlist=True) }}"
+  when: cod_deploy | bool
+

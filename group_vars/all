@@ -20,6 +20,8 @@
 
 #slurm.conf variables
   cluster_name: "ohpc"
+  slurm_bin_path: "/bin"
+  slurm_conf_path: "/etc/slurm/slurm.conf"
 #  gres_types: "gpu"
 
 # sacct user list
@@ -54,6 +56,8 @@
   gpu_chroot: centos7-gpu
   login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"
   login_chroot: centos7-login 
+  bright_cod_login_chroot_loc: "/cm/images/{{ bright_cod_login_chroot }}"
+  bright_cod_login_chroot: login-image
 
 # Node Inventory method - automatic, or manual
   node_inventory_auto: false
@@ -155,9 +159,11 @@
 # User Registration
   enable_user_reg: true
   user_register_app: "flask_user_reg"
-  user_register_app_tag: "v0.1"
+  user_register_app_tag: "master"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
-  user_register_app_repo: "https://gitlab.rc.uab.edu/mmoo97/flask_user_reg.git"
+  user_register_app_key: "1234"
+  user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
+  cors_allowed_origins: "https://testshib.dev.rc.uab.edu"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
   RegUser_app_user_full_name: "RegUser of user register app"
@@ -170,9 +176,33 @@
   user_create_script_repo: "https://gitlab.rc.uab.edu/tr27p/ohpc_user_create.git"
 
 # RabbitMQ
-  rabbitmq_provision: false
+  rabbitmq_provision: true
   rabbitmq_user: "reggie"
   rabbitmq_user_password: "reggie"
+  rabbitmq_host: "master"
+  rabbitmq_exchange: "RegUsr"
+  rabbitmq_vhost: "adduser"
+  rabbitmq_port: "5672"
+  rabbitmq_agents_loc: "/cm/shared/rabbitmq_agents"
+  rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
+  rabbitmq_agents_version: "feat-cod-rmq"
+  rabbitmq_agents_service_user: "root"
+  rabbitmq_agents_db_path: ".agent_db"
+
+  # rabbit_config
+  mail_server: "localhost"
+  admin_email: "root@localhost"
+  sender: "ROOT@LOCALHOST"
+  sender_alias: "Services"
+  subject: "New User Account"
+  info_url: "https://www.google.com"
+  mail_list: "root@localhost"
+  mail_list_bcc: "cmsupport@localhost"
+
+  delay: "5" #time delay to let account creation finish to avoid concurrency
+  user_dirs: ['/home', '/data/user', '/data/scratch']
+  rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
+  rc_users_ldap_repo_loc: "~/git/rc-users"
 
 # Celery
   celery_user: "reggie"
@@ -196,7 +226,3 @@
   lmod_db_passwd: "password"
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
-
-# Polling interval from dashboard to slurm in milliseconds
-  poll_interval: 120000 
-  env_file_loc: "/etc/ood/config/apps/dashboard/"
