@@ -83,13 +83,13 @@
   command: ./createDB.py --dbname="{{ lmod_db }}"
   args:
     chdir: "{{ lmod_module_tracking_loc }}"
+  ignore_errors: yes
 
 - name: Modify store db script
   lineinfile:
     path: "{{ lmod_module_tracking_loc }}/store_module_data"
     regexp: "syshost\\(dataT"
     line: "    dataT['syshost'] = dataT['host']"
-    state: absent
     backup: yes
 
 - name: Setup script for cron job
