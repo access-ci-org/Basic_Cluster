@@ -1,0 +1,10 @@
+/var/log/{{ user_register_app }}/*log {
+  missingok
+  copytruncate
+  notifempty
+  weekly
+  compress
+  postrotate
+      /sbin/service {{ user_register_app }} restart > /dev/null 2>/dev/null || true
+  endscript
+}

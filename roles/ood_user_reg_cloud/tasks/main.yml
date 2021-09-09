@@ -51,6 +51,11 @@
     group: "{{ RegUser_app_user }}"
     state: directory
 
+- name: Set up log rotate for module usage
+  template:
+    src: logrotate.j2
+    dest: "/etc/logrotate.d/{{ user_register_app }}"
+
 - name: Copy Celery service template
   template:
     src: celery.service.j2
