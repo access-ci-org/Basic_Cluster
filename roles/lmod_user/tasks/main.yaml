@@ -2,7 +2,7 @@
 - name: Setup rsyslog
   template:
     src: rsyslog.j2
-    dest: /etc/rsyslog.d/
+    dest: /etc/rsyslog.d/moduleTracking-client.conf
 
 - name: Restart rsyslog
   service:

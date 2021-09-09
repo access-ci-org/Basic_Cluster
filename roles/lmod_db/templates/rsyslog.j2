@@ -1,0 +1,8 @@
+$Ruleset remote
+if $programname contains 'ModuleUsageTracking' then {{ lmod_log_filename }}
+$Ruleset RSYSLOG_DefaultRuleset
+
+# provides UDP syslog reception
+$ModLoad imudp
+$InputUDPServerBindRuleset remote
+$UDPServerRun 514
