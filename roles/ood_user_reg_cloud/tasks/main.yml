@@ -25,6 +25,20 @@
     state: directory
     recurse: yes
 
+- name: Create __pycache__ in app dir
+  file:
+    path: "{{ user_register_app_path }}/__pycache__"
+    owner: "{{ RegUser_app_user }}"
+    group: "{{ RegUser_app_user }}"
+    state: directory
+
+- name: Create  __pycache__ in app dir
+  file:
+    path: "{{ user_register_app_path }}/app/__pycache__"
+    owner: "{{ RegUser_app_user }}"
+    group: "{{ RegUser_app_user }}"
+    state: directory
+
 - name: Copy Self-Reg app variables file
   template:
     src: vars.j2
@@ -50,6 +64,11 @@
     owner: "{{ RegUser_app_user }}"
     group: "{{ RegUser_app_user }}"
     state: directory
+
+- name: Set up log rotate for module usage
+  template:
+    src: logrotate.j2
+    dest: "/etc/logrotate.d/{{ user_register_app }}"
 
 - name: Copy Celery service template
   template:

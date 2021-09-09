@@ -4,6 +4,7 @@
     - { name: 'pre_ohpc', tags: 'pre_ohpc' }
     - { name: 'ohpc_install', tags: 'ohpc_install' }
     - { name: 'ohpc_config', tags: 'ohpc_config' }
+    - { name: 'lmod_db', tags: 'lmod_db' }
     - { name: 'compute_build_vnfs', tags: 'compute_build_vnfs' }
     - { name: 'compute_build_nodes', tags: 'compute_build_nodes' }
     - { name: 'nodes_vivify', tags: 'nodes_vivify' }
