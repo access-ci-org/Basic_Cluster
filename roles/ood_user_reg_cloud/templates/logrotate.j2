@@ -2,6 +2,9 @@
   missingok
   copytruncate
   notifempty
-  size 1M
+  weekly
   compress
+  postrotate
+      /sbin/service {{ user_register_app }} restart > /dev/null 2>/dev/null || true
+  endscript
 }
