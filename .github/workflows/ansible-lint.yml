@@ -39,7 +39,7 @@ jobs:
         # targets: |
         #   playbook_1.yml
         #   playbook_2.yml
-        targets: ""
+        targets: "${{ steps.get_file_changes.outputs.files }}"
         # [optional]
         # Arguments to override a package and its version to be set explicitly.
         # Must follow the example syntax.
