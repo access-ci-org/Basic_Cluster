@@ -16,6 +16,17 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
+
+    - name: Get file changes
+      id: get_file_changes
+      uses: trilom/file-changes-action@v1.2.3
+      with:
+        output: ' '
+
+    - name: Echo file changes
+      run: |
+        echo Changed files: ${{ steps.get_file_changes.outputs.files }}
+
     - name: Lint Ansible Playbook
       # replace "master" with any valid ref
       uses: ansible/ansible-lint-action@master
