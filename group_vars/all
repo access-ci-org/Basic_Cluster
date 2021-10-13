@@ -169,12 +169,6 @@
   RegUser_app_user_full_name: "RegUser of user register app"
   RegUser_app_user_passwd: "qweasd"
 
-# User Create Scripts
-  enable_user_create_scripts: true
-  user_create_scripts: "ohpc_user_create"
-  user_create_scripts_path: "/opt/{{ user_create_scripts }}"
-  user_create_script_repo: "https://gitlab.rc.uab.edu/tr27p/ohpc_user_create.git"
-
 # RabbitMQ
   rabbitmq_provision: true
   rabbitmq_user: "reggie"
