@@ -1,7 +1,7 @@
 Introduction
 ============
 
-This is a basic quickstart guide for the CentOS 7 version of the XSEDE
+This is a basic quickstart guide for the Rocky Linux version of the XSEDE
 Compatible Basic Cluster, based on the OpenHPC Project.
 (https://openhpc.community). It covers initial setup of your hardware
 (or virtual machines), configuration options for the ansible scripts,
@@ -118,7 +118,7 @@ Building the Cluster
 Installation of the base OS on the headnode
 -------------------------------------------
 
-1\. Install CentOS 7.x minimal, on the headnode VM, 
+1\. Install Rocky Linux minimal, on the headnode VM, 
 
 During installation, the default partition setup is fine.
 It helps to set up the three network interfaces at this point. 
@@ -256,7 +256,7 @@ build will be pointed out as we go along.
 Separated by category, the full list of parameters is:
 
 #### OpenHPC Release Version
--   ```openhpc_release_rpm: "https://github.com/openhpc/ohpc/releases/download/v1.3.GA/ohpc-release-1.3-1.el7.x86_64.rpm"```
+-   ```openhpc_release_rpm: "http://repos.openhpc.community/OpenHPC/2/CentOS_8/x86_64/ohpc-release-2-1.el8.x86_64.rpm"```
 
     This contains the version number and path
     of the current openhpc release rpm. 
@@ -276,7 +276,7 @@ Separated by category, the full list of parameters is:
 
     The ip of the headnode on the private network
  
--   ```build_kernel_ver: '3.10.0-327.el7.x86_64'```
+-   ```build_kernel_ver: '4.18.0-305.3.1.el8_4.x86_64'```
     
     `uname -r` at build time - required for Warewulf to build bootstrap
     images for the compute nodes. THIS SHOULD BE UPDATED AT RUN-TIME!
@@ -332,7 +332,7 @@ These are added to the SLURM configuration file as needed
     tutorial.
 
 #### GPU Necessities
--   ```nvidia_driver_installer: "NVIDIA-Linux-x86_64-375.39.run"```
+-   ```nvidia_driver_installer: "NVIDIA-Linux-x86_64-387.26.run"```
 
     Contains the full name of
     the NVIDIA driver installer. This should be downloaded and placed
@@ -359,11 +359,11 @@ Do not worry! If you don't have GPU or login nodes, space and time will not
 be wasted making unnecessary images.
 
 -   ```compute_chroot_loc: "/opt/ohpc/admin/images/{{ compute_chroot }}"```
--   ```compute_chroot: centos7-compute```
+-   ```compute_chroot: rocky8-compute```
 -   ```gpu_chroot_loc: "/opt/ohpc/admin/images/{{ gpu_chroot }}"```
--   ```gpu_chroot: centos7-gpu```
+-   ```gpu_chroot: rocky8-gpu```
 -   ```login_chroot_loc: "/opt/ohpc/admin/images/{{ login_chroot }}"```
--   ```login_chroot: centos7-login```
+-   ```login_chroot: rocky8-login```
 
 #### Node Inventory Method
 -   ```node_inventory_auto: true```
@@ -467,7 +467,7 @@ Installation of the compute nodes
 
 4\. `ansible-playbook -i inventory/headnode -t compute_build_vnfs headnode.yml `
 This role builds an image for the compute nodes, by configuring a chroot environment
-in `/opt/ohpc/admin/images/centos-7.3-compute`, and adding a "VNFS" image to the Warewulf
+in `/opt/ohpc/admin/images/rocky8-compute`, and adding a "VNFS" image to the Warewulf
 database. This will be used by the compute nodes to PXE boot.
 It takes a while to build the image - good time to take a break from your screen!
 
