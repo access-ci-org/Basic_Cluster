@@ -90,15 +90,6 @@
    - name: blacklist nouveau in modprobe
      copy: src=blacklist_modprobe dest={{ gpu_chroot_loc }}/etc/modprobe.d/blacklist.conf
 
-   - name: blacklist nouveau in grub
-     copy: src=grub_default dest={{ gpu_chroot_loc }}/etc/default/grub
-
-   - name: create rebuild-grub service
-     copy: src=rebuild-grub.service dest={{ gpu_chroot_loc }}/etc/systemd/system/rebuild-grub.service
- 
-   - name: enable rebuild-grub.service
-     command: chroot {{ gpu_chroot_loc }} systemctl enable rebuild-grub.service
-
    - name: create service create-cuda-devices
      copy: src=create-cuda-devices.service dest={{ gpu_chroot_loc }}/etc/systemd/system/create-cuda-devices.service
 
