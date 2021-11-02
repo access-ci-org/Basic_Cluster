@@ -114,7 +114,7 @@ For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' 
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
 interface, on the internal network. DO NOT INSTALL ANYTHING ON THESE VMs - The images 
 will be generated and pushed out from the headnode during this tutorial. Make sure they have 
-at least 2GB of RAM - otherwise the disk images built in this tutorial will be too large,
+at least 4GB of RAM - otherwise the disk images built in this tutorial will be too large,
 and you will encounter mysterious errors.
 
 Building the Cluster
@@ -139,15 +139,16 @@ in Virtualbox, to be sure you substitute the correct device names below!
 (Typically, they show up as something like enp0s3,enp0s8, etc. - it pays to
 double-check!)
 
-The NAT ip address will be used sparingly in the following documentation, but will
-be called ```$public-nic```.
+The NAT device, along with its IP, will be used sparingly in the following documentation, 
+but will be called ```$public-nic```. Virtualbox assigns the IP address as 10.0.x.15,
+where x begins at 2 for the 1st VM, 3 for the 2nd, etc.
 
+The device of the host-only network will be referred to as ```$host-nic```.
 Save the ip address of the interface on the host-only network - 
-you'll use this as the address for the headnode in the ansible scripts, 
-and it will be referred to as ```$host-nic```
+you'll use this as the address for the headnode in the ansible scripts.
 
-The ip address for the internal nic was set earlier, and will be referred to 
-either as 10.0.0.1 or ```$internal-nic```
+The device for the internal network will be referred to as ```$internal-nic```. The
+IP address created earlier will be relevant throughout this documentation.
 
 Make sure that the host-only and internal adapters are not set as default
 routes - ```ip route show``` should not list them as default! 
@@ -211,25 +212,6 @@ run `ssh-keygen`, to create a local set of ssh keys, followed by
 
 
 3\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
-
- The script creates a python virtualenv named “ansible” in
- ```${HOME}/ansible_env/ansible```, in order to avoid polluting
- the system python installation. The ansible source code is cloned into
- ```${HOME}/ansible_env/ansible_source```.
-
-### Prepare your shell session
-
-The next two steps prepare your shell for using the ansible playbooks,
-by source two files containing environment variables - one for a
-python virtualenv, and one for the local installation of ansible.
-
-4\. `source ${HOME}/ansible_env/ansible/bin/activate`
-
-Loads the ansible virtualenv into the current session.
-
-5\. `source ${HOME}/ansible_env/ansible_source/hacking/env-setup `
-
-Loads the ansible environment variables into the current session.
 
 Defining Cluster Parameters
 ---------------------------
@@ -411,7 +393,7 @@ Note the inventory file in
 headnode ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
 ```
 
-Make sure that the hostname of your headnode matches the entry on that line! Either
+Make sure that the hostname of your headnode matches the entry on that second line! Either
 edit the inventory file, or change the hostname via:
 ```hostnamectl set-hostname headnode```.
 
