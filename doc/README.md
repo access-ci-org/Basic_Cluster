@@ -80,30 +80,35 @@ Initial Setup On VirtualBox
 Create (at least) two VM’s - one to be the headnode, and one to be a
 compute node.
 
-For the headnode, activate three network interfaces, attached to NAT,
-Internal Network, and Host-only. (For hardware you would require only
+Configure the network interfaces on the headnode. There are three
+network interfaces that need to be activated (For hardware you would require only
 two, but having both NAT and host-only simplifies configuration on the
-headnode.)
+headnode.): 
 
-In this configuration, the assumption is that there is a host-only network
-on Virtualbox configured with the internal DHCP server on. 
-(Under File-\>Preferences-\>Networking-\>Host-only Networks).
-The default network is 192.168.56.0, but feel free to change this as you 
-prefer.
+ 1. NAT: this provides connection to the outside world.
+ The default IP for your NAT IP address will appear as 10.0.x.15, where x
+ begins at 2 for the 1st VM, 3 for the 2nd, etc.
 
-1\.  Configure the network interfaces on the
-headnode. There are three: one for NAT, which provides connection to the 
-outside world, one for a host-only network,
-and one for the internal network, which connects to
-compute nodes.
-
-The host-only network is for an ssh connection into the main host. You could also use
-this as the interface for the headnode in an ansible inventory file, and
-run these roles against the headnode remotely. 
+ 2. Host-only: this provides a connection to the host computer of the VM,
+ primarily for the use of ssh to control the VM via some other terminal; in
+ addition, you could use this as the interface for the headnode in an ansible
+ inventory file, and run these roles against the headnode remotely. 
+ In this configuration, the assumption is that there is a host-only network
+ on Virtualbox configured with the internal DHCP server on. 
+ (Under File-\>Preferences-\>Networking-\>Host-only Networks).
+ The default network is 192.168.56.x, but feel free to change this as you 
+ prefer.
+ 
+ 3. Internal: this connects the host node to the compute nodes. It is setup
+ by you manually later. When you do configure the internal network interface,
+ have the address be 10.0.0.1, netmask /24, and gateway 0.0.0.0 - the headnode
+ will act as router for the compute nodes. /24 is important, so that Warewulf
+ will see the compute nodes as existing on the same network as the headnode
+ interface!!! Don't forget to also check the 'Always Connect' box.
+ 
 Use the DHCP server provided by Virtualbox; you will find the ip address given to
 the VM after installation of the OS. It is possible to use a static IP, but
 this is somewhat unreliable on successive reboots or image copies.
-
 
 For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' with
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
@@ -125,14 +130,6 @@ It helps to set up the three network interfaces at this point.
 Don't touch the 'NAT' interface, other than to check the 'Always Connect' box under
 'Configure->General'. The same goes for the 'host-only' network.
 
-Configure the internal network interface to have address 10.0.0.1, netmask /24 and gateway 
-0.0.0.0 - the headnode will act as router for the compute nodes.
-
-/24 is important, so that Warewulf will see the compute nodes as existing on
-the same network as the headnode interface!!! Don't forget to also check the
-'Always Connect' box.
-
-
 2\. After installation, check the ip of your headnode on the host-only adapter via
 
       ip addr
@@ -146,7 +143,7 @@ The NAT device, along with its IP, will be used sparingly in the following docum
 but will be called ```$public-nic```. Virtualbox assigns the IP address as 10.0.x.15,
 where x begins at 2 for the 1st VM, 3 for the 2nd, etc.
 
-For the device of the host-only network, it will be referred to as ```$host-nic```.
+The device of the host-only network will be referred to as ```$host-nic```.
 Save the ip address of the interface on the host-only network - 
 you'll use this as the address for the headnode in the ansible scripts.
 
