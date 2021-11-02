@@ -109,7 +109,7 @@ For the compute nodes, define two virtual machines, 'compute-0' and 'compute-1' 
 the boot order (Under 'Settings->General') set to Network ONLY, and a single ethernet
 interface, on the internal network. DO NOT INSTALL ANYTHING ON THESE VMs - The images 
 will be generated and pushed out from the headnode during this tutorial. Make sure they have 
-at least 2GB of RAM - otherwise the disk images built in this tutorial will be too large,
+at least 4GB of RAM - otherwise the disk images built in this tutorial will be too large,
 and you will encounter mysterious errors.
 
 Building the Cluster
