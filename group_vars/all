@@ -20,8 +20,8 @@
 
 #slurm.conf variables
   cluster_name: "ohpc"
-  slurm_bin_path: "/bin"
-  slurm_conf_path: "/etc/slurm/slurm.conf"
+  slurm_bin_path: "/cm/shared/apps/slurm/current/bin"
+  slurm_conf_path: "/cm/shared/apps/slurm/var/etc/slurm/slurm.conf"
 #  gres_types: "gpu"
 
 # sacct user list
