@@ -1,13 +1,4 @@
 ---
-- name: Enable Lmod
-  replace:
-    path: "/cm/images/default-image/etc/sysconfig/modules/lmod/{{ item.path }}"
-    regexp: "{{ item.regexp }}"
-    replace: "{{ item.replace }}"
-  loop:
-    - { path: 'cm-lmod-init.sh', regexp: 'LMOD=.*$', replace: 'LMOD=1'}
-    - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
-
 # cod login-image build
 - name: clone the default image to build a login image
   command: cmsh -c "softwareimage; clone default-image login-image; commit --wait"
