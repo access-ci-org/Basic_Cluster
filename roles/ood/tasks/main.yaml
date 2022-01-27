@@ -86,7 +86,7 @@
     block: |
       auth:
         - 'AuthType Basic'
-        - 'AuthName "private"'
+        - 'AuthName "Private"'
         - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
         - 'RequestHeader unset Authorization'
         - 'Require valid-user'
