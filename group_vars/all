@@ -19,7 +19,9 @@
   gpu_ip_minimum: "10.1.1.128" #This could be more clever, like compute_ip_minimum + num_nodes...
 
 #slurm.conf variables
-  cluster_name: "ohpc"
+  cluster_name: "CoD"
+  cluster_title: "CoD Cluster"
+  cluster_host: "login001"
   slurm_bin_path: "/cm/shared/apps/slurm/current/bin"
   slurm_conf_path: "/cm/shared/apps/slurm/var/etc/slurm/slurm.conf"
 #  gres_types: "gpu"
@@ -72,9 +74,9 @@
 
 #OpenOnDemand
   ood_nodename: "ood"
-  ood_version: 1.6
+  ood_version: 2.0
   ood_private_ip: "10.1.1.11"
-  ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.el7.noarch.rpm"
+  ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.noarch.rpm"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
@@ -159,7 +161,7 @@
 # User Registration
   enable_user_reg: true
   user_register_app: "flask_user_reg"
-  user_register_app_tag: "master"
+  user_register_app_tag: "5c06809cf494db0f268c325fbc309a40eb5a6eea"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
