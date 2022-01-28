@@ -3,6 +3,7 @@
     path: /etc/ood/config/ood_portal.yml
     insertbefore: "#ssl:"
     backup: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
     block: |
       ssl:
         - 'SSLCertificateFile "/etc/pki/tls/certs/localhost.crt"'
