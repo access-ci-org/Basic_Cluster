@@ -20,6 +20,8 @@
 
 #slurm.conf variables
   cluster_name: "ohpc"
+  cluster_title: "Ohpc Cluster"
+  cluster_host: "ohpc.local"
   slurm_bin_path: "/bin"
   slurm_conf_path: "/etc/slurm/slurm.conf"
 #  gres_types: "gpu"
