@@ -83,6 +83,7 @@
     path: /etc/ood/config/ood_portal.yml
     insertbefore: "#auth:"
     backup: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK auth"
     block: |
       auth:
         - 'AuthType Basic'
