@@ -1,0 +1,17 @@
+module ood 1.0;
+
+require {
+	type user_home_t;
+	type ood_pun_t;
+	type default_context_t;
+	class process setfscreate;
+	class dir search;
+	class file read;
+	class file ioctl;
+	class file open;
+}
+
+#============= ood_pun_t ==============
+allow ood_pun_t default_context_t:dir search;
+allow ood_pun_t self:process setfscreate;
+allow ood_pun_t user_home_t:file { ioctl read open };

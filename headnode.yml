@@ -12,4 +12,4 @@
    - {role: gpu_build_nodes, tags: gpu_build_nodes}
    - {role: login_build_nodes, tags: login_build_nodes}
    - {role: viz_build_nodes, tags: viz_build_nodes}
-   - {role: nodes_vivify, tags: nodes_vivify}
+   - {role: ood_install, tags: ood_install} 

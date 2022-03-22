@@ -11,6 +11,15 @@
   build_kernel_ver: '4.18.0-193.6.3.el8_2.x86_64' # `uname -r` at build time... for wwbootstrap
   dhcpd_enabled: true
 
+#Open OnDemand Variables
+  public_servername: "swosu-duke.offn.onenet.net"
+  ssl_cert_key_file_path: "/etc/pki/tls/private/swosu-duke.offn.onenet.net/key.pem"
+  ssl_cert_file_path: "/etc/pki/tls/certs/swosu-duke.offn.onenet.net/cert.pem"
+  ssl_chain_file_path: ""
+  headnode_local_homedirs: true # true unless mounting user homedirs from NFS
+  ood_install: true #Turn OOD install on or off
+  public_ip: "156.110.41.132" #Publicly accessible IP for httpd24-httpd
+
 #Private network Info
   private_network: "10.0.0.0"  
   private_network_mask: "24"

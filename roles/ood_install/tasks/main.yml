@@ -1,0 +1,200 @@
+---
+
+   - name: Import OSC GPG key
+     ansible.builtin.rpm_key:
+       state: present
+       key: https://yum.osc.edu/ondemand/RPM-GPG-KEY-ondemand
+                                         
+   - name: install OOD repo
+     dnf:
+       name: 
+        - "https://yum.osc.edu/ondemand/2.0/ondemand-release-web-2.0-1.noarch.rpm"
+       state: latest
+       disable_gpg_check: yes
+
+   - name: enable DNF ruby modules
+     shell: sudo dnf module reset -y ruby && sudo dnf module enable -y ruby:2.7
+
+   - name: enable DNF nodejs modules
+     shell: sudo dnf module reset -y nodejs && sudo dnf module enable -y nodejs:12
+
+   - name: install OOD packages and dependencies
+     dnf:
+       name: 
+        - "ondemand"
+        - "ondemand-selinux"
+        - "mod_authnz_pam"
+          #- "python-websockify"
+        - "selinux-policy-devel"
+          #- "httpd24-httpd"
+          #- "httpd24"
+        - "python39"
+       state: latest
+
+       #     file:
+       #       path: "/root/build"
+       #       state: directory
+       #     ansible.builtin.unarchive:
+       #       src: https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.tar.gz
+       #       dest: "/root/build"
+       #       remote_src: yes
+       #     ansible.builtin.command: "/root/build/websockify-0.10.0/"
+       #       cmd: python3.9 setup.py install
+
+
+   - name: Add TurboVNC repo
+     get_url:
+       url: https://turbovnc.org/pmwiki/uploads/Downloads/TurboVNC.repo
+       dest: /etc/yum.repos.d/
+       mode: '0644'
+       owner: root
+       group: root
+
+   - name: Install web app dependencies
+     dnf:
+       name:
+               #- "python-websockify"
+        - "turbovnc"
+        - "netcat"
+
+#This should be 'off' when on a host that is mounting homedirs over NFS
+   - name: selinux ondemand_manage_user_home_dir yes
+     seboolean: 
+       name: ondemand_manage_user_home_dir
+       state: on
+       persistent: yes
+     when: headnode_local_homedirs == true
+
+   - name: selinux ondemand_use_slurm yes
+     seboolean: 
+       name: ondemand_use_slurm
+       state: on
+       persistent: yes
+
+   - name: selinux ondemand_use_torque yes
+     seboolean: 
+       name: ondemand_use_torque
+       state: on
+       persistent: yes
+
+   - name: create tmpdir for semodule build
+     file:
+       state: directory
+       path: /tmp/ood_sebuild
+ 
+   - name: copy ood.te to tmp builddir
+     copy:
+       dest: /tmp/ood_sebuild
+       src: ood.te
+
+# This make command will compile a local.te file in the current
+# directory. If you did not specify a "pp" file, the make file
+# will compile all "te" files in the current directory.  After
+# you compile your te file into a "pp" file, you need to install
+# it using the semodule command.
+
+   - name: compile the policy package
+     command: make -f /usr/share/selinux/devel/Makefile ood.pp
+     args:
+       chdir: /tmp/ood_sebuild
+
+   - name: install the ood semodule
+     command: semodule -i ood.pp
+     args:
+       chdir: /tmp/ood_sebuild
+
+   - name: clean up after semodule build
+     file:
+       path: /tmp/ood_sebuild
+       state: absent
+
+#   - name: allow http for OOD
+#     firewalld:
+#       zone: public
+#       permanent: yes
+#       service: http
+#       state: enabled
+#
+#   - name: allow https for OOD
+#     firewalld:
+#       zone: public
+#       permanent: yes
+#       service: https
+#       state: enabled
+#   - fail:
+
+
+#Edit the httpd24 config to listen only on the public interface
+# /opt/rh/httpd24/root/etc/httpd/conf
+#
+#   - name: set httpd24 to listen on public nic
+#     lineinfile:
+#       path: /opt/rh/httpd24/root/etc/httpd/conf/httpd.conf
+#       line: "Listen {{ public_ip }}:80"
+#       regexp: '^Listen'
+#       state: present
+
+       #   - name: start and enable httpd24 server
+       #     service: 
+       #       name: httpd24-httpd
+       #   state: started
+       # enabled: yes
+
+   - name: cluster.yml template
+     file: 
+       state: directory
+       path: /etc/ood/config/clusters.d/
+
+   - template: 
+       src: cluster.yml.j2 
+       dest: /etc/ood/config/clusters.d/{{ cluster_name }}.yml
+
+   - name: ood_portal.yml template
+     template: src=ood_portal.yml.j2 dest=/etc/ood/config/ood_portal.yml
+   
+     #   - name: configure ood pam authentication
+     #copy:
+     # src: /usr/lib64/httpd/modules/mod_authnz_pam.so
+     # dest: /opt/rh/httpd24/root/usr/lib64/httpd/modules/
+   
+   - name: create ood-webapp pam config file
+     copy:
+       src: /etc/pam.d/sshd
+       dest: /etc/pam.d/ood-webapp
+   
+   - name: turn on authnz_pam_module for httpd
+     lineinfile:
+       path: /etc/httpd/conf.modules.d/55-authnz_pam.conf
+       create: yes
+       line: 'LoadModule authnz_pam_module modules/mod_authnz_pam.so'
+   
+   - name: allow httpd access to /etc/shadow
+     file:
+       dest: /etc/shadow
+       group: apache
+       mode: 0640
+
+   - name: update the apache config
+     command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+
+   - name: update the bc_desktop app form
+     template:
+       dest: /var/www/ood/apps/sys/bc_desktop/form.yml
+       src: bc_desktop_form.j2
+
+   - name: turn off port 80 in httpd main config
+     lineinfile:
+       path: /etc/httpd/conf/httpd.conf
+       line: '#Listen 80'
+       regexp: 'Listen 80$'
+
+   - name: turn off port 443 in /etc/httpd/conf.d/ssl.conf
+     lineinfile:
+       path: /etc/httpd/conf.d/ssl.conf
+       line: '#Listen 443 https'
+       regexp: 'Listen 443 https$'
+
+   - name: restart the httpd server
+     service: 
+       name: httpd
+       state: restarted

@@ -1,0 +1,22 @@
+---
+cluster: "{{ cluster_name }}"
+attributes:
+  desktop: "xfce"
+  bc_vnc_idle: 0
+  bc_vnc_resolution:
+    required: true
+  node_type: null
+  slurm_queue:
+    label: Partition
+    help: Please select a queue from the drop-down
+    widget: select
+    options:
+      - [ "General", "cloud" ]
+#      - [ "GPU", "gpu" ]
+form:
+  - bc_vnc_idle
+  - desktop
+  - bc_num_hours
+  - slurm_queue
+  - bc_vnc_resolution
+

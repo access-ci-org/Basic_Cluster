@@ -1,0 +1,31 @@
+---
+v2:
+  metadata:
+    title: "{{ cluster_name  }}"
+    url: "{{ public_servername }}"
+    hidden: false
+  login:
+    host: "{{ public_servername  }}"
+  job:
+    adapter: "slurm"
+    bin: "/bin/"
+    conf: "/etc/slurm/slurm.conf"
+#bin_overrides:
+# squeue: "/usr/local/slurm/bin/squeue_wrapper"
+# # Override just want you want/need to
+# scontrol: "/usr/local/slurm/bin/scontrol_wrapper"
+# sbatch: "/usr/local/slurm/bin/sbatch_wrapper"
+# # Will be ignored because bsub is not a command used in the Slurm adapter
+# bsub: "/opt/lsf/bin/bsub"
+  batch_connect:
+    basic:
+      script_wrapper: |
+        #!/bin/bash
+        module purge
+        %s
+    vnc:
+      script_wrapper: |
+        module purge
+        export PATH=/opt/TurboVNC/bin:${PATH}
+        export WEBSOCKIFY_CMD="/usr/local/bin/websockify"
+        %s 
