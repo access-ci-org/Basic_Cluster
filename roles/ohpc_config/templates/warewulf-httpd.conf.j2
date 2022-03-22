@@ -1,3 +1,5 @@
+Listen {{ headnode_private_ip }}:80
+
 <VirtualHost {{ headnode_private_ip }}:80>
   ServerName warewulf.local
   <IfModule !perl_module>
