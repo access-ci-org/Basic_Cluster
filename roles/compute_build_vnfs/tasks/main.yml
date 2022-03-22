@@ -110,6 +110,12 @@
    - name: wwimport file into image (munge)
      command: wwsh file import /etc/munge/munge.key
 
+   - name: sync passwd directly into VNFS chroot
+     copy: src=/etc/passwd dest="{{ compute_chroot_loc }}/etc/passwd" #"
+
+   - name: sync munge key directly into VNFS chroot
+     copy: src=/etc/munge/munge.key dest="{{ compute_chroot_loc }}/etc/munge/munge.key" #"
+
    - name: import Active Directory files into image
      block:
        - name: wwimport file into image (krb5.keytab)
