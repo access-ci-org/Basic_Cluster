@@ -48,9 +48,9 @@
        state: latest
 #               "fail2ban", breaks python38 used for ansible; I should maybe switch ansible to python 3.6 instead?
 
-   - name: enable CentOS PowerTools repo
+   - name: enable Rocky PowerTools repo
      ini_file:
-      path: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+      path: /etc/yum.repos.d/Rocky-PowerTools.repo
       section: powertools
       option: enabled
       value: 1
