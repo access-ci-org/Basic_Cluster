@@ -32,11 +32,13 @@
   yum:
     name: "{{ ood_rpm_repo }}"
     state: present
+    validate_certs: no
 
 - name: Install OnDemand and all of its dependencies
   yum:
     name: "ondemand"
     state: present
+    validate_certs: no
 
 - name: Create clusters.d directory
   file:
