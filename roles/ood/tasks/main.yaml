@@ -76,7 +76,7 @@
     regexp: '{{ item.regexp }}'
     replace: '{{ item.replace }}'
   with_items:
-      - { regexp: "^#?host_regex:.*$", replace: "host_regex: '{{ compute_node_glob }}'" }
+      - { regexp: "^#?host_regex:.*$", replace: "host_regex: '{{ compute_node_prefix }}\\d+'" }
       - { regexp: "^#?node_uri:.*$", replace: "node_uri: '/node'" }
       - { regexp: "^#?rnode_uri:.*$", replace: "rnode_uri: '/rnode'" }
 

@@ -2,30 +2,41 @@
 # cod login-image build
 - name: clone the default image to build a login image
   command: cmsh -c "softwareimage; clone default-image login-image; commit --wait"
+  register: add_image
+  changed_when: "'already' not in add_image.stderr"
 
 - name: create a new node category for the image, called login
   command: cmsh -c "category; clone default login; set softwareimage login-image; roles; assign login; commit --wait"
+  register: add_category
+  changed_when: "'already' not in add_category.stderr"
 
 - name: Change default gateway for the login category to access internet
   command: cmsh -c "category; use login; set defaultgateway 192.168.200.254; commit"
+  changed_when: True
 
 - name: Config for slurm-submit role
-  command: cmsh -c "configurationoverlay; use slurm-submit; append categories login; commit"
+  command: cmsh -c "category; use login; roles; assign slurmsubmit; slurmjobqueueaccesslist; add slurm; commit"
+  register: add_slurmsubmit
+  changed_when: "'already' not in add_slurmsubmit.stderr"
 
 - name: Add software to the image
-  command: yum -y --installroot=/cm/images/login-image install {{ item }}
-  loop:
-    - ansible
-    - git
-    - vim
-    - bash-completion
-    - python3
-    - python3-devel
-    - shorewall
-    - nfs-utils
+  yum:
+    installroot: "{{ bright_cod_login_chroot_loc }}"
+    name:
+      - ansible
+      - git
+      - vim
+      - bash-completion
+      - python3
+      - python3-devel
+      - shorewall
+      - nfs-utils
 
 - name: Create a symlink for munge.key before enabling munge service
-  command: ln -s /cm/shared/apps/slurm/var/munge/keys/munge.key /cm/images/login-image/etc/munge/munge.key
+  file:
+    state: link
+    src: /cm/shared/apps/slurm/var/munge/keys/munge.key
+    dest: "{{ bright_cod_login_chroot_loc }}/etc/munge/munge.key"
 
 - name: Create a directory for CRI_XCBC in the login-image chroot path
   file:
@@ -36,7 +47,12 @@
     group: root
 
 - name: Mount dirs required for ansible scripts to function
-  command: mount -o bind /{{ item }} /cm/images/login-image/{{ item }}
+  mount:
+    src: /{{ item }}
+    path: "{{ bright_cod_login_chroot_loc }}/{{ item }}"
+    opts: bind
+    fstype: none
+    state: mounted
   loop:
     - dev
     - proc
@@ -45,20 +61,40 @@
     - CRI_XCBC
 
 - name: Run the Ansible roles related to login image
-  command: ansible-playbook -c chroot -i '/cm/images/login-image/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
+  command: ansible-playbook -c chroot -i '{{ bright_cod_login_chroot_loc }}/CRI_XCBC/hosts' /CRI_XCBC/ood-cod.yaml -b
+  changed_when: True
+
+- name: Unmount mounted dirs
+  mount:
+    path: "{{ bright_cod_login_chroot_loc }}/{{ item }}"
+    state: unmounted
+  loop:
+    - dev
+    - proc
+    - sys
+    - home
+    - CRI_XCBC
 
 # cod login node deploy
-- name: Change login001 category to login
-  command: cmsh -c "device; use login001; set category login; commit"
+- name: Change login node category to login
+  command: cmsh -c "device; use {{ item }}; set category login; commit"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
 
 - name: Set DHCP on BOOTIF device
-  command: cmsh -c "device; use login001; interfaces; use bootif; set dhcp yes; commit"
+  command: cmsh -c "device; use {{ item }}; interfaces; use bootif; set dhcp yes; commit"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
 
 - name: Add an extra interface to login from externalnet
-  command: cmsh -c "device; use login001; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
+  command: cmsh -c "device; use {{ item }}; addinterface -c login physical eth1 externalnet 192.168.200.1; commit"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
 
 - name: Set DHCP on the new interface added above
-  command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
+  command: cmsh -c "device; use {{ item }}; interfaces; use eth1; set dhcp yes; commit"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
 
 - name: Make sure tftp systemd service is running on head node
   systemd:
@@ -66,4 +102,6 @@
     name: tftpd
 
 - name: Reboot login001 to pick up the new image
-  command: cmsh -c "device; use login001; reboot"
+  command: cmsh -c "device; use {{ item }}; reboot"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
