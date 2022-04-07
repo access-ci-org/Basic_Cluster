@@ -5,6 +5,7 @@ VHost = "{{ rabbitmq_vhost }}"
 Server = "{{ rabbitmq_host }}"
 Port = {{ rabbitmq_port }}
 
+Valid_state = {{ valid_user_state }}
 
 # time delay to let account creation finish 
 # to avoid concurrency with downstream agents

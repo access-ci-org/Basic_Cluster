@@ -81,6 +81,8 @@
   ood_version: 2.0
   ood_private_ip: "10.1.1.11"
   ood_rpm_repo: "https://yum.osc.edu/ondemand/{{ ood_version }}/ondemand-release-web-{{ ood_version }}-1.noarch.rpm"
+  # a regex to extract username from remote_user in user_auth script"
+  ood_user_regex: "^(.+)$"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
@@ -203,6 +205,7 @@
   user_dirs: ['/home', '/data/user', '/data/scratch']
   rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
   rc_users_ldap_repo_loc: "~/git/rc-users"
+  valid_user_state: ['ok', 'blocked', 'certification']
 
 # Celery
   celery_user: "reggie"

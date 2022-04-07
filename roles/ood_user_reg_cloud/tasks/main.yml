@@ -114,14 +114,14 @@
     replace: '{{ item.replace }}'
     backup: yes
   with_items:
-      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'" }
+      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/user_auth'" }
       - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
       - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
 
 - name: Stage regex file for ood
-  copy:
-    src: uab_ood_auth.regex
-    dest: /opt/ood/ood_auth_map/bin/uab_ood_auth.regex
+  template:
+    src: user_auth.j2
+    dest: /opt/ood/ood_auth_map/bin/user_auth
     owner: root
     group: root
     mode: 0755
