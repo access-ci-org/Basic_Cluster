@@ -156,7 +156,7 @@
     - { repo_name: "atlurie/shibboleth-3.0-ood", host: ["{{ ood_nodename }}"] }
 
 # Shibboleth SSO
-  install_shib: true
+  install_shib: false
 
 # User Registration
   enable_user_reg: true
