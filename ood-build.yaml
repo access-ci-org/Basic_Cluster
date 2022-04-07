@@ -11,6 +11,6 @@
     - { name: 'install_ww_bin', tags: 'install_ww_bin' }
     - { name: 'ood_firewall_and_services', tags: 'ood_firewall_and_services' }
     - { name: 'ohpc_firewall_and_services', tags: 'ohpc_firewall_and_services' }
-    - { name: 'ood_shib_sso', tags: 'ood_shib_sso', when: enable_shib }
+    - { name: 'ood_shib_install', tags: 'ood_shib_install', when: install_shib }
     - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
     - { name: 'ood_add_rabbitmq_agents', tags: 'ood_add_rabbitmq_agents', when: enable_user_reg }
