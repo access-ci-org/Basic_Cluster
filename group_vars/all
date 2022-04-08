@@ -163,6 +163,16 @@
 
 # Shibboleth SSO
   install_shib: false
+  configure_shib: false
+
+# LTS-S3 config
+  lts_access_key:  ACCESS_KEY
+  lts_secret_key: SECRET_KEY
+  s3_endpoint:  S3_ENDPOINT
+
+#S3-shib_config
+  s3_shibboleth_bucket_name: UAB_SHIB_BUCKET
+  s3_shibboleth_object_name: UAB_SHIB_OBJECT
 
 # User Registration
   enable_user_reg: true
