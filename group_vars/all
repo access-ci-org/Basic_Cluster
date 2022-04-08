@@ -214,6 +214,7 @@
 
 #ClusteronDemand CoD
   cod_deploy: true
+  post_create_script: PostAddUserScript.sh
 
 # Lmod
   lmod_loc: "/opt/ohpc/admin/lmod/lmod"
