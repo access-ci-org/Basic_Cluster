@@ -68,6 +68,4 @@
 - name: Restart shibd and enable on boot
   service:
     name: shibd
-    state: restarted
-    daemon_reload: yes
     enabled: yes
