@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [[ "$1" == "" ]]; then
+  echo "$0 requires on username passed as an argument"
+  exit 1
+else
+  user="$1"
+fi
+
+# Create $USER_DATA and $USER_SCRATCH
+userdir=/data/user/$user
+scratch=/data/scratch/$user
+if [ ! -d $userdir ]; then
+  mkdir -p $userdir
+  chown ${user}:${user} $userdir
+  chmod 700 $userdir
+fi
+
+if [ ! -d $scratch ]; then
+  mkdir -p $scratch;
+  chown ${user}:${user} $scratch;
+  chmod 700 $scratch;
+fi
+
+# Create ssh key for user
+sshdir=/home/$user/.ssh
+sshkeyfile=${sshdir}/id_ecdsa
+if [ ! -f $sshkeyfile ]; then
+  echo Creating ECDSA key for ssh
+  mkdir $sshdir -p
+  ssh-keygen -t ecdsa -f $sshkeyfile -q -N "" -C "${user}@{{ cluster_title }}"
+  cat ${sshkeyfile}.pub >> ${sshdir}/authorized_keys
+  chown -R ${user}:${user} ${sshdir}
+  chmod 600 ${sshdir}/authorized_keys ${sshkeyfile} ${sshkeyfile}.pub
+fi
+unset sshdir sshkeyfile
+# End ssh key
+
+# Add the user account to Slurm
+source /etc/profile.d/modules.sh
+module load shared
+module load slurm/slurm
+
+/cm/shared/apps/slurm/current/bin/sacctmgr --immediate add Account ${user} | tee -a /root/sacctmgr-account-add.log
+/cm/shared/apps/slurm/current/bin/sacctmgr --immediate add User Accounts=${user} ${user} | tee -a /root/sacctmgr-user-add.log
+# End Slurm
+
+
+unset user userdir scratch sacctmgr
+
