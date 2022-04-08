@@ -10,6 +10,7 @@
     - { name: 'ood_sas', tags: 'ood_sas', when: sas_provision }
     - { name: 'ood_firewall_and_services', tags: 'ood_firewall_and_services' }
     - { name: 'ohpc_firewall_and_services', tags: 'ohpc_firewall_and_services' }
-    - { name: 'ood_shib_sso', tags: 'ood_shib_sso', when: enable_shib }
+    - { name: 'ood_shib_install', tags: 'ood_shib_install', when: install_shib }
+    - { name: 'ood_shib_config', tags: 'ood_shib_config', when: configure_shib }
     - { name: 'ood_user_reg_ops', tags: 'ood_user_reg_ops' }
     - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
