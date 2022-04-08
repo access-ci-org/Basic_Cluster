@@ -65,6 +65,12 @@
     src: PostAddUserScript.j2
     dest: "/root/bin/{{ post_create_script }}"
 
+- name: Update cmd.conf for post creation script
+  replace:
+    path: "/cm/local/apps/cmd/etc/cmd.conf"
+    regexp: "^#? ?AdvancedConfig.*"
+    replace: 'AdvancedConfig = { "AddUserScript=/root/bin/{{ post_create_script }}" }'
+
 - name: Make sure tftp systemd service is running on head node
   systemd:
     state: started
