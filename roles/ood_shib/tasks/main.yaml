@@ -1,0 +1,73 @@
+---
+- name: Install require package
+  pip:
+    name: boto3
+    extra_args: "--extra-index-url https://pypi.python.org/simple"
+
+- name: create a shib directory in /tmp
+  file:
+    path: /tmp/shib
+    state: directory
+
+- name: Download shibboleth tar from S3
+  aws_s3:
+    mode: get
+    s3_url: "{{ s3_endpoint }}"
+    bucket: "{{ s3_shibboleth_bucket_name }}"
+    object: "{{ s3_shibboleth_object_name }}"
+    dest: "/tmp/{{ s3_shibboleth_object_name }}"
+    aws_access_key: "{{ lts_access_key }}"
+    aws_secret_key: "{{ lts_secret_key }}"
+
+- name: Extract shib_conf.tar.gz into /etc/
+  unarchive:
+    src: "/tmp/{{ s3_shibboleth_object_name }}"
+    dest: /
+
+- name: Recursively change ownership of a /etc/shibboleth to root
+  ansible.builtin.file:
+    path: /etc/shibboleth
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+
+- name: Change file ownership, group and permissions
+  ansible.builtin.file:
+    path: "/etc/shibboleth/{{ item }}"
+    owner: shibd
+    group: shibd
+  loop:
+    - sp-encrypt-key.pem
+    - sp-signing-key.pem
+    - sp-encrypt-cert.pem
+    - sp-signing-cert.pem
+
+- name: update ood portal config for shibboleth auth
+  blockinfile:
+    path: /etc/ood/config/ood_portal.yml
+    insertbefore: "#auth:"
+    backup: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK auth"
+    block: |
+      auth:
+        - "AuthType shibboleth"
+        - "ShibRequestSetting requireSession 1"
+        - "Require valid-user"
+- name: update servername on ood_portal
+  ansible.builtin.lineinfile:
+    path: /etc/ood/config/ood_portal.yml
+    regexp: '^servername'
+    insertafter: '^#servername'
+    line: "servername : rc.uab.edu"
+
+- name: Build the updated Apache config
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes
+
+- name: Restart shibd and enable on boot
+  service:
+    name: shibd
+    state: restarted
+    daemon_reload: yes
+    enabled: yes
