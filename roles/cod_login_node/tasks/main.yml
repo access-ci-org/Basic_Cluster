@@ -60,6 +60,11 @@
 - name: Set DHCP on the new interface added above
   command: cmsh -c "device; use login001; interfaces; use eth1; set dhcp yes; commit"
 
+- name: Put post creation script in place
+  template:
+    src: PostAddUserScript.j2
+    dest: "/root/bin/{{ post_create_script }}"
+
 - name: Make sure tftp systemd service is running on head node
   systemd:
     state: started
