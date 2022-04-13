@@ -23,6 +23,7 @@
   unarchive:
     src: "/tmp/{{ s3_shibboleth_object_name }}"
     dest: /
+    remote_src: yes
 
 - name: Recursively change ownership of a /etc/shibboleth to root
   ansible.builtin.file:
