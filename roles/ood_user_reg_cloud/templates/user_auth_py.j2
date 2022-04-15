@@ -20,7 +20,7 @@ if len(sys.argv) < 2:
 
 else:
     # decode from url-encoded remote_user
-    remote_user=unquote(sys.argv[1])
+    remote_user = unquote(sys.argv[1])
 
     # Extract username from remote_user with defined regex
     match = re.search(regex, remote_user)
