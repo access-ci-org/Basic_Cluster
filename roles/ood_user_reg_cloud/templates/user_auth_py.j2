@@ -1,10 +1,41 @@
-#!/bin/bash
-# from https://stackoverflow.com/questions/6250698
-function urldecode() { : "${*//+/ }"; echo -e "${_//%/\\x}"; }
+#!{{ rabbitmq_agents_loc }}/venv/bin/python
+import re
+import sys
+from urllib.parse import unquote
 
-regex="{{ ood_user_regex }}"
+sys.path.append("{{ rabbitmq_agents_loc }}")
+import rc_util
 
-remote_user=$(urldecode $1)
-username=$(echo $remote_user | sed -r "s/$regex/\1/")
+default_state = "ok"
+regex = "{{ ood_user_regex }}"
 
-{{ rabbitmq_agents_loc }}/venv/bin/python {{ rabbitmq_agents_loc }}/user_auth.py $username
+# Enable for migration phase
+# e.g. not all users has entry in user_state db
+migration = True
+
+# Print empty if no remote_user is passed
+if len(sys.argv) < 2:
+    print()
+
+else:
+    # decode from url-encoded remote_user
+    remote_user=unquote(sys.argv[1])
+
+    # Extract username from remote_user with defined regex
+    username=re.search(regex, remote_user).group(1)
+
+    # Check state from db
+    result = rc_util.check_state(username)
+
+    if result == "ok":
+        print(username)
+    else:
+        if migration and result == "no-account":
+            rc = subprocess.run(
+                ["getent", "passwd", username], stdout=subprocess.DEVNULL
+            ).returncode
+            if rc == 0:
+                rc_util.update_state(username, default_state)
+                print(username)
+                sys.exit()
+        print()
