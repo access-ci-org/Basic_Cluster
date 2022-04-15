@@ -199,6 +199,7 @@
   rabbitmq_agents_loc: "/cm/shared/rabbitmq_agents"
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
+  rabbitmq_agents_refspec: "{{ github_refspec }}"
   rabbitmq_agents_service_user: "root"
   rabbitmq_agents_db_path: ".agent_db"
 

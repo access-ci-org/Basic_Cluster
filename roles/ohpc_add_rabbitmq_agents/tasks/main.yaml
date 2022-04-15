@@ -3,6 +3,7 @@
   git: 
     repo: "{{ rabbitmq_agents_repo }}"
     dest: "{{ rabbitmq_agents_loc }}"
+    refspec: "{{ rabbitmq_agents_refspec }}"
     version: "{{ rabbitmq_agents_version }}"
 
 - name: Create .agent_db dir for sqlite DB if not present
