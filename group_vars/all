@@ -247,5 +247,5 @@
 # with refspec set up, you can specify version as:
 # gitlab: mr/MR_ID
 # github: pr/PR_ID
-  gitlab_refspec: "+refs/merge-requests/*/merge:refs/remotes/origin/mr/*"
-  github_refspec: "+refs/pull/*/merge:refs/remotes/origin/pr/*"
+  gitlab_refspec: "+refs/merge-requests/*/head:refs/remotes/origin/mr/*"
+  github_refspec: "+refs/pull/*/head:refs/remotes/origin/pr/*"
