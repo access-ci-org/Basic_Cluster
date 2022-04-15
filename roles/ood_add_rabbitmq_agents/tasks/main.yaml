@@ -1,6 +1,6 @@
 ---
 - name: Clone the git repo to the machine
-  git: 
+  git:
     repo: "{{ rabbitmq_agents_repo }}"
     dest: "{{ rabbitmq_agents_loc }}"
     refspec: "{{ rabbitmq_agents_refspec }}"
