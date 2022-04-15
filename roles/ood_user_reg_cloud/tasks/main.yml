@@ -114,7 +114,7 @@
     replace: '{{ item.replace }}'
     backup: yes
   with_items:
-      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/user_auth'" }
+      - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/user_auth.py'" }
       - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
       - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
 
