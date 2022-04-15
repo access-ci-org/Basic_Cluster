@@ -120,8 +120,8 @@
 
 - name: Stage regex file for ood
   template:
-    src: user_auth.j2
-    dest: /opt/ood/ood_auth_map/bin/user_auth
+    src: user_auth_py.j2
+    dest: /opt/ood/ood_auth_map/bin/user_auth.py
     owner: root
     group: root
     mode: 0755
