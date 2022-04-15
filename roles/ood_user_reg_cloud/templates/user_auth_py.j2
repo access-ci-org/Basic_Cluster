@@ -23,7 +23,12 @@ else:
     remote_user=unquote(sys.argv[1])
 
     # Extract username from remote_user with defined regex
-    username=re.search(regex, remote_user).group(1)
+    match = re.search(regex, remote_user)
+    if not match:
+        print()
+        sys.exit()
+    else:
+        username = match.group(1)
 
     # Check state from db
     result = rc_util.check_state(username)
