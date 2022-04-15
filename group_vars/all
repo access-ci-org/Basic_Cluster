@@ -159,6 +159,9 @@
   rstudio_ood_app_version: "0.6.0"
   rstudio_provision: false
   singularity_ver: '2.4.2'
+  singularity_rstudio_app_repo: "https://github.com/nickjer/singularity-rstudio.git"
+  singularity_rstudio_app_refspec: "{{ github_refspec }}"
+  singularity_rstudio_app_version: "{{ master }}"
   r_versions:
     - { full: '3.5.1', short: '3.5' }
     - { full: '3.4.4', short: '3.4' }
