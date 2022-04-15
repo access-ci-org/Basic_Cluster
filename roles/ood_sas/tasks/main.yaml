@@ -8,7 +8,8 @@
     path: /var/www/ood/apps/sys/sas
     state: directory
 
-- git:
+- name: Clone ood sas template
+  git:
     repo: "{{ sas_ood_app_repo }}"
     dest: /var/www/ood/apps/sys/sas/
     refspec: "{{ sas_ood_app_refspec }}"
