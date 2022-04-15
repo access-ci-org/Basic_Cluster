@@ -42,8 +42,10 @@
 
 - name: Clone template modulefiles from upstream
   git:
-    repo: 'https://github.com/nickjer/singularity-rstudio.git'
+    repo: "{{ singularity_rstudio_app_repo }}"
     dest: '/tmp/singularity-rstudio'
+    refspec: "{{ singularity_rstudio_app_refspec }}"
+    version: "{{ singularity_rstudio_app_version }}"
     force: yes
   become_user: build
 
