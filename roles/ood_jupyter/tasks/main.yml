@@ -11,9 +11,10 @@
 
 - name: Clone the default jupyter app from OOD
   git:
-    repo: https://github.com/OSC/bc_example_jupyter.git
-    version: custom_environment
+    repo: "{{ jupyter_ood_app_repo }}"
     dest: /var/www/ood/apps/sys/jupyter
+    refspec: "{{ jupyter_ood_app_refspec }}"
+    version: "{{ jupyter_ood_app_version }}"
 
 - name: Use custom form.yml from templates for jupyter app 
   template:
