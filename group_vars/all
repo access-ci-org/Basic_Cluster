@@ -152,6 +152,9 @@
   sas_module_appdir: "sas"
   sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
+  sas_ood_app_repo: "https://github.com/uabrc/ood_sas.git"
+  sas_ood_app_refspec: "{{ github_refspec }}"
+  sas_ood_app_version: "master"
 
 #Rstudio related
   rstudio_ood_app_repo: "https://github.com/rtripath89/bc_osc_rstudio_server.git"
