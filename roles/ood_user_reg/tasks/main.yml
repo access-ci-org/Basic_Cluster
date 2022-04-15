@@ -27,6 +27,8 @@
   git:
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
+    refspec: "{{ user_register_app_refspec }}"
+    version: "{{ user_register_app_tag }}"
 
 - name: Install requirements in virtualenv
   pip:
