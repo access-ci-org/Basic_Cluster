@@ -117,6 +117,9 @@
 
 #Jupyter related
   jupyter_provision: false
+  jupyter_ood_app_repo: "https://github.com/OSC/bc_example_jupyter.git"
+  jupyter_ood_app_refspec: "{{ github_refspec }}"
+  jupyter_ood_app_version: "custom_environment"
 
 #EasyBuild variables
   cluster_shared_folder: "/export"
