@@ -240,3 +240,10 @@
   lmod_db_passwd: "password"
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
+
+# refspec for merge/pull request
+# with refspec set up, you can specify version as:
+# gitlab: mr/MR_ID
+# github: pr/PR_ID
+  gitlab_refspec: "+refs/merge-requests/*/merge:refs/remotes/origin/mr/*"
+  github_refspec: "+refs/pull/*/merge:refs/remotes/origin/pr/*"
