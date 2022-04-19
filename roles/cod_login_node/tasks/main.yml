@@ -108,6 +108,11 @@
     regexp: "^#? ?AdvancedConfig.*"
     replace: 'AdvancedConfig = { "AddUserScript=/root/bin/{{ post_create_script }}" }'
 
+- name: Restart cmd to pick up the change
+  systemd:
+    state: restarted
+    name: cmd
+
 - name: Make sure tftp systemd service is running on head node
   systemd:
     state: started
