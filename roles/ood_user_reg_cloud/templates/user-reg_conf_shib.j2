@@ -29,9 +29,9 @@ ProxyPassReverse /static http://127.0.0.1:8000/static
         RewriteRule . - [E=mail:%1]
         RequestHeader set REMOTE_USER_MAIL %{mail}e
         RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:primary-affiliation} (.+)
-        RewriteRule . - [E=primary-affiliation:%1]
-        RequestHeader set REMOTE_USER_EPPA %{primary-affiliation}e
+        RewriteCond %{LA-U:unscoped-affiliation} (.+)
+        RewriteRule . - [E=unscoped-affiliation:%1]
+        RequestHeader set REMOTE_USER_EPPA %{unscoped-affiliation}e
 </Location>
 
 <Location "/static/">
