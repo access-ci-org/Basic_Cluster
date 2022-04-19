@@ -202,6 +202,8 @@
   RegUser_app_user: "reggie"
   RegUser_app_user_full_name: "RegUser of user register app"
   RegUser_app_user_passwd: "qweasd"
+# Authorized user group
+  valid_eppa = ["faculty", "staff", "student", "affiliate"]
 
 # RabbitMQ
   rabbitmq_provision: true
