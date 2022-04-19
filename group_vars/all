@@ -229,6 +229,7 @@
   info_url: "https://www.google.com"
   mail_list: "root@localhost"
   mail_list_bcc: "cmsupport@localhost"
+  function_timeout: 30
 
   delay: "5" #time delay to let account creation finish to avoid concurrency
   user_dirs: ['/home', '/data/user', '/data/scratch']
