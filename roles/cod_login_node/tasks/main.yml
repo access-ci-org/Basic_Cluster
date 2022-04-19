@@ -96,6 +96,11 @@
   with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
   changed_when: True
 
+- name: Reboot login001 to pick up the new image
+  command: cmsh -c "device; use {{ item }}; reboot"
+  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
+  changed_when: True
+
 - name: Put post creation script in place
   template:
     src: PostAddUserScript.j2
@@ -117,8 +122,3 @@
   systemd:
     state: started
     name: tftpd
-
-- name: Reboot login001 to pick up the new image
-  command: cmsh -c "device; use {{ item }}; reboot"
-  with_sequence: "start=1 count={{ num_login_nodes }} format={{ login_node_format }}"
-  changed_when: True
