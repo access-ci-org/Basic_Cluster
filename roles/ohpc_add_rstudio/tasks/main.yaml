@@ -5,6 +5,7 @@
     export EASYBUILD_PREFIX={{ easybuild_prefix }}
     module load EasyBuild
     eb Singularity-{{ singularity_ver }}-GCC-5.4.0-2.26.eb --toolchain-name=system -r --force
+  become: yes
   become_user: build
   args:
     executable: /bin/bash
@@ -42,9 +43,12 @@
 
 - name: Clone template modulefiles from upstream
   git:
-    repo: 'https://github.com/nickjer/singularity-rstudio.git'
+    repo: "{{ singularity_rstudio_app_repo }}"
     dest: '/tmp/singularity-rstudio'
+    refspec: "{{ singularity_rstudio_app_refspec }}"
+    version: "{{ singularity_rstudio_app_version }}"
     force: yes
+  become: yes
   become_user: build
 
 - name: Delete folder and modulefile of old version
@@ -61,6 +65,7 @@
     state: directory
   with_items:
     "{{ r_versions }}"
+  become: yes
   become_user: build
 
 - name: Create library folder for different R versions
@@ -69,6 +74,7 @@
     state: directory
   with_items:
     "{{ r_versions }}"
+  become: yes
   become_user: build
 
 - name: Download Rstudio singularity image
@@ -78,6 +84,7 @@
     SINGULARITY_PULLFOLDER={{ item.full }} singularity pull --name singularity-rstudio.simg shub://nickjer/singularity-rstudio:{{ item.full }}
   with_items:
     "{{ r_versions }}"
+  become: yes
   become_user: build
   args:
     chdir: /tmp/singularity-rstudio/example_module

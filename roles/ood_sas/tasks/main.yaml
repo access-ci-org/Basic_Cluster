@@ -8,10 +8,12 @@
     path: /var/www/ood/apps/sys/sas
     state: directory
 
-- git:
-    repo: 'https://github.com/uabrc/ood_sas.git'
+- name: Clone ood sas template
+  git:
+    repo: "{{ sas_ood_app_repo }}"
     dest: /var/www/ood/apps/sys/sas/
-    clone: yes
+    refspec: "{{ sas_ood_app_refspec }}"
+    version: "{{ sas_ood_app_version }}"
 
 - name: Replace form.yml
   template:

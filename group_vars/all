@@ -117,6 +117,9 @@
 
 #Jupyter related
   jupyter_provision: false
+  jupyter_ood_app_repo: "https://github.com/OSC/bc_example_jupyter.git"
+  jupyter_ood_app_refspec: "{{ github_refspec }}"
+  jupyter_ood_app_version: "custom_environment"
 
 #EasyBuild variables
   cluster_shared_folder: "/export"
@@ -138,6 +141,9 @@
   matlab_module_appdir: "matlab"
   matlab_module_file: "r2018a"
   matlab_ver: "{{ matlab_module_file }}"
+  matlab_ood_app_repo: "https://github.com/OSC/bc_osc_matlab.git"
+  matlab_ood_app_refspec: "{{ github_refspec }}"
+  matlab_ood_app_version: "master"
 
 #SAS install related
   sas_provision: false
@@ -146,10 +152,19 @@
   sas_module_appdir: "sas"
   sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
+  sas_ood_app_repo: "https://github.com/uabrc/ood_sas.git"
+  sas_ood_app_refspec: "{{ github_refspec }}"
+  sas_ood_app_version: "master"
 
 #Rstudio related
+  rstudio_ood_app_repo: "https://github.com/rtripath89/bc_osc_rstudio_server.git"
+  rstudio_ood_app_refspec: "{{ github_refspec }}"
+  rstudio_ood_app_version: "0.6.0"
   rstudio_provision: false
   singularity_ver: '2.4.2'
+  singularity_rstudio_app_repo: "https://github.com/nickjer/singularity-rstudio.git"
+  singularity_rstudio_app_refspec: "{{ github_refspec }}"
+  singularity_rstudio_app_version: "{{ master }}"
   r_versions:
     - { full: '3.5.1', short: '3.5' }
     - { full: '3.4.4', short: '3.4' }
@@ -181,6 +196,7 @@
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
+  user_register_app_refspec: "{{ gitlab_refspec }}"
   cors_allowed_origins: "*"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
   RegUser_app_user: "reggie"
@@ -198,6 +214,7 @@
   rabbitmq_agents_loc: "/cm/shared/rabbitmq_agents"
   rabbitmq_agents_repo: "https://github.com/uabrc/rabbitmq_agents.git"
   rabbitmq_agents_version: "feat-cod-rmq"
+  rabbitmq_agents_refspec: "{{ github_refspec }}"
   rabbitmq_agents_service_user: "root"
   rabbitmq_agents_db_path: ".agent_db"
 
@@ -232,6 +249,8 @@
   lmod_log_loc: "/var/log"
   lmod_log_filename: "{{ lmod_log_loc }}/moduleUsage.log"
   lmod_module_tracking_loc: "{{ lmod_loc }}/tools/tracking_module_usage"
+  lmod_repo: "https://github.com/TACC/Lmod.git"
+  lmod_refspec: "{{ github_refspec }}"
   lmod_version: "8.5.9"
   lmod_cron_user: "root"
   lmod_share_loc: "{{ cluster_shared_folder }}/lmod_script"
@@ -240,3 +259,10 @@
   lmod_db_passwd: "password"
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
+
+# refspec for merge/pull request
+# with refspec set up, you can specify version as:
+# gitlab: mr/MR_ID
+# github: pr/PR_ID
+  gitlab_refspec: "+refs/merge-requests/*/head:refs/remotes/origin/mr/*"
+  github_refspec: "+refs/pull/*/head:refs/remotes/origin/pr/*"

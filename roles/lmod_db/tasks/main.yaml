@@ -26,8 +26,9 @@
 
 - name: Clone Lmod repo
   git:
-    repo: https://github.com/TACC/Lmod.git
+    repo: "{{ lmod_repo }}"
     dest: /tmp/lmod
+    refspec: "{{ lmod_refspec }}"
     version: "{{ lmod_version }}"
 
 - name: Copy module tracking folder
