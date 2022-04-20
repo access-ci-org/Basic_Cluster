@@ -1,10 +1,10 @@
 [Unit]
 Description=Service to create an account on OOD.
 After=network.target
-StartLimitIntervalSec=0
 
 [Service]
 Type=simple
+StartLimitInterval=0
 Restart=always
 RestartSec=5
 User=centos
