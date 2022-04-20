@@ -8,7 +8,7 @@ Restart=always
 RestartSec=1
 User={{ rabbitmq_agents_service_user }}
 WorkingDirectory={{ item | dirname }}
-Environment="SLURMCONF={{ slurm_conf_path }}"
+Environment="SLURM_CONF={{ slurm_conf_path }}"
 Environment="PYTHONPATH={{ rabbitmq_agents_loc }}"
 Environment="PATH={{ rabbitmq_agents_loc }}/venv/bin:{{ lookup('env','PATH') }}"
 ExecStart={{ rabbitmq_agents_loc }}/venv/bin/python -u {{ item | basename | splitext | first }}.py
