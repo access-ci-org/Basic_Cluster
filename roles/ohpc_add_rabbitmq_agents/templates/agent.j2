@@ -1,9 +1,9 @@
 [Unit]
 After=rabbitmq-server.service
-StartLimitIntervalSec=0
 
 [Service]
 Type=simple
+StartLimitInterval=0
 Restart=always
 RestartSec=1
 User={{ rabbitmq_agents_service_user }}
