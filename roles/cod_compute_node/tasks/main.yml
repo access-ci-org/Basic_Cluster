@@ -60,11 +60,6 @@
   with_sequence: "start=1 count={{ num_compute_nodes }} format={{ compute_node_format }}"
   changed_when: True
 
-- name: Make sure tftp systemd service is running on head node
-  systemd:
-    state: started
-    name: tftpd
-
 - name: Reboot compute node to pick up the new image
   command: cmsh -c "device; use {{ item }}; reboot"
   with_sequence: "start=1 count={{ num_compute_nodes }} format={{ compute_node_format }}"

@@ -117,8 +117,3 @@
   systemd:
     state: restarted
     name: cmd
-
-- name: Make sure tftp systemd service is running on head node
-  systemd:
-    state: started
-    name: tftpd
