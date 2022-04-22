@@ -1,13 +1,13 @@
-ProxyPass /socket.io/ http://127.0.0.1:8000/socket.io/
-ProxyPassReverse /socket.io/ http://127.0.0.1:8000/socket.io/
+ProxyPass /socket.io/ http://127.0.0.1:{{ user_register_app_port }}/socket.io/
+ProxyPassReverse /socket.io/ http://127.0.0.1:{{ user_register_app_port }}/socket.io/
 
-ProxyPass /register http://127.0.0.1:8000/
-ProxyPassReverse /register http://127.0.0.1:8000/
+ProxyPass {{ user_register_app_url }} http://127.0.0.1:{{ user_register_app_port }}/
+ProxyPassReverse {{ user_register_app_url }} http://127.0.0.1:{{ user_register_app_port }}/
 
-ProxyPass /static http://127.0.0.1:8000/static
-ProxyPassReverse /static http://127.0.0.1:8000/static
+ProxyPass /static http://127.0.0.1:{{ user_register_app_port }}/static
+ProxyPassReverse /static http://127.0.0.1:{{ user_register_app_port }}/static
 
-<Location /register>
+<Location {{ user_register_app_url }}>
         AuthType shibboleth
         ShibRequestSetting requireSession 1
         Require valid-user
