@@ -24,3 +24,22 @@
     group: root
     mode: '0755'
 
+- name: Set Accountingstorage enforce to limits
+  lineinfile:
+    path: "{{ slurm_conf_path }}"
+    insertafter: '^#\sAccountingStoragePass'
+    line: "AccountingStorageEnforce=limits"
+
+- name: Restart slurmctld service
+  service:
+    name: slurmctld
+    state: restarted
+
+- name: Create nossh group
+  command: module load cmsh && cmsh -c "group; add nossh; commit"
+
+- name: Add nossh group to denygroups
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    insertafter: "^#MaxSessions"
+    line: "DenyGroups nossh"
