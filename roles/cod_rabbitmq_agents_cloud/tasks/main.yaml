@@ -24,3 +24,14 @@
     group: root
     mode: '0755'
 
+- name: Set Accountingstorage enforce to limits
+  lineinfile:
+    path: "{{ slurm_conf_path }}"
+    #regexp: '^# AccountingStoragePass'
+    insertafter: '^#\sAccountingStoragePass'
+    line: "AccountingStorageEnforce=limits"
+
+- name: Restart slurmctld service
+  service:
+    name: slurmctld
+    state: restarted
