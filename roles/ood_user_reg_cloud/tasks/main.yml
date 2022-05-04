@@ -84,7 +84,7 @@
 - name: Put apache config file in place (user-reg_conf_shib.j2 in case of shib)
   template:
     src: user-reg_conf_shib.j2
-    dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg-{{ user_register_app_url }}.conf"
+    dest: "/opt/rh/httpd24/root/etc/httpd/conf.d/user-reg-{{ user_register_app }}.conf"
   when: configure_shib
 
 - name: Put apache config file in place (user-reg_conf.j2 in case of basicauth)
