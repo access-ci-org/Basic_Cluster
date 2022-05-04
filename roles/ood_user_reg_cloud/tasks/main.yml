@@ -74,11 +74,11 @@
 - name: Copy Celery service template
   template:
     src: celery.service.j2
-    dest: "/etc/systemd/system/celery.service"
+    dest: "/etc/systemd/system/celery-{{ user_register_app }}.service"
 
 - name: Enable celery.service
   systemd:
-    name: celery.service
+    name: celery-{{ user_register_app }}.service
     enabled: yes
 
 - name: Put apache config file in place (user-reg_conf_shib.j2 in case of shib)
