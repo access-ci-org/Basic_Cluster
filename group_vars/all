@@ -197,7 +197,6 @@
   user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
   user_register_app_refspec: "{{ gitlab_refspec }}"
-  user_register_app_url: "/register"
   user_register_app_port: 8000
   cors_allowed_origins: "*"
   mod_wsgi_pkg_name: "uab-httpd24-mod_wsgi"
@@ -205,7 +204,7 @@
   RegUser_app_user_full_name: "RegUser of user register app"
   RegUser_app_user_passwd: "qweasd"
 # Authorized user group
-#WIP  valid_eppa:  ["faculty", "staff", "student", "affiliate"]
+  valid_eppa:  ["faculty", "staff", "student", "affiliate"]
 
 # RabbitMQ
   rabbitmq_provision: true
