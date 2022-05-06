@@ -8,34 +8,14 @@ ProxyPass /static http://127.0.0.1:{{ user_register_app_port }}/static
 ProxyPassReverse /static http://127.0.0.1:{{ user_register_app_port }}/static
 
 <Location /{{ user_register_app }}>
-        AuthType shibboleth
-        ShibRequestSetting requireSession 1
-        Require valid-user
-        RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:REMOTE_USER} "([a-zA-Z0-9_.+-]+)@uab.edu$" [OR]
-        RewriteCond %{LA-U:REMOTE_USER} "urn:mace:incommon:uab.edu!https://uabgrid.uab.edu/shibboleth!(.+)$"         
-        RewriteRule . - [E=RU:%1]
-        RequestHeader set REMOTE_USER %{RU}e
-        RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:givenName} (.+)
-        RewriteRule . - [E=givenName:%1]
-        RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:sn} (.+)
-        RewriteRule . - [E=sn:%1]
-        SetEnv space " "
-        RequestHeader set REMOTE_USER_DISPLAYNAME %{givenName}e%{space}e%{sn}e        
-        RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:mail} (.+)
-        RewriteRule . - [E=mail:%1]
-        RequestHeader set REMOTE_USER_MAIL %{mail}e
-        RewriteCond %{IS_SUBREQ} ^false$
-        RewriteCond %{LA-U:unscoped-affiliation} (.+)
-        RewriteRule . - [E=unscoped-affiliation:%1]
-        RequestHeader set REMOTE_USER_EPPA %{unscoped-affiliation}e
+    AuthType shibboleth
+    ShibRequestSetting requireSession 1
+    Require valid-user
+    ShibUseHeaders On
 </Location>
 
 <Location "/static/">
-        AuthType shibboleth
-        ShibRequestSetting requireSession 1
-        Require valid-user
+    AuthType shibboleth
+    ShibRequestSetting requireSession 1
+    Require valid-user
 </Location>
