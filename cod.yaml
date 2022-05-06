@@ -1,0 +1,6 @@
+---
+- hosts: headnode
+  roles:
+    - { name: 'cod_module', tags: 'cod_module' }
+    - { name: 'cod_login_node', tags: 'cod_login_node' }
+    - { name: 'cod_compute_node', tags: 'cod_compute_node' }

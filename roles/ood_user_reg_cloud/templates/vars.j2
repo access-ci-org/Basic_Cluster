@@ -1,11 +1,14 @@
 id = "{{ celery_user }}"
 password = "{{ celery_user_password }}"
 key = "{{ user_register_app_key }}" 
+celery_app = "{{ user_register_app }}"
 broker_url =  'amqp://' + id + ':' + password + '@{{ rabbitmq_host }}:5672/'
 message_queue =  broker_url + 'socketio'
 default_referrer = "/pun/sys/dashboard"
 cors_allowed_origins= "{{ cors_allowed_origins }}"
 rabbitmq_agents_loc= "{{ rabbitmq_agents_loc }}"
+valid_eppa= ['faculty', 'staff', 'student', 'affiliate']
 username_key = ["REMOTE_USER"]
 fullname_key = ["REMOTE_USER_DISPLAYNAME"]
 email_key = ["REMOTE_USER_MAIL"]
+eppa_key = ["REMOTE_USER_EPPA"]

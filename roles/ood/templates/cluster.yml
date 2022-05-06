@@ -1,9 +1,10 @@
 ---
 v2:
   metadata:
-    title: "{{ cluster_name }}"
+    title: "{{ cluster_title }}"
   login:
-    host: "{{ cluster_name }}"
+    host: "{{ cluster_host }}"
+    default: true
   job:
     adapter: "slurm"
     bin: "{{ slurm_bin_path }}"

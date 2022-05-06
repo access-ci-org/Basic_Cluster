@@ -1,8 +1,9 @@
 ---
 - name: Clone the git repo to the machine
-  git: 
+  git:
     repo: "{{ rabbitmq_agents_repo }}"
     dest: "{{ rabbitmq_agents_loc }}"
+    refspec: "{{ rabbitmq_agents_refspec }}"
     version: "{{ rabbitmq_agents_version }}"
 
 - name: Create .agent_db dir for sqlite DB if not present
@@ -40,7 +41,7 @@
 - name: Install prod agents service files
   template:
     src: agent.j2
-    dest: "/etc/systemd/system/{{ item | basename | splitext | first}}_agent.service"
+    dest: "/etc/systemd/system/{{ item | basename | splitext | first }}_agent.service"
   loop: "{{ lookup('fileglob', '{{ rabbitmq_agents_loc }}/prod_rmq_agents/*.py', wantlist=True) }}"
   when: cod_deploy | bool
 

@@ -1,0 +1,66 @@
+---
+# cod compute-image build
+- name: clone the default image to build a compute image
+  command: cmsh -c "softwareimage; clone default-image compute-image; commit --wait"
+  register: add_image
+  changed_when: "'already' not in add_image.stderr"
+
+- name: create a new category for the compute image
+  command: cmsh -c "category; clone default compute; set softwareimage compute-image; commit --wait"
+  register: add_category
+  changed_when: "'already' not in add_category.stderr"
+
+- name: Config for slurm-client role
+  command: cmsh -c "category; use compute; roles; assign slurmclient; set wlmcluster slurm; append queues defq; commit --wait"
+  register: add_slurmclient
+  changed_when: "'already' not in add_slurmclient.stderr"
+
+- name: Add software to the image
+  yum:
+    installroot: "{{ bright_cod_compute_chroot_loc }}"
+    name:
+      - ansible
+      - bash-completion
+      - git
+      - nc
+      - nfs-utils
+      - python-websockify
+      - python2-numpy
+      - python3
+      - python3-devel
+      - ruby
+      - shorewall
+      - tmux
+      - turbojpeg
+      - vim
+      - '@X Window System'
+      - '@Xfce'
+
+- name: Install TurboVNC via rpm
+  yum:
+    installroot: "{{ bright_cod_compute_chroot_loc }}"
+    name: https://sourceforge.net/projects/turbovnc/files/2.2/turbovnc-2.2.x86_64.rpm
+    state: present
+    validate_certs: no
+
+- name: Create a symlink for munge.key before enabling munge service
+  file:
+    state: link
+    src: /cm/shared/apps/slurm/var/munge/keys/munge.key
+    dest: "{{ bright_cod_compute_chroot_loc }}/etc/munge/munge.key"
+
+# cod compute node deploy
+- name: Change compute nodes category to compute
+  command: cmsh -c "device; use {{ item }}; set category compute; commit"
+  with_sequence: "start=1 count={{ num_compute_nodes }} format={{ compute_node_format }}"
+  changed_when: True
+
+- name: Set DHCP on BOOTIF device
+  command: cmsh -c "device; use {{ item }}; interfaces; use bootif; set dhcp yes; commit"
+  with_sequence: "start=1 count={{ num_compute_nodes }} format={{ compute_node_format }}"
+  changed_when: True
+
+- name: Reboot compute node to pick up the new image
+  command: cmsh -c "device; use {{ item }}; reboot"
+  with_sequence: "start=1 count={{ num_compute_nodes }} format={{ compute_node_format }}"
+  changed_when: True

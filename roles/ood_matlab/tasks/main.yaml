@@ -8,10 +8,12 @@
     path: /var/www/ood/apps/sys/matlab
     state: directory
 
-- git:
-    repo: 'https://github.com/OSC/bc_osc_matlab.git'
+- name: Clone ood matlab app
+  git:
+    repo: "{{ matlab_ood_app_repo }}"
     dest: /var/www/ood/apps/sys/matlab/
-    clone: yes
+    refspec: "{{ matlab_ood_app_refspec }}"
+    version: "{{ matlab_ood_app_version }}"
 
 - name: Replace form.yml
   template:
@@ -30,5 +32,5 @@
 
 - name: Replace form script template
   copy:
-    src: script.sh.erb 
-    dest: /var/www/ood/apps/sys/matlab/template/script.sh.erb 
+    src: script.sh.erb
+    dest: /var/www/ood/apps/sys/matlab/template/script.sh.erb

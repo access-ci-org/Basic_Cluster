@@ -16,4 +16,3 @@
     - { name: 'ood_shib_sso', tags: 'ood_shib_sso', when: enable_shib }
     - { name: 'ood_user_reg', tags: 'ood_user_reg', when: enable_user_reg }
     - { name: 'warewulf_sync', tags: 'warewulf_sync' }
-    - { name: 'reg_user_create_scripts', tags: 'reg_user_create_scripts', when: enable_user_create_scripts }

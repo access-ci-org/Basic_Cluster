@@ -1,7 +1,7 @@
 WSGIDaemonProcess "{{ user_register_app }}" user={{ RegUser_app_user }} group={{ RegUser_app_user }} threads=5
 WSGIProcessGroup "{{ user_register_app }}"
-WSGIScriptAlias /register "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
-<Location /register>
+WSGIScriptAlias /{{ user_register_app }} "{{ user_register_app_path}}/{{ user_register_app }}.wsgi"
+<Location /{{ user_register_app }}>
         AuthType Basic
         AuthName "Private"
         AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"

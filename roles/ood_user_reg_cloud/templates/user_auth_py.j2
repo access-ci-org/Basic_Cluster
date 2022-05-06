@@ -1,0 +1,47 @@
+#!{{ rabbitmq_agents_loc }}/venv/bin/python
+import re
+import sys
+import subprocess
+from urllib.parse import unquote
+
+sys.path.append("{{ rabbitmq_agents_loc }}")
+import rc_util
+
+default_state = "ok"
+regex = "{{ ood_user_regex }}"
+
+# Enable for migration phase
+# e.g. not all users has entry in user_state db
+migration = True
+
+# Print empty if no remote_user is passed
+if len(sys.argv) < 2:
+    print()
+
+else:
+    # decode from url-encoded remote_user
+    remote_user = unquote(sys.argv[1])
+
+    # Extract username from remote_user with defined regex
+    match = re.search(regex, remote_user)
+    if not match:
+        print()
+        sys.exit()
+    else:
+        username = match.group(1)
+
+    # Check state from db
+    result = rc_util.check_state(username)
+
+    if result == "ok":
+        print(username)
+    else:
+        if migration and result == "no-account":
+            rc = subprocess.run(
+                ["getent", "passwd", username], stdout=subprocess.DEVNULL
+            ).returncode
+            if rc == 0:
+                rc_util.update_state(username, default_state)
+                print(username)
+                sys.exit()
+        print()

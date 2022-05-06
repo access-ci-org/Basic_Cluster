@@ -2,7 +2,7 @@
 - name: Enable Copr Repos
   shell: yum -y copr enable "{{ item.repo_name }}"
   with_items: "{{ copr_repos }}"
-  when: enable_copr == true and inventory_hostname in item.host
+  when: enable_copr and inventory_hostname in item.host
 
 - name: Install mod_wsgi for httpd24
   yum: name="{{ mod_wsgi_pkg_name }}" state=latest
@@ -27,6 +27,8 @@
   git:
     repo: "{{ user_register_app_repo }}"
     dest: "{{ user_register_app_path }}"
+    refspec: "{{ user_register_app_refspec }}"
+    version: "{{ user_register_app_tag }}"
 
 - name: Install requirements in virtualenv
   pip:
@@ -42,7 +44,7 @@
 - name: Put wsgi config file in place
   template:
     src: wsgi.j2
-    dest: "{{ user_register_app_path }}/{{ user_register_app}}.wsgi"
+    dest: "{{ user_register_app_path }}/{{ user_register_app }}.wsgi"
 
 - name: Enable user registration redirect
   replace:
@@ -52,8 +54,8 @@
     backup: yes
   with_items:
       - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/uab_ood_auth.regex'" }
-      - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/register'" }
-      - { regexp: "^#?(register_uri:).*", replace: "\\1 '/register'" }
+      - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/{{ user_register_app }}'" }
+      - { regexp: "^#?(register_uri:).*", replace: "\\1 '/{{ user_register_app }}'" }
 
 - name: Stage regex file for ood
   copy:
@@ -68,7 +70,7 @@
   ignore_errors: yes
 
 - name: Get UID and GID of RegUser from OHPC
-  stat: 
+  stat:
      path: /home/{{ RegUser_app_user }}
   register: RegUser_stat
 

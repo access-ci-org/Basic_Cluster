@@ -23,6 +23,7 @@ attributes:
     widget: select
     label: Partition
     options:
+      - [ "defq", "defq" ]
       - [ "low", "low" ]
 
 form:

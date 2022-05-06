@@ -32,11 +32,13 @@
   yum:
     name: "{{ ood_rpm_repo }}"
     state: present
+    validate_certs: no
 
 - name: Install OnDemand and all of its dependencies
   yum:
     name: "ondemand"
     state: present
+    validate_certs: no
 
 - name: Create clusters.d directory
   file:
@@ -74,9 +76,23 @@
     regexp: '{{ item.regexp }}'
     replace: '{{ item.replace }}'
   with_items:
-      - { regexp: "^#?host_regex:.*$", replace: "host_regex: '{{ compute_node_glob }}'" }
+      - { regexp: "^#?host_regex:.*$", replace: "host_regex: '{{ compute_node_prefix }}\\d+'" }
       - { regexp: "^#?node_uri:.*$", replace: "node_uri: '/node'" }
       - { regexp: "^#?rnode_uri:.*$", replace: "rnode_uri: '/rnode'" }
+
+- name: update ood portal config for basic authentication
+  blockinfile:
+    path: /etc/ood/config/ood_portal.yml
+    insertbefore: "#auth:"
+    backup: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK auth"
+    block: |
+      auth:
+        - 'AuthType Basic'
+        - 'AuthName "Private"'
+        - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+        - 'RequestHeader unset Authorization'
+        - 'Require valid-user'
 
 - name: Stage http authz file for ood
   copy:
