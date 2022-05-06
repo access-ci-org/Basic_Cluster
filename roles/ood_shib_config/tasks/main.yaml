@@ -62,7 +62,7 @@
         - "RewriteRule . - [E=REMOTE_USER:%1]"
         - "RewriteCond %{IS_SUBREQ} ^false$"
         - "RewriteCond %{HTTP:unscoped-affiliation} !({{ valid_eppa|join('|') }}) [NC]"
-        - "RewriteRule ^(.*)$ {{ user_register_app_url }} [L]"
+        - "RewriteRule ^(.*)$ /{{ user_register_app }} [L]"
 
 - name: update servername on ood_portal
   ansible.builtin.lineinfile:
