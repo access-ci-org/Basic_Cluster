@@ -118,6 +118,7 @@
       - { regexp: "^#?(user_map_cmd:).*", replace: "\\1 '/opt/ood/ood_auth_map/bin/user_auth.py'" }
       - { regexp: "^#?(map_fail_uri:).*", replace: "\\1 '/{{ user_register_app }}'" }
       - { regexp: "^#?(register_uri:).*", replace: "\\1 '/{{ user_register_app }}'" }
+  when: activate_namespace
 
 - name: Stage regex file for ood
   template:
