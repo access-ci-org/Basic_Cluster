@@ -226,6 +226,7 @@
   RegUser_app_user_passwd: "qweasd"
 # Authorized user group
   valid_eppa:  ["faculty", "staff", "student", "affiliate"]
+  activate_namespace: false
 
 # RabbitMQ
   rabbitmq_provision: true
