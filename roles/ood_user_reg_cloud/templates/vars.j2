@@ -5,6 +5,7 @@ celery_app = "{{ user_register_app }}"
 broker_url =  'amqp://' + id + ':' + password + '@{{ rabbitmq_host }}:5672/'
 message_queue =  broker_url + 'socketio'
 default_referrer = "/pun/sys/dashboard"
+app_host = "{{ user_register_app_host }}"
 cors_allowed_origins= "{{ cors_allowed_origins }}"
 rabbitmq_agents_loc= "{{ rabbitmq_agents_loc }}"
 valid_eppa= ['faculty', 'staff', 'student', 'affiliate']

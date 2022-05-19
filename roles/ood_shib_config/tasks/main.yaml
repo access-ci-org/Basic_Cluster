@@ -60,9 +60,9 @@
         - "RewriteCond %{HTTP:REMOTE_USER} '([a-zA-Z0-9_.+-]+)@uab.edu$' [OR]"
         - "RewriteCond %{HTTP:REMOTE_USER} 'urn:mace:incommon:uab.edu!https://uabgrid.uab.edu/shibboleth!(.+)$'"
         - "RewriteRule . - [E=REMOTE_USER:%1]"
-        - "RewriteCond %{IS_SUBREQ} ^false$"
-        - "RewriteCond %{HTTP:unscoped-affiliation} !({{ valid_eppa|join('|') }}) [NC]"
-        - "RewriteRule ^(.*)$ /{{ user_register_app }} [L]"
+        #- "RewriteCond %{IS_SUBREQ} ^false$"
+        #- "RewriteCond %{HTTP:unscoped-affiliation} !({{ valid_eppa|join('|') }}) [NC]"
+        #- "RewriteRule ^(.*)$ /{{ user_register_app }} [L]"
   when: activate_namespace
 
 - name: update servername on ood_portal
