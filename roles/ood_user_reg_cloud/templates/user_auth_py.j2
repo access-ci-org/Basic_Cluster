@@ -33,7 +33,7 @@ else:
     # Check state from db
     result = rc_util.check_state(username)
 
-    if result == "ok":
+    if result == "ok" or result == "pre_certification":
         print(username)
     else:
         if migration and result == "no-account":
