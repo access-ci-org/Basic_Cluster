@@ -42,8 +42,8 @@
 
 - name: Copy Self-Reg app variables file
   template:
-    src: vars.j2
-    dest: "{{ user_register_app_path }}/vars.py"
+    src: app_vars.j2
+    dest: "{{ user_register_app_path }}/app_vars.py"
 
 - name: Install requirements in virtualenv
   pip:
