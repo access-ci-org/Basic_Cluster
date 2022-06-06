@@ -260,6 +260,7 @@
   rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
   rc_users_ldap_repo_loc: "~/git/rc-users"
   valid_user_state: ['ok', 'hold', 'certification', 'pre_certification']
+  cmsh_version: 9.0
 
 # Celery
   celery_user: "reggie"
