@@ -1,6 +1,6 @@
 #!/bin/sh
 dnf -y install epel-release
-dnf -y install python38-devel python38-setuptools gcc libffi-devel openssl-devel python38-pip ansible python38-pyyaml python3-pexpect 
+dnf -y install python3-devel python3-setuptools gcc libffi-devel openssl-devel python3-pip ansible python3-pyyaml python3-pexpect 
 #pip3 install virtualenv
 #mkdir -p $HOME/ansible_env
 #cd $HOME/ansible_env
