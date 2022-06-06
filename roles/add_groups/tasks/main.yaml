@@ -1,0 +1,28 @@
+---
+- name: Create groups
+  command: /cm/local/apps/cmd/bin/cmsh -c "group; add {{ item.name }}; commit"
+  loop: "{{ ssh_groups }}"
+
+- name: Add default banner for users in deny groups
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE added denygroup: {{ item.name }}"
+    backup: yes
+    block: |
+      DenyGroups {{ item.name }}
+      Match Group {{ item.name }}
+        Banner /etc/ssh/{{ item.name }}-msg
+        ForceCommand echo
+        PasswordAuthentication no
+      Match all
+  when: item.deny
+  loop: "{{ ssh_groups }}"
+
+- name: Create banner message file
+  copy:
+    content: "{{ item.msg }}"
+    dest: "/etc/ssh/{{ item.name }}-msg"
+    owner: root
+    group: root
+  when: item.msg
+  loop: "{{ ssh_groups }}"
