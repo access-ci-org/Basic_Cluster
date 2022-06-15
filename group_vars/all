@@ -291,8 +291,8 @@
 # ssh groups
   ssh_groups:
     - {"name": "hold", "deny": true, "msg": "Your account is currently on hold. Please reach out to administrator to clear your account."}
-    - {"name": "certify", "deny": true, "msg": "Account certification is required. Please reach out to administrator to clear your account."}
-    - {"name": "precertify", "deny": false, "msg": ""}
+    - {"name": "certification", "deny": true, "msg": "Account certification is required. Please reach out to administrator to clear your account."}
+    - {"name": "pre_certification", "deny": false, "msg": ""}
 
 # refspec for merge/pull request
 # with refspec set up, you can specify version as:
