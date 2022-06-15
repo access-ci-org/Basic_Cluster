@@ -17,6 +17,8 @@
       Match all
   when: item.deny
   loop: "{{ ssh_groups }}"
+  notify:
+    - Restart sshd
 
 - name: Create banner message file
   copy:
