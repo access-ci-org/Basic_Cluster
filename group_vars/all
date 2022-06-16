@@ -259,11 +259,6 @@
   user_dirs: ['/home', '/data/user', '/data/scratch']
   rc_users_ldap_repo: "git@gitlab.rc.uab.edu:atlurie/rc-user-add-test.git"
   rc_users_ldap_repo_loc: "~/git/rc-users"
-  valid_user_state: ['ok', 'hold', 'certification', 'pre_certification']
-  # dict values in lock_groups correspond to the states defined above
-  lock_groups: { "hold":"hold",
-                 "certification":"certify",
-                 "pre_certification":"pre_certify" }
   cmsh_version: 9.0
 
 # Celery
@@ -294,9 +289,10 @@
 
 # ssh groups
   ssh_groups:
-    - {"name": "hold", "deny": true, "msg": "Your account is currently on hold. Please reach out to administrator to clear your account."}
-    - {"name": "certification", "deny": true, "msg": "Account certification is required. Please reach out to administrator to clear your account."}
-    - {"name": "pre_certification", "deny": false, "msg": ""}
+    - {"name": "hold", "state":"hold", "deny": true, "msg": "Your account is currently on hold. Please reach out to administrator to clear your account."}
+    - {"name": "certification", "state":"certification", "deny": true, "msg": "Account certification is required. Please reach out to administrator to clear your account."}
+    - {"name": "pre_certification", "state":"pre_certification", "deny": false, "msg": ""}
+    - {"name": "", "state":"ok", "deny": false, "msg": ""}
 
 # refspec for merge/pull request
 # with refspec set up, you can specify version as:
