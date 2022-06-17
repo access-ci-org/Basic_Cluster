@@ -5,7 +5,19 @@ VHost = "{{ rabbitmq_vhost }}"
 Server = "{{ rabbitmq_host }}"
 Port = {{ rabbitmq_port }}
 
-Valid_state = {{ valid_user_state }}
+Valid_state = [
+  {% for group in ssh_groups %}
+      '{{group.state}}',
+  {% endfor %}
+]
+
+# dict values in state_groups correspond to the states defined above
+# eg: {"state":"group"}
+state_groups = {
+  {% for group in ssh_groups %}
+      "{{ group.state }}" : "{{ group.name }}",
+  {% endfor %}
+}
 
 # Default function timeout
 Function_timeout = {{ function_timeout }}
