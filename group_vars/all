@@ -289,8 +289,8 @@
 
 # ssh groups
   ssh_groups:
-    - {"name": "hold", "state":"hold", "deny": true, "msg": "Your account is currently on hold. Please reach out to administrator to clear your account."}
-    - {"name": "certification", "state":"certification", "deny": true, "msg": "Account certification is required. Please reach out to administrator to clear your account."}
+    - {"name": "hold", "state":"hold", "deny": true, "msg": "Your account is currently on hold.\n Please reach out to administrator to clear your account.\n"}
+    - {"name": "certification", "state":"certification", "deny": true, "msg": "Account certification is required.\n Please reach out to administrator to clear your account.\n"}
     - {"name": "pre_certification", "state":"pre_certification", "deny": false, "msg": ""}
     - {"name": "", "state":"ok", "deny": false, "msg": ""}
 
