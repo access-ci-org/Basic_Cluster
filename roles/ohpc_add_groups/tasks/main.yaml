@@ -1,0 +1,4 @@
+---
+- name: Create groups
+  command: /cm/local/apps/cmd/bin/cmsh -c "group; add {{ item.name }}; commit"
+  loop: "{{ ssh_groups }}"
