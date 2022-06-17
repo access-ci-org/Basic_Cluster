@@ -1,0 +1,26 @@
+---
+- name: Add default banner for users in deny groups
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE added denygroup: {{ item.name }}"
+    backup: yes
+    block: |
+      DenyGroups {{ item.name }}
+      Match Group {{ item.name }}
+        Banner /etc/ssh/{{ item.name }}-msg
+        ForceCommand echo
+        PasswordAuthentication no
+      Match all
+  when: item.deny
+  loop: "{{ ssh_groups }}"
+  notify:
+    - Restart sshd
+
+- name: Create banner message file
+  copy:
+    content: "{{ item.msg }}"
+    dest: "/etc/ssh/{{ item.name }}-msg"
+    owner: root
+    group: root
+  when: item.msg | length > 0
+  loop: "{{ ssh_groups }}"

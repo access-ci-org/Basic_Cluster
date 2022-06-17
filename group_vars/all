@@ -288,6 +288,12 @@
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
 
+# ssh groups
+  ssh_groups:
+    - {"name": "hold", "deny": true, "msg": "Your account is currently on hold.\n Please reach out to administrator to clear your account.\n"}
+    - {"name": "certification", "deny": true, "msg": "Account certification is required.\n Please reach out to administrator to clear your accounta\n."}
+    - {"name": "pre_certification", "deny": false, "msg": ""}
+
 # refspec for merge/pull request
 # with refspec set up, you can specify version as:
 # gitlab: mr/MR_ID
