@@ -1,8 +1,4 @@
 ---
-- name: Create groups
-  command: /cm/local/apps/cmd/bin/cmsh -c "group; add {{ item.name }}; commit"
-  loop: "{{ ssh_groups }}"
-
 - name: Add default banner for users in deny groups
   blockinfile:
     path: /etc/ssh/sshd_config
@@ -26,5 +22,5 @@
     dest: "/etc/ssh/{{ item.name }}-msg"
     owner: root
     group: root
-  when: item.msg
+  when: item.msg | length > 0
   loop: "{{ ssh_groups }}"
