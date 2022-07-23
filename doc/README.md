@@ -165,8 +165,8 @@ firewall zone.
 
 You may also need to ensure that the connections will autoconnect on reboot:
 
-      nmcli con modify $internal-nic connection.autoconnect=yes
-      nmcli con modify $public-nic connection.autoconnect=yes
+      nmcli con modify $internal-nic connection.autoconnect yes
+      nmcli con modify $public-nic connection.autoconnect yes
 
 (replace enp0s3 with each of your interfaces! The host-only and internal network 
 interfaces are the most likely to have this turned off by default.)
