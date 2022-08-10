@@ -164,6 +164,7 @@
   ansys_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ ansys_module_name }}"
   ansys_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ ansys_module_name }}"
   ansys_ood_repo: "http://github.com/uabrc/ood_ansys.git"
+  ansys_ood_app_version: "v1"
   ansys_versions:
     - "19.1"
 
