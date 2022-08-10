@@ -155,7 +155,7 @@
   sas_ver: "{{ sas_module_file }}"
   sas_ood_app_repo: "https://github.com/uabrc/ood_sas.git"
   sas_ood_app_refspec: "{{ github_refspec }}"
-  sas_ood_app_version: "master"
+  sas_ood_app_version: "v1.0"
 
 #ANSYS install related
   ansys_provision: false
