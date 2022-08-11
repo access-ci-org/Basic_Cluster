@@ -1,25 +1,8 @@
-- name: Get UID and GID of RegUser from OHPC
-  stat: 
-     path: /home/{{ RegUser_app_user }}
-  register: RegUser_stat
-
-- name: Create Group for RegUser on OOD
-  group:
-    gid: "{{ RegUser_stat.stat.gid  }}"
-    name: "{{ RegUser_app_user  }}"
-    state: present
-
 - name: Create RegUser on OOD
   user:
     name: "{{ RegUser_app_user }}"
     comment: "{{ RegUser_app_user_full_name }}"
     shell: /bin/bash
-    uid: "{{ RegUser_stat.stat.uid }}"
-    group: "{{ RegUser_app_user  }}"
     createhome: no
     state: present
-
-- name: Restart service httpd24, in all cases
-  service:
-    name: httpd24-httpd
-    state: restarted
+    system: yes
