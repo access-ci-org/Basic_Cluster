@@ -180,9 +180,9 @@
     - "2.5.0-Java-11"
 
 #Rstudio related
-  rstudio_ood_app_repo: "https://github.com/rtripath89/bc_osc_rstudio_server.git"
+  rstudio_ood_app_repo: "https://github.com/uabrc/bc_rcc_rstudio_server.git"
   rstudio_ood_app_refspec: "{{ github_refspec }}"
-  rstudio_ood_app_version: "0.6.0"
+  rstudio_ood_app_version: "v1.0"
   rstudio_provision: false
   singularity_ver: '2.4.2'
   singularity_rstudio_app_repo: "https://github.com/nickjer/singularity-rstudio.git"
