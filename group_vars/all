@@ -144,7 +144,7 @@
   matlab_ver: "{{ matlab_module_file }}"
   matlab_ood_app_repo: "https://github.com/OSC/bc_osc_matlab.git"
   matlab_ood_app_refspec: "{{ github_refspec }}"
-  matlab_ood_app_version: "v1.0"
+  matlab_ood_app_version: "v1.1"
 
 #SAS install related
   sas_provision: false
