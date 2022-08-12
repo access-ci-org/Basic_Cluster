@@ -1,0 +1,11 @@
+---
+- name: Remove header setting from template
+  lineinfile:
+    path: /opt/ood/ood-portal-generator/templates/ood-portal.conf.erb
+    line: '  Header Set Cache-Control "max-age=0, no-store"'
+    state: absent
+    backup: yes
+
+- name: Update ood portal file
+  command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  ignore_errors: yes
