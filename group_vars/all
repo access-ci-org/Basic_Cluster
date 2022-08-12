@@ -175,7 +175,7 @@
   igv_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ igv_module_name }}"
   igv_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ igv_module_name }}"
   igv_ood_repo: "https://github.com/uabrc/ood_igv.git"
-  igv_ood_app_version: "v1"
+  igv_ood_app_version: "v1.1"
   igv_versions:
     - "2.5.0-Java-11"
 
