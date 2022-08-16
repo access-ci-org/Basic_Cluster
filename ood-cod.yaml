@@ -5,6 +5,7 @@
     - { name: 'ood_fix_cache', tags: 'ood_fix_cache' }
     - { name: 'ood_enable_ssl', tags: 'ood_enable_ssl' }
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
+    - { name: 'ood_jupyterlab', tags: 'ood_jupyterlab', when: jupyterlab_provision }
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
     - { name: 'ood_add_rstudio', tags: 'ood_add_rstudio', when: rstudio_provision }
     - { name: 'ood_matlab', tags: 'ood_matlab', when: matlab_provision }
