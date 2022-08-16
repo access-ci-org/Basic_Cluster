@@ -1,0 +1,16 @@
+- name: Remove existing JupyterLab app install
+  file:
+    path: "{{ ood_sys_apps_dir }}/jupyter_lab"
+    state: absent
+
+- name: Create jupyterlab directory
+  file:
+    path: "{{ ood_sys_apps_dir }}/jupyter_lab"
+    state: directory
+
+- name: Clone ood jupyterlab app
+  git:
+    repo: "{{ jupyterlab_ood_app_repo }}"
+    dest: "{{ ood_sys_apps_dir }}/jupyterlab"
+    refspec: "{{ jupyterlab_ood_app_refspec }}"
+    version: "{{ jupyterlab_ood_app_version }}"
