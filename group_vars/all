@@ -122,6 +122,12 @@
   jupyter_ood_app_refspec: "{{ github_refspec }}"
   jupyter_ood_app_version: "v1.1"
 
+#JupyterLab related
+  jupyterlab_provision: false
+  jupyterlab_ood_app_repo: "https://github.com/uabrc/ood_jupyterlab.git"
+  jupyterlab_ood_app_refspec: "{{ github_refspec }}"
+  jupyterlab_ood_app_version: "v1.0"
+
 #EasyBuild variables
   cluster_shared_folder: "/export"
   easybuild_prefix: "{{ cluster_shared_folder }}/eb"
