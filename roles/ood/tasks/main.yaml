@@ -1,4 +1,9 @@
 ---
+- name: Enable epel repo if not done already
+  yum:
+    name: "epel-release"
+    state: present
+
 - name: Enable the Software Collections repository
   yum:
     name: "centos-release-scl"
