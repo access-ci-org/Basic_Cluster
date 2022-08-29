@@ -1,8 +1,15 @@
 ---
+- name: Install python3 and pip3
+  yum:
+    name:
+      - python3
+      - python3-pip
+
 - name: Install require package
   pip:
     name: boto3
     extra_args: "--extra-index-url https://pypi.python.org/simple"
+    executable: "/usr/bin/pip3"
 
 - name: create a shib directory in /tmp
   file:
@@ -18,6 +25,8 @@
     dest: "/tmp/{{ s3_shibboleth_object_name }}"
     aws_access_key: "{{ lts_access_key }}"
     aws_secret_key: "{{ lts_secret_key }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
 - name: Extract shib_conf.tar.gz into /etc/
   unarchive:
