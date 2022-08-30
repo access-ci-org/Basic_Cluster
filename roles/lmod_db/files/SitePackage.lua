@@ -3,6 +3,7 @@
 
 local hook    = require("Hook")
 local uname   = require("posix").uname
+local pid     = require("posix").unistd.getpid()
 local cosmic  = require("Cosmic"):singleton()
 local syshost = cosmic:value("LMOD_SYSHOST")
 
@@ -24,9 +25,9 @@ local function load_hook(t)
 
 
    if (mode() ~= "load") then return end
-   local msg         = string.format("user=%s module=%s path=%s host=%s time=%f",
-                                     os.getenv("USER"), t.modFullName, t.fn, uname("%n"),
-                                     epoch())
+   local msg         = string.format("user=%s pid=%s module=%s path=%s host=%s time=%f",
+                                     os.getenv("USER"), pid, t.modFullName, t.fn,
+                                     uname("%n"), epoch())
    local a           = s_msgA
    a[#a+1]           = msg
 end
