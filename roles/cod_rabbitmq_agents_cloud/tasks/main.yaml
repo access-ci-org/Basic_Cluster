@@ -36,7 +36,7 @@
     state: restarted
 
 - name: Create nossh group
-  command: module load cmsh && cmsh -c "group; add nossh; commit"
+  command: cmsh -c "group; add nossh; commit"
 
 - name: Add nossh group to denygroups
   lineinfile:
