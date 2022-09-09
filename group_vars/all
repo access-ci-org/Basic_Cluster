@@ -118,13 +118,13 @@
 
 #Jupyter related
   jupyter_provision: false
-  jupyter_ood_app_repo: "https://github.com/uabrc/bc_example_jupyter.git"
+  jupyter_ood_app_repo: "https://github.com/uabrc/bc_uab_jupyter.git"
   jupyter_ood_app_refspec: "{{ github_refspec }}"
   jupyter_ood_app_version: "v1.1"
 
 #JupyterLab related
   jupyterlab_provision: false
-  jupyterlab_ood_app_repo: "https://github.com/uabrc/ood_jupyterlab.git"
+  jupyterlab_ood_app_repo: "https://github.com/uabrc/bc_uab_jupyterlab.git"
   jupyterlab_ood_app_refspec: "{{ github_refspec }}"
   jupyterlab_ood_app_version: "v1.0"
 
@@ -148,7 +148,7 @@
   matlab_module_appdir: "matlab"
   matlab_module_file: "r2018a"
   matlab_ver: "{{ matlab_module_file }}"
-  matlab_ood_app_repo: "https://github.com/uabrc/bc_osc_matlab.git"
+  matlab_ood_app_repo: "https://github.com/uabrc/bc_uab_matlab.git"
   matlab_ood_app_refspec: "{{ github_refspec }}"
   matlab_ood_app_version: "v1.1"
 
@@ -159,7 +159,7 @@
   sas_module_appdir: "sas"
   sas_module_file: "9.4"
   sas_ver: "{{ sas_module_file }}"
-  sas_ood_app_repo: "https://github.com/uabrc/ood_sas.git"
+  sas_ood_app_repo: "https://github.com/uabrc/bc_uab_sas.git"
   sas_ood_app_refspec: "{{ github_refspec }}"
   sas_ood_app_version: "v1.1"
 
@@ -169,7 +169,7 @@
   ansys_install_root: "{{ cluster_shared_folder }}/apps/{{ ansys_module_name }}"
   ansys_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ ansys_module_name }}"
   ansys_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ ansys_module_name }}"
-  ansys_ood_repo: "http://github.com/uabrc/ood_ansys.git"
+  ansys_ood_repo: "http://github.com/uabrc/bc_uab_ansys.git"
   ansys_ood_app_version: "v1.1"
   ansys_versions:
     - "19.1"
@@ -180,13 +180,13 @@
   igv_install_root: "{{ cluster_shared_folder }}/apps/{{ igv_module_name }}"
   igv_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ igv_module_name }}"
   igv_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ igv_module_name }}"
-  igv_ood_repo: "https://github.com/uabrc/ood_igv.git"
+  igv_ood_repo: "https://github.com/uabrc/bc_uab_igv.git"
   igv_ood_app_version: "v1.1"
   igv_versions:
     - "2.5.0-Java-11"
 
 #Rstudio related
-  rstudio_ood_app_repo: "https://github.com/uabrc/bc_rcc_rstudio_server.git"
+  rstudio_ood_app_repo: "https://github.com/uabrc/bc_uab_rstudio_server.git"
   rstudio_ood_app_refspec: "{{ github_refspec }}"
   rstudio_ood_app_version: "v1.0"
   rstudio_provision: false
