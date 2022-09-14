@@ -277,6 +277,7 @@
 #ClusteronDemand CoD
   cod_deploy: true
   post_create_script: PostAddUserScript.sh
+  cm_def_img_path: "/cm/images/default-image"
 
 # Lmod
   lmod_loc: "/opt/ohpc/admin/lmod/lmod"
@@ -294,6 +295,7 @@
   lmod_db_passwd: "password"
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
+  lmod_slurm_module_rel_path: "slurm/slurm"
 
 # ssh groups
   ssh_groups:
