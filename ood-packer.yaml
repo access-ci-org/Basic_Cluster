@@ -1,11 +1,9 @@
 ---
-- hosts: ood 
+- hosts: ood
   become: true
   roles:
     - { name: 'ood', tags: 'ood' }
     - { name: 'ood_fix_cache', tags: 'ood_fix_cache' }
-    - { name: 'ood_uab_ui', tags: 'ood_uab_ui' }
-    - { name: 'ood_easter_egg', tags: 'ood_easter_egg' }
     - { name: 'ood_shib_install', tags: 'ood_shib_install', when: install_shib }
     - { name: 'ood_shib_config', tags: 'ood_shib_config', when: configure_shib }
     - { name: 'ood_enable_ssl', tags: 'ood_enable_ssl' }
@@ -13,11 +11,7 @@
     - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
-    - { name: 'ood_updated_rstudio', tags: 'ood_updated_rstudio', when: rstudio_provision }
-    - { name: 'ood_deprecated_rstudio', tags: 'ood_deprecated_rstudio', when: rstudio_provision_deprecated }
     - { name: 'ood_matlab', tags: 'ood_matlab', when: matlab_provision }
     - { name: 'ood_sas', tags: 'ood_sas', when: sas_provision }
     - { name: 'ood_ansys', tags: 'ood_ansys', when: ansys_provision }
     - { name: 'ood_igv', tags: 'ood_igv', when: igv_provision }
-    - { name: 'ood_jupyter_lab', tags: 'ood_jupyter_lab', when: jupyter_provision}
-    - { name: 'ood_enable_sandbox', tags: 'ood_enable_sandbox', when: enable_sandbox }
