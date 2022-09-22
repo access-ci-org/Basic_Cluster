@@ -14,3 +14,12 @@
     dest: "{{ ansys_ood_app_dir }}"
     clone: yes
     version: "{{ ansys_ood_app_version }}" 
+
+- name: Change permission for ANSYS app directory
+  file:
+    path: "{{ ansys_ood_app_dir }}"
+    state: directory
+    owner: root
+    group: "{{ ansys_group_id }}"
+    mode: '0750'
+    recurse: yes
