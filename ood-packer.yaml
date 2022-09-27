@@ -7,6 +7,7 @@
     - { name: 'ood_shib_install', tags: 'ood_shib_install', when: install_shib }
     - { name: 'ood_shib_config', tags: 'ood_shib_config', when: configure_shib }
     - { name: 'ood_enable_ssl', tags: 'ood_enable_ssl' }
+    - { name: 'enable_lmod', tags: 'enable_lmod' }
     - { name: 'ood_user_reg_ops', tags: 'ood_user_reg_cloud' }
     - { name: 'ood_user_reg_cloud', tags: 'ood_user_reg_cloud' }
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }

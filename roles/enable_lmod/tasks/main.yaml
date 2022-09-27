@@ -10,7 +10,7 @@
 
 - name: Enable Lmod in image
   replace:
-    path: "/cm/images/default-image/etc/sysconfig/modules/lmod/{{ item.path }}"
+    path: "{{ cm_def_img_path }}/etc/sysconfig/modules/lmod/{{ item.path }}"
     regexp: "{{ item.regexp }}"
     replace: "{{ item.replace }}"
   loop:
@@ -23,4 +23,4 @@
     dest: "{{ item }}"
   loop:
     - "/usr/share/modulefiles"
-    - "/cm/images/default-image/usr/share/modulefiles"
+    - "{{ cm_def_img_path }}/usr/share/modulefiles"
