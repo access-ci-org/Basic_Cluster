@@ -18,8 +18,8 @@
     - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
 
 - name: Put DefaultModules in place
-  copy:
-    src: DefaultModules.lua
+  template:
+    src: DefaultModules.lua.j2
     dest: "{{ item }}"
   loop:
     - "/usr/share/modulefiles"
