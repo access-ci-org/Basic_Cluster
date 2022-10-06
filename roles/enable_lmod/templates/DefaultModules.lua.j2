@@ -11,7 +11,7 @@ end
 local uid, status = chomp(capture("/usr/bin/id -u"))
 
 if uid == "0" then
-  load("shared", "cmd", "cluster-tools", "{{ lmod_slurm_module_rel_path }}")
+  load("shared", "cmd", "cluster-tools", "{{ lmod_slurm_module_name }}")
 else
-  load("shared", "{{ lmod_slurm_module_rel_path }}") -- DEFAULT_MODULES_OTHER
+  load("shared", "{{ lmod_slurm_module_name }}") -- DEFAULT_MODULES_OTHER
 end
