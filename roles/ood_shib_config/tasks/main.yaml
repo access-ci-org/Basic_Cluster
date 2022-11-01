@@ -79,7 +79,7 @@
     path: /etc/ood/config/ood_portal.yml
     regexp: '^servername'
     insertafter: '^#servername'
-    line: "servername : rc.uab.edu"
+    line: "servername : {{ ood_servername }}"
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
