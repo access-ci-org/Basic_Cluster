@@ -8,12 +8,12 @@
     dest: "/etc/pki/tls/certs/{{ item }}"
     aws_access_key: "{{ lts_access_key }}"
     aws_secret_key: "{{ lts_secret_key }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  when: ood_ssl_s3_bucket and item
   loop:
     - "{{ ood_ssl_cert_file }}"
     - "{{ ood_ssl_cert_chain_file }}"
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-  when: ood_ssl_s3_bucket
 
 - name: Download SSL key from S3
   aws_s3:
