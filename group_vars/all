@@ -120,13 +120,13 @@
   jupyter_provision: false
   jupyter_ood_app_repo: "https://github.com/uabrc/bc_uab_jupyter.git"
   jupyter_ood_app_refspec: "{{ github_refspec }}"
-  jupyter_ood_app_version: "v1.1"
+  jupyter_ood_app_version: "master"
 
 #JupyterLab related
   jupyterlab_provision: false
   jupyterlab_ood_app_repo: "https://github.com/uabrc/bc_uab_jupyterlab.git"
   jupyterlab_ood_app_refspec: "{{ github_refspec }}"
-  jupyterlab_ood_app_version: "v1.0"
+  jupyterlab_ood_app_version: "master"
 
 #EasyBuild variables
   cluster_shared_folder: "/export"
@@ -150,7 +150,7 @@
   matlab_ver: "{{ matlab_module_file }}"
   matlab_ood_app_repo: "https://github.com/uabrc/bc_uab_matlab.git"
   matlab_ood_app_refspec: "{{ github_refspec }}"
-  matlab_ood_app_version: "v1.1"
+  matlab_ood_app_version: "master"
 
 #SAS install related
   sas_provision: false
@@ -161,7 +161,7 @@
   sas_ver: "{{ sas_module_file }}"
   sas_ood_app_repo: "https://github.com/uabrc/bc_uab_sas.git"
   sas_ood_app_refspec: "{{ github_refspec }}"
-  sas_ood_app_version: "v1.1"
+  sas_ood_app_version: "master"
 
 #ANSYS install related
   ansys_provision: false
@@ -171,7 +171,7 @@
   ansys_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ ansys_module_name }}"
   ansys_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ ansys_module_name }}"
   ansys_ood_repo: "http://github.com/uabrc/bc_uab_ansys.git"
-  ansys_ood_app_version: "v1.1"
+  ansys_ood_app_version: "master"
   ansys_versions:
     - "19.1"
 
@@ -182,14 +182,14 @@
   igv_modulefiles_dir: "{{ cluster_shared_folder }}/modulefiles/{{ igv_module_name }}"
   igv_ood_app_dir: "{{ ood_sys_apps_dir }}/{{ igv_module_name }}"
   igv_ood_repo: "https://github.com/uabrc/bc_uab_igv.git"
-  igv_ood_app_version: "v1.1"
+  igv_ood_app_version: "master"
   igv_versions:
     - "2.5.0-Java-11"
 
 #Rstudio related
   rstudio_ood_app_repo: "https://github.com/uabrc/bc_uab_rstudio_server.git"
   rstudio_ood_app_refspec: "{{ github_refspec }}"
-  rstudio_ood_app_version: "v1.0"
+  rstudio_ood_app_version: "master"
   rstudio_provision: false
   singularity_ver: '2.4.2'
   singularity_rstudio_app_repo: "https://github.com/nickjer/singularity-rstudio.git"
