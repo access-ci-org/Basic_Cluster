@@ -25,8 +25,9 @@ local function load_hook(t)
 
 
    if (mode() ~= "load") then return end
-   local msg         = string.format("user=%s pid=%s module=%s path=%s host=%s time=%f",
-                                     os.getenv("USER"), pid, t.modFullName, t.fn,
+   local job_id      = os.getenv("SLURM_JOB_ID") or 0
+   local msg         = string.format("user=%s jobid=%s pid=%s module=%s path=%s host=%s time=%f",
+                                     os.getenv("USER"), job_id, pid, t.modFullName, t.fn,
                                      uname("%n"), epoch())
    local a           = s_msgA
    a[#a+1]           = msg
