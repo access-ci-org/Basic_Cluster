@@ -25,7 +25,7 @@
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
-  ignore_errors: yes 
+  ignore_errors: yes
 
 - name: Restart service httpd24, in all cases
   service:
