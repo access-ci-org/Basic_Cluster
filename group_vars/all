@@ -297,7 +297,7 @@
   lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
   lmod_slurm_module_name: "slurm/slurm"
-  enable_lmod_base: ""
+  enable_lmod_prefix: ""
 
 # ssh groups
   ssh_groups:

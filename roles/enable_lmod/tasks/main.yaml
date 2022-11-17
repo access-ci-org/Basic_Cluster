@@ -1,7 +1,7 @@
 ---
 - name: Enable Lmod
   replace:
-    path: "{{ enable_lmod_base }}/etc/sysconfig/modules/lmod/{{ item.path }}"
+    path: "{{ enable_lmod_prefix }}/etc/sysconfig/modules/lmod/{{ item.path }}"
     regexp: "{{ item.regexp }}"
     replace: "{{ item.replace }}"
   loop:
@@ -13,4 +13,4 @@
     src: DefaultModules.lua.j2
     dest: "{{ item }}/DefaultModules.lua"
   loop:
-    - "{{ enable_lmod_base }}/usr/share/modulefiles"
+    - "{{ enable_lmod_prefix }}/usr/share/modulefiles"
