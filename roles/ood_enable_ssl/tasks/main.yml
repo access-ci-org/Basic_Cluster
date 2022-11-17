@@ -6,8 +6,8 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
     block: |
       ssl:
-        - 'SSLCertificateFile "/etc/pki/tls/certs/localhost.crt"'
-        - 'SSLCertificateKeyFile "/etc/pki/tls/private/localhost.key"'
+        - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
+        - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
