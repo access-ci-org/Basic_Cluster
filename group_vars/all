@@ -85,6 +85,10 @@
   ood_sys_apps_dir: "/var/www/ood/apps/sys"
   # a regex to extract username from remote_user in user_auth script"
   ood_user_regex: "^(.+)$"
+  ood_ssl_cert_file: "localhost.crt"
+  ood_ssl_cert_key: "localhost.key"
+  ood_ssl_cert_chain_file: ""
+  ood_ssl_s3_bucket: ""
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
