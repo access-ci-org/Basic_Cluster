@@ -11,6 +11,4 @@
 - name: Put DefaultModules in place
   template:
     src: DefaultModules.lua.j2
-    dest: "{{ item }}/DefaultModules.lua"
-  loop:
-    - "{{ enable_lmod_prefix }}/usr/share/modulefiles"
+    dest: "{{ enable_lmod_prefix }}/usr/share/modulefiles/DefaultModules.lua"
