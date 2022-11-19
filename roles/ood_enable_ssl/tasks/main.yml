@@ -1,3 +1,33 @@
+---
+- name: Download SSL Certs from S3
+  aws_s3:
+    mode: get
+    s3_url: "{{ s3_endpoint }}"
+    bucket: "{{ ood_ssl_s3_bucket }}"
+    object: "{{ item }}"
+    dest: "/etc/pki/tls/certs/{{ item }}"
+    aws_access_key: "{{ lts_access_key }}"
+    aws_secret_key: "{{ lts_secret_key }}"
+  loop:
+    - "{{ ood_ssl_cert_file }}"
+    - "{{ ood_ssl_cert_chain_file }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  when: ood_ssl_s3_bucket
+
+- name: Download SSL key from S3
+  aws_s3:
+    mode: get
+    s3_url: "{{ s3_endpoint }}"
+    bucket: "{{ ood_ssl_s3_bucket }}"
+    object: "{{ ood_ssl_cert_key }}"
+    dest: "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"
+    aws_access_key: "{{ lts_access_key }}"
+    aws_secret_key: "{{ lts_secret_key }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  when: ood_ssl_s3_bucket
+
 - name: enable ssl
   blockinfile:
     path: /etc/ood/config/ood_portal.yml
