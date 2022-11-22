@@ -1,16 +1,7 @@
 ---
-- name: Enable Lmod on Master node
+- name: Enable Lmod
   replace:
-    path: "/etc/sysconfig/modules/lmod/{{ item.path }}"
-    regexp: "{{ item.regexp }}"
-    replace: "{{ item.replace }}"
-  loop:
-    - { path: 'cm-lmod-init.sh', regexp: 'LMOD=.*$', replace: 'LMOD=1'}
-    - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
-
-- name: Enable Lmod in image
-  replace:
-    path: "{{ cm_def_img_path }}/etc/sysconfig/modules/lmod/{{ item.path }}"
+    path: "{{ enable_lmod_prefix }}/etc/sysconfig/modules/lmod/{{ item.path }}"
     regexp: "{{ item.regexp }}"
     replace: "{{ item.replace }}"
   loop:
@@ -18,9 +9,6 @@
     - { path: 'cm-lmod-init.csh', regexp: 'LMOD.*$', replace: 'LMOD "1"'}
 
 - name: Put DefaultModules in place
-  copy:
-    src: DefaultModules.lua
-    dest: "{{ item }}"
-  loop:
-    - "/usr/share/modulefiles"
-    - "{{ cm_def_img_path }}/usr/share/modulefiles"
+  template:
+    src: DefaultModules.lua.j2
+    dest: "{{ enable_lmod_prefix }}/usr/share/modulefiles/DefaultModules.lua"
