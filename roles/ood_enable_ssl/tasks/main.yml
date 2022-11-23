@@ -28,14 +28,14 @@
     ansible_python_interpreter: /usr/bin/python3
   when: ood_ssl_s3_bucket
 
-- name: Create ssl config for certificate and key file
+- name: Create SSL config for certificate and key file
   ansible.builtin.set_fact:
     ood_ssl_config: |-
       ssl:
         - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
         - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
 
-- name: Update for certificate chain file
+- name: Update SSL config for certificate chain file
   ansible.builtin.set_fact:
     ood_ssl_config: |-
       {{ ood_ssl_config }}
@@ -52,7 +52,7 @@
         - 'ServerSignature Off'
         - 'TraceEnable Off'
 
-- name: enable ssl
+- name: Enable SSL
   blockinfile:
     path: /etc/ood/config/ood_portal.yml
     insertbefore: "#ssl:"
