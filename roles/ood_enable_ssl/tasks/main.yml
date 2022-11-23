@@ -28,6 +28,20 @@
     ansible_python_interpreter: /usr/bin/python3
   when: ood_ssl_s3_bucket
 
+- name: Create ssl config for certificate and key file
+  ansible.builtin.set_fact:
+    ood_ssl_config: |-
+      ssl:
+        - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
+        - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
+
+- name: Update for certificate chain file
+  ansible.builtin.set_fact:
+    ood_ssl_config: |-
+      {{ ood_ssl_config }}
+        - 'SSLCertificateChainFile "/etc/pki/tls/certs/{{ ood_ssl_cert_chain_file }}"'
+  when: ood_ssl_cert_chain_file
+
 - name: enable ssl
   blockinfile:
     path: /etc/ood/config/ood_portal.yml
@@ -35,23 +49,7 @@
     backup: yes
     marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
     block: |
-      ssl:
-        - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
-        - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
-  when: not ood_ssl_cert_chain_file
-
-- name: enable ssl with chain
-  blockinfile:
-    path: /etc/ood/config/ood_portal.yml
-    insertbefore: "#ssl:"
-    backup: yes
-    marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
-    block: |
-      ssl:
-        - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
-        - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
-        - 'SSLCertificateChainFile "/etc/pki/tls/certs/{{ ood_ssl_cert_chain_file }}"'
-  when: ood_ssl_cert_chain_file
+      {{ ood_ssl_config }}
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
