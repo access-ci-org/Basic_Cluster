@@ -1,17 +1,69 @@
-- name: enable ssl
+---
+- name: Download SSL Certs from S3
+  aws_s3:
+    mode: get
+    s3_url: "{{ s3_endpoint }}"
+    bucket: "{{ ood_ssl_s3_bucket }}"
+    object: "{{ item }}"
+    dest: "/etc/pki/tls/certs/{{ item }}"
+    aws_access_key: "{{ lts_access_key }}"
+    aws_secret_key: "{{ lts_secret_key }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  when: ood_ssl_s3_bucket and item
+  loop:
+    - "{{ ood_ssl_cert_file }}"
+    - "{{ ood_ssl_cert_chain_file }}"
+
+- name: Download SSL key from S3
+  aws_s3:
+    mode: get
+    s3_url: "{{ s3_endpoint }}"
+    bucket: "{{ ood_ssl_s3_bucket }}"
+    object: "{{ ood_ssl_cert_key }}"
+    dest: "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"
+    aws_access_key: "{{ lts_access_key }}"
+    aws_secret_key: "{{ lts_secret_key }}"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  when: ood_ssl_s3_bucket
+
+- name: Create SSL config for certificate and key file
+  ansible.builtin.set_fact:
+    ood_ssl_config: |-
+      ssl:
+        - 'SSLCertificateFile "/etc/pki/tls/certs/{{ ood_ssl_cert_file }}"'
+        - 'SSLCertificateKeyFile "/etc/pki/tls/private/{{ ood_ssl_cert_key }}"'
+
+- name: Update SSL config for certificate chain file
+  ansible.builtin.set_fact:
+    ood_ssl_config: |-
+      {{ ood_ssl_config }}
+        - 'SSLCertificateChainFile "/etc/pki/tls/certs/{{ ood_ssl_cert_chain_file }}"'
+  when: ood_ssl_cert_chain_file
+
+- name: Enhanced SSL config
+  ansible.builtin.set_fact:
+    ood_ssl_config: |-
+      {{ ood_ssl_config }}
+        - 'SSLProtocol -all +TLSv1.2'
+        - 'SSLHonorCipherOrder On'
+        - 'SSLCipherSuite  DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256'
+        - 'ServerSignature Off'
+        - 'TraceEnable Off'
+
+- name: Enable SSL
   blockinfile:
     path: /etc/ood/config/ood_portal.yml
     insertbefore: "#ssl:"
     backup: yes
     marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
     block: |
-      ssl:
-        - 'SSLCertificateFile "/etc/pki/tls/certs/localhost.crt"'
-        - 'SSLCertificateKeyFile "/etc/pki/tls/private/localhost.key"'
+      {{ ood_ssl_config }}
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
-  ignore_errors: yes 
+  ignore_errors: yes
 
 - name: Restart service httpd24, in all cases
   service:
