@@ -7,7 +7,7 @@
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
     - { name: 'ood_jupyterlab', tags: 'ood_jupyterlab', when: jupyterlab_provision }
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
-    - { name: 'ood_add_rstudio', tags: 'ood_add_rstudio', when: rstudio_provision }
+    - { name: 'ood_rstudio', tags: 'ood_rstudio', when: rstudio_provision }
     - { name: 'ood_matlab', tags: 'ood_matlab', when: matlab_provision }
     - { name: 'ood_sas', tags: 'ood_sas', when: sas_provision }
     - { name: 'ood_ansys', tags: 'ood_ansys', when: ansys_provision }
