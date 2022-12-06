@@ -4,6 +4,7 @@
     - { name: 'prep_ood_cloud', tags: 'prep_ood' }
     - { name: 'ood', tags: 'ood' }
     - { name: 'ood_jupyter', tags: 'ood_jupyter', when: jupyter_provision}
+    - { name: 'ood_jupyterlab', tags: 'ood_jupyterlab', when: jupyterlab_provision}
     - { name: 'ood_vnc_form', tags: 'ood_vnc_form' }
     - { name: 'ood_rstudio', tags: 'ood_rstudio', when: rstudio_provision }
     - { name: 'ood_matlab', tags: 'ood_matlab', when: matlab_provision }
