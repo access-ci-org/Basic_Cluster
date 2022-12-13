@@ -52,7 +52,7 @@
         - 'ServerSignature Off'
         - 'TraceEnable Off'
 
-- name: Enable SSL
+- name: Enable SSL in ood portal
   blockinfile:
     path: /etc/ood/config/ood_portal.yml
     insertbefore: "#ssl:"
@@ -60,6 +60,12 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK ssl"
     block: |
       {{ ood_ssl_config }}
+
+- name: Disable server details in server banner
+  ansible.builtin.lineinfile:
+    path: /opt/rh/httpd24/root/etc/httpd/conf/httpd.conf
+    state: present
+    line: "ServerTokens Prod"
 
 - name: Build the updated Apache config
   command: /opt/ood/ood-portal-generator/sbin/update_ood_portal
