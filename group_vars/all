@@ -227,7 +227,7 @@
 # User Registration
   enable_user_reg: true
   user_register_app: "flask_user_reg"
-  user_register_app_tag: "5c06809cf494db0f268c325fbc309a40eb5a6eea"
+  user_register_app_tag: "master"
   user_register_app_path: "/var/www/ood/register/{{ user_register_app }}"
   user_register_app_key: "1234"
   user_register_app_repo: "https://gitlab.rc.uab.edu/rc/self-reg-form.git"
