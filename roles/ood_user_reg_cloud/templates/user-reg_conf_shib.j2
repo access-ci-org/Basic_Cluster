@@ -13,8 +13,7 @@ ProxyPassReverse /static http://127.0.0.1:{{ user_register_app_port }}/static
     Require valid-user
     ShibUseHeaders On
     RewriteCond %{IS_SUBREQ} ^false$
-    RewriteCond %{HTTP:REMOTE_USER} '([a-zA-Z0-9_.+-]+)@uab.edu$' [OR]
-    RewriteCond %{HTTP:REMOTE_USER} 'urn:mace:incommon:uab.edu!https://uabgrid.uab.edu/shibboleth!(.+)$'
+    RewriteCond %{HTTP:REMOTE_USER} '{{ ood_user_regex }}'
     RewriteRule . - [E=REMOTE_USER:%1]
     RequestHeader set REMOTE_USER %{REMOTE_USER}e
 </Location>
