@@ -6,6 +6,6 @@
    create 644 root root
    notifempty
    postrotate
-     mv {{ lmod_log_filename }}-* {{ lmod_archive_loc }}
+     /usr/bin/mv {{ lmod_log_filename }}-* {{ lmod_archive_loc }}
    endscript
 }
