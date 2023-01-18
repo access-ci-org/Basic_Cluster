@@ -31,10 +31,10 @@
     - "{{ lmod_log_loc }}"
     - "{{ lmod_share_loc }}"
 
-- name: Update rsyslog.d
+- name: Update rsyslog to include rsyslog.d
   lineinfile:
     path: /etc/rsyslog.conf
-    line: '\$IncludeConfig /etc/rsyslog.d/\*.conf)'
+    line: '$IncludeConfig /etc/rsyslog.d/*.conf'
     backup: yes
 
 - name: Put rsyslog config file in place
