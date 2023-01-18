@@ -4,10 +4,6 @@
     src: SitePackage.lua
     dest: "{{ lmod_loc }}/libexec/SitePackage.lua"
 
-- name: Import file in warewulf
-  import_tasks: warewulf_steps.yaml
-  when: not cod_deploy
-
 - name: Clone Lmod repo
   git:
     repo: "{{ lmod_repo }}"

@@ -286,7 +286,7 @@
   cm_def_img_path: "/cm/images/default-image"
 
 # Lmod
-  lmod_loc: "/opt/ohpc/admin/lmod/lmod"
+  lmod_loc: "/usr/share/lmod/lmod"
   lmod_archive_loc: "{{ cluster_shared_folder }}/rc/lmod"
   lmod_log_loc: "/var/log"
   lmod_log_filename: "{{ lmod_log_loc }}/moduleUsage.log"
@@ -295,7 +295,7 @@
   lmod_refspec: "{{ github_refspec }}"
   lmod_version: "8.5.9"
   lmod_share_loc: "{{ cluster_shared_folder }}/lmod_script"
-  lmod_db_host_machine: "ohpc"
+  lmod_db_host_machine: "master"
   lmod_root_default_modules: ["shared", "cmd", "cluster-tools", "slurm/slurm"]
   lmod_default_modules: ["shared", "slurm/slurm"]
   enable_lmod_prefix: ""
