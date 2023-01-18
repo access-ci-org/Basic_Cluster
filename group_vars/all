@@ -294,12 +294,7 @@
   lmod_repo: "https://github.com/TACC/Lmod.git"
   lmod_refspec: "{{ github_refspec }}"
   lmod_version: "8.5.9"
-  lmod_cron_user: "root"
   lmod_share_loc: "{{ cluster_shared_folder }}/lmod_script"
-  lmod_db: "lmod"
-  lmod_db_user: "lmod"
-  lmod_db_passwd: "password"
-  lmod_db_allow_host: "localhost"
   lmod_db_host_machine: "ohpc"
   lmod_root_default_modules: ["shared", "cmd", "cluster-tools", "slurm/slurm"]
   lmod_default_modules: ["shared", "slurm/slurm"]

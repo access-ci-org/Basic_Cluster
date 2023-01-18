@@ -1,20 +1,4 @@
 ---
-- name: Install necessary packages
-  yum:
-    state: present
-    name: mariadb
-
-- name: Install necessary packages
-  pip:
-    state: present
-    name: mysql-python
-
-- name: Install necessary packages
-  pip:
-    state: present
-    name: mysqlclient
-    executable: pip3
-
 - name: Update SitePackge.lua
   copy:
     src: SitePackage.lua
@@ -66,59 +50,6 @@
   template:
     src: logrotate.j2
     dest: /etc/logrotate.d/moduleUsage
-
-- name: Set up module tracking database user
-  mysql_user:
-    name: "{{ lmod_db_user }}"
-    password: "{{ lmod_db_passwd }}"
-    priv: "{{ lmod_db }}.*:ALL"
-    host: "{{ lmod_db_allow_host }}"
-    state: present
-
-- name: Setup config file for module tracking
-  command: ./conf_create --dbhost="{{ lmod_db_host_machine }}" --dbuser="{{ lmod_db_user }}" --passwd="{{ lmod_db_passwd }}" --dbname="{{ lmod_db }}"
-  args:
-    chdir: "{{ lmod_module_tracking_loc }}"
-
-- name: Setup database
-  command: ./createDB.py --dbname="{{ lmod_db }}"
-  args:
-    chdir: "{{ lmod_module_tracking_loc }}"
-  ignore_errors: yes
-
-- name: Modify store db script
-  lineinfile:
-    path: "{{ lmod_module_tracking_loc }}/store_module_data"
-    regexp: "syshost\\(dataT"
-    line: "    dataT['syshost'] = dataT['host']"
-    backup: yes
-
-- name: Setup script for cron job
-  template:
-    src: cron.j2
-    dest: "{{ lmod_module_tracking_loc }}/module_to_db"
-    owner: "{{ lmod_cron_user }}"
-    group: "{{ lmod_cron_user }}"
-    mode: 0755
-
-- name: Setup cron job
-  cron:
-    name: "Insert module usage into db"
-    job: "{{ lmod_module_tracking_loc }}/module_to_db"
-    user: "{{ lmod_cron_user }}"
-    special_time: daily
-
-- name: Copy analyzeLmodDB script to share location
-  copy:
-    src: "{{ lmod_module_tracking_loc }}/{{ item.name }}"
-    dest: "{{ lmod_share_loc }}"
-    mode: "{{ item.mode }}"
-    remote_src: yes
-  loop:
-    - { name: analyzeLmodDB, mode: "0755" }
-    - { name: BeautifulTbl.py, mode: "0644" }
-    - { name: LMODdb.py, mode: "0644" }
-    - { name: "{{ lmod_db }}_db.conf", mode: "0644" }
 
 - name: Restart rsyslog
   service:
