@@ -5,4 +5,7 @@
    daily
    create 644 root root
    notifempty
+   postrotate
+     /usr/bin/mv {{ lmod_log_filename }}-* {{ lmod_archive_loc }}
+   endscript
 }
