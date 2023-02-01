@@ -5,4 +5,4 @@ $Ruleset RSYSLOG_DefaultRuleset
 # provides UDP syslog reception
 $ModLoad imudp
 $InputUDPServerBindRuleset remote
-$UDPServerRun 514
+$UDPServerRun {{ lmod_db_host_port }}
