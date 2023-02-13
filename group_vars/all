@@ -288,6 +288,7 @@
 # Lmod
   lmod_loc: "/usr/share/lmod/lmod"
   lmod_archive_loc: "{{ cluster_shared_folder }}/rc/lmod"
+  lmod_cache_loc: "/cm/shared"
   lmod_log_loc: "/var/log"
   lmod_log_filename: "{{ lmod_log_loc }}/moduleUsage.log"
   lmod_module_tracking_loc: "{{ lmod_loc }}/tools/tracking_module_usage"
