@@ -1,0 +1,12 @@
+#%Module1.0#######################################################################
+## default modulefile
+##
+proc ModulesHelp { } {
+
+        puts stderr "\tAdds shared modules to module environment"
+}
+
+module-whatis   "adds shared modules"
+module use --append /cm/shared/modulefiles
+
+

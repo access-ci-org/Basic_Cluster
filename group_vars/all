@@ -300,6 +300,7 @@
   lmod_db_host_port: 10514
   lmod_root_default_modules: ["shared", "cmd", "cluster-tools", "slurm/slurm"]
   lmod_default_modules: ["shared", "slurm/slurm"]
+  lmod_default_modulepath: "/usr/share/modulefiles"
   enable_lmod_prefix: ""
 
 # ssh groups

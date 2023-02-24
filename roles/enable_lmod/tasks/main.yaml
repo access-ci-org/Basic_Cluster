@@ -21,7 +21,7 @@
 
     - name: Update Lmod Spider Cache setting
       ansible.builtin.replace:
-        path: "{{ enable_lmod_prefix }}/{{ lmod_loc }}/init/lmodrc.lua"
+        path: "{{ enable_lmod_prefix }}{{ lmod_loc }}/init/lmodrc.lua"
         regexp: '(\["{{ item.key }}"\] = ).*$'
         replace: \1 "{{ item.value }}",
       loop:
@@ -29,20 +29,36 @@
         - {"key": "timestamp", "value": "{{ lmod_cache_loc }}/sysCacheTS.txt"}
   when: '"cm" in ansible_facts.packages.Lmod[0].release'
 
-- name: Add Lmod Spider Cache setting
-  ansible.builtin.blockinfile:
-    marker: "-- {mark} ANSIBLE MANAGED BLOCK"
-    path: "{{ enable_lmod_prefix }}/{{ lmod_loc }}/init/lmodrc.lua"
-    block: |
-      scDescriptT = {
-        {
-          ["dir"] = "{{ lmod_cache_loc }}/sysCacheDir",
-          ["timestamp"] = "{{ lmod_cache_loc }}/sysCacheTS.txt",
-        },
-      }
+- name: Tasks only needed in non-cm version
+  block:
+    - name: Add Lmod Spider Cache setting
+      ansible.builtin.blockinfile:
+        marker: "-- {mark} ANSIBLE MANAGED BLOCK"
+        path: "{{ enable_lmod_prefix }}{{ lmod_loc }}/init/lmodrc.lua"
+        block: |
+          scDescriptT = {
+            {
+              ["dir"] = "{{ lmod_cache_loc }}/sysCacheDir",
+              ["timestamp"] = "{{ lmod_cache_loc }}/sysCacheTS.txt",
+            },
+          }
+
+    - name: Add shared module
+      ansible.builtin.copy:
+        src: shared
+        dest: "{{ enable_lmod_prefix }}{{ lmod_default_modulepath }}/shared"
+
+    - name: Setup default modules
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "/etc/profile.d/z01-{{ item }}"
+      loop:
+        - default_module.sh
+        - default_module.csh
+
   when: '"cm" not in ansible_facts.packages.Lmod[0].release'
 
 - name: Put DefaultModules in place
   template:
     src: DefaultModules.lua.j2
-    dest: "{{ enable_lmod_prefix }}/usr/share/modulefiles/DefaultModules.lua"
+    dest: "{{ enable_lmod_prefix }}{{ lmod_default_modulepath }}/DefaultModules.lua"
