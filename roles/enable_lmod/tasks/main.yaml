@@ -5,10 +5,17 @@
 
 - name: Tasks only needed in cm version
   block:
-    - name: Make sure lmod config is installed with cm version
+    - name: Make sure lmod config is installed with cm 8 version
       ansible.builtin.yum:
         name: cm-modules-init-client
         state: present
+      when: cmsh_version is version('9.0', '<')
+
+    - name: Make sure lmod config is installed with cm 9 version
+      ansible.builtin.yum:
+        name: cm-modules-init
+        state: present
+      when: cmsh_version is version('9.0', '>=')
 
     - name: Enable Lmod
       replace:
