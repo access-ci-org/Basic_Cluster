@@ -263,6 +263,7 @@
   admin_email: "root@localhost"
   sender: "ROOT@LOCALHOST"
   Sender_subscription: "SUBSCRIBE_EMAIL@LOCALHOST"
+  Sender_notification: "NOTIFICATION@LOCALHOST"
   sender_alias: "Services"
   subject: "New User Account"
   info_url: "https://www.google.com"
