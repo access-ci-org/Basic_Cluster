@@ -1,5 +1,7 @@
 ---
 script:
+  job_environment:
+    USER: "<%= ENV['USER'] %>"
   native:
     - "-N"
     - "1"
