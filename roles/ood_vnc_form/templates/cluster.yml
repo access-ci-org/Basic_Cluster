@@ -1,6 +1,6 @@
 ---
 title: "HPC Desktop"
-cluster: {{ cluster_name }} 
+cluster: {{ cluster_name }}
 submit: "submit/submit.yml.erb"
 attributes:
   desktop: "xfce"
@@ -32,3 +32,4 @@ form:
   - bc_partition
   - bc_num_slots
   - bc_num_mems
+  - bc_email_on_started
