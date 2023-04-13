@@ -1,3 +1,9 @@
+<%-
+  email = ENV['USER']
+  if !email.include? '@'
+    email = email + '@uab.edu'
+  end
+-%>
 ---
 script:
   native:
@@ -9,4 +15,8 @@ script:
     - "--job-name=ood-vnc"
 <%- if bc_partition == "pascalnodes" -%>
     - "--gres=gpu:1"
+<%- end -%>
+<%- if bc_email_on_started == "1" -%>
+    - "--mail-type=BEGIN"
+    - "--mail-user=<%= email %>"
 <%- end -%>
