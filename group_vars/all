@@ -89,6 +89,7 @@
   ood_ssl_cert_key: "localhost.key"
   ood_ssl_cert_chain_file: ""
   ood_ssl_s3_bucket: ""
+  docs_url: "https://www.google.com"
 
 #Node Inventory - not in the Ansible inventory sense! Just for WW and Slurm config.
 # Someday I will need a role that can run wwnodescan, and add nodes to this file! Probably horrifying practice.
