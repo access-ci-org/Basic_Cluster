@@ -323,5 +323,5 @@
 
   local_user:
     username: ""
-    home: "/home"
+    home: "/home.local"
     ssh_pub_key: ""
