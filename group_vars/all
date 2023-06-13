@@ -135,6 +135,7 @@
   jupyterlab_ood_app_version: "master"
 
 #EasyBuild variables
+  easybuild_provision: false
   cluster_shared_folder: "/export"
   easybuild_prefix: "{{ cluster_shared_folder }}/eb"
   easybuild_tmpdir: "/tmp"
