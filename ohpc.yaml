@@ -8,7 +8,7 @@
     - { name: 'compute_build_vnfs', tags: 'compute_build_vnfs' }
     - { name: 'compute_build_nodes', tags: 'compute_build_nodes' }
     - { name: 'nodes_vivify', tags: 'nodes_vivify' }
-    - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild' }
+    - { name: 'ohpc_add_easybuild', tags: 'ohpc_add_easybuild', when: easybuild_provision }
     - { name: 'ohpc_jupyter', tags: 'ohpc_jupyter', when: jupyter_provision}
     - { name: 'ohpc_matlab', tags: 'ohpc_matlab', when: matlab_provision }
     - { name: 'ohpc_sas', tags: 'ohpc_sas', when: sas_provision }
