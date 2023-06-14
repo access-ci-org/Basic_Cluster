@@ -18,3 +18,4 @@
     - { name: 'ood_sas', tags: 'ood_sas', when: sas_provision }
     - { name: 'ood_ansys', tags: 'ood_ansys', when: ansys_provision }
     - { name: 'ood_igv', tags: 'ood_igv', when: igv_provision }
+    - { name: 'local_user', tags: 'local_user', when: local_user.username | length > 0 }
