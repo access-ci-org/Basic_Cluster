@@ -1,0 +1,10 @@
+---
+- name: Add local user
+  ansible.builtin.user:
+    name: "{{ local_user.username }}"
+    home: "{{ local_user.home }}/{{ local_user.username }}"
+
+- name: Add authorized key
+  ansible.builtin.authorized_key:
+    user: "{{ local_user.username }}"
+    key: "{{ local_user.ssh_pub_key }}"
