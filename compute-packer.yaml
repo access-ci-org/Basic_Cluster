@@ -1,0 +1,7 @@
+---
+- hosts: compute
+  become: true
+  roles:
+    - { name: 'enable_lmod', tags: 'enable_lmod' }
+    - { name: 'lmod_user', tags: 'lmod_user' }
+    - { name: 'local_user', tags: 'local_user', when: local_user.username | length > 0 }
