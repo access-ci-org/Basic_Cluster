@@ -325,3 +325,8 @@
     username: ""
     home: "/home.local"
     ssh_pub_key: ""
+
+# Node Exporter
+    enable_node_exporter: true	
+    # Destination on remote server to move install-node_exporter.sh script to
+    install-node_exporter_dest: "/tmp" 
