@@ -19,3 +19,4 @@
     - { name: 'ood_ansys', tags: 'ood_ansys', when: ansys_provision }
     - { name: 'ood_igv', tags: 'ood_igv', when: igv_provision }
     - { name: 'local_user', tags: 'local_user', when: local_user.username | length > 0 }
+    - { name: 'install_node_exporter', tags: 'install_node_exporter', when: enable_node_exporter }
