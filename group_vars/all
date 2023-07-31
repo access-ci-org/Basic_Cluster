@@ -327,6 +327,6 @@
     ssh_pub_key: ""
 
 # Node Exporter
-    enable_node_exporter: true	
+    enable_node_exporter: false	
     # Destination on remote server to move install-node_exporter.sh script to
     install-node_exporter_dest: "/tmp" 
