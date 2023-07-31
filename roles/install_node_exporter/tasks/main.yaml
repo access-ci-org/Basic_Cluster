@@ -13,8 +13,8 @@
     dest: "/etc/systemd/system/node_exporter.service"
 
 - name: Run install-node_exporter.sh as root
-    command: "sudo {{ install-node_exporter_dest }}/install-node_exporter.sh"
-    become: yes
+  command: "sudo {{ install-node_exporter_dest }}/install-node_exporter.sh"
+  become: yes
 
 - name: Enable node_exporter.service
   systemd:
