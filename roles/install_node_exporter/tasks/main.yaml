@@ -10,10 +10,10 @@
 - name: Copy node_exporter.service
   copy:
     src: "node_exporter.service"
-    dest: "/etc/systemd/system/install-node_exporter.sh"
+    dest: "/etc/systemd/system/node_exporter.service"
 
 - name: Run install-node_exporter.sh as root
-    shell: "{{ install-node_exporter_dest }}/install-node_exporter.sh"
+    command: "sudo {{ install-node_exporter_dest }}/install-node_exporter.sh"
     become: yes
 
 - name: Enable node_exporter.service
