@@ -329,4 +329,4 @@
 # Node Exporter
     enable_node_exporter: false	
     # Destination on remote server to move install-node_exporter.sh script to
-    install-node_exporter_dest: "/tmp" 
+    install_node_exporter_dest: "/tmp" 
