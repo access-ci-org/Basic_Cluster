@@ -19,5 +19,6 @@
 - name: Enable node_exporter.service
   systemd:
     name: node_exporter.service
-    state: enabled
+    state: started
+    enabled: true
 
