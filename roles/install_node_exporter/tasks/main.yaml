@@ -56,8 +56,6 @@
     owner: root
     group: root
     mode: 0755
-  notify:
-    - Restart node_exporter service
   tags:
     - configuration
 
@@ -65,18 +63,15 @@
   template:
     src: node_exporter.service.j2
     dest: /etc/systemd/system/node_exporter.service
-  notify:
-    - Reload systemd daemons
   tags:
     - configuration
 
-handlers:
+- name: Reload systemd daemons
+  systemd:
+    daemon_reload: yes
+    
 - name: Restart node_exporter service
   systemd:
     name: node_exporter
     state: restarted
     enabled: true
-
-- name: Reload systemd daemons
-  systemd:
-    daemon_reload: yes
