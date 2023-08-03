@@ -3,24 +3,11 @@
   get_url:
     url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ file }}"
     dest: "{{ scriptdir }}/{{ file }}"
-  register: download_result
-  when: not download_result|default(false).failed
-  tags:
-    - download
-
-- name: Fail if download failed
-  fail:
-    msg: "Downloading node_exporter binary failed!"
-  when: download_result.failed
-  tags:
-    - download
 
 - name: Download checksum file
   get_url:
     url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ sha256 }}"
     dest: "{{ scriptdir }}/{{ sha256 }}"
-  tags:
-    - download
 
 - name: Verify checksum
   shell: "grep {{ file }} {{ sha256 }} | sha256sum -c -"
@@ -28,8 +15,6 @@
     chdir: "{{ scriptdir }}"
   register: checksum_result
   failed_when: not checksum_result.stdout | contains('OK')
-  tags:
-    - download
 
 - name: Extract node_exporter
   unarchive:
@@ -38,16 +23,12 @@
     remote_src: yes
     extra_opts: "--strip-components=1"
   when: checksum_result is succeeded and not (scriptdir + '/tmp/' + file | is_file)
-  tags:
-    - extract
 
 - name: Add system user
   user:
     name: node_exporter
     shell: /bin/false
     system: yes
-  tags:
-    - configuration
 
 - name: Copy node_exporter binary
   copy:
@@ -56,15 +37,11 @@
     owner: root
     group: root
     mode: 0755
-  tags:
-    - configuration
 
 - name: Copy systemd service file
   template:
     src: node_exporter.service.j2
     dest: /etc/systemd/system/node_exporter.service
-  tags:
-    - configuration
 
 - name: Reload systemd daemons
   systemd:
