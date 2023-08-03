@@ -1,28 +1,25 @@
 ---
-- name: Download node_exporter binary
-  get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ file }}"
-    dest: "{{ scriptdir }}/{{ file }}"
-
 - name: Download checksum file
   get_url:
     url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ sha256 }}"
-    dest: "{{ scriptdir }}/{{ sha256 }}"
+    dest: "/tmp/{{ sha256 }}"
 
-- name: Verify checksum
-  shell: "grep {{ file }} {{ sha256 }} | sha256sum -c -"
-  args:
-    chdir: "{{ scriptdir }}"
-  register: checksum_result
-  failed_when: not checksum_result.stdout | contains('OK')
+- set_fact:
+    md5_value: "{{ lookup('file', '/tmp/{{ sha256 }}') }}"
+
+- name: Download node_exporter binary
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ file }}"
+    dest: "/tmp/{{ file }}"
+    checksum: "sha256:{{ md5_value }}"
+    force: true
 
 - name: Extract node_exporter
   unarchive:
-    src: "{{ scriptdir }}/{{ file }}"
-    dest: "{{ scriptdir }}/tmp"
+    src: "/tmp/{{ file }}"
+    dest: "/tmp"
     remote_src: yes
     extra_opts: "--strip-components=1"
-  when: checksum_result is succeeded and not (scriptdir + '/tmp/' + file | is_file)
 
 - name: Add system user
   user:
