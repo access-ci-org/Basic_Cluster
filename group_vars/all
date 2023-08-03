@@ -330,3 +330,7 @@
     enable_node_exporter: false	
     # Destination on remote server to move install-node_exporter.sh script to
     install_node_exporter_dest: "/tmp" 
+    ver: "1.6.1"
+    file: "node_exporter-{{ ver }}.linux-amd64.tar.gz"
+    sha256: "sha256sums.txt"
+    scriptdir: "{{ playbook_dir }}"

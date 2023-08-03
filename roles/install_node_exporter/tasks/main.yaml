@@ -1,24 +1,82 @@
 ---
-- name: Copy install-node_exporter.sh
+- name: Download node_exporter binary
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ file }}"
+    dest: "{{ scriptdir }}/{{ file }}"
+  register: download_result
+  when: not download_result|default(false).failed
+  tags:
+    - download
+
+- name: Fail if download failed
+  fail:
+    msg: "Downloading node_exporter binary failed!"
+  when: download_result.failed
+  tags:
+    - download
+
+- name: Download checksum file
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ ver }}/{{ sha256 }}"
+    dest: "{{ scriptdir }}/{{ sha256 }}"
+  tags:
+    - download
+
+- name: Verify checksum
+  shell: "grep {{ file }} {{ sha256 }} | sha256sum -c -"
+  args:
+    chdir: "{{ scriptdir }}"
+  register: checksum_result
+  failed_when: not checksum_result.stdout | contains('OK')
+  tags:
+    - download
+
+- name: Extract node_exporter
+  unarchive:
+    src: "{{ scriptdir }}/{{ file }}"
+    dest: "{{ scriptdir }}/tmp"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+  when: checksum_result is succeeded and not (scriptdir + '/tmp/' + file | is_file)
+  tags:
+    - extract
+
+- name: Add system user
+  user:
+    name: node_exporter
+    shell: /bin/false
+    system: yes
+  tags:
+    - configuration
+
+- name: Copy node_exporter binary
   copy:
-    src: "install-node_exporter.sh"
-    dest: "{{ install_node_exporter_dest }}/install-node_exporter.sh"
+    src: "{{ scriptdir }}/tmp/{{ file | regex_replace('.tar.gz', '') }}/node_exporter"
+    dest: /usr/local/bin/node_exporter
     owner: root
     group: root
-    mode: 0700
+    mode: 0755
+  notify:
+    - Restart node_exporter service
+  tags:
+    - configuration
 
-- name: Copy node_exporter.service
-  copy:
-    src: "node_exporter.service"
-    dest: "/etc/systemd/system/node_exporter.service"
+- name: Copy systemd service file
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+  notify:
+    - Reload systemd daemons
+  tags:
+    - configuration
 
-- name: Run install-node_exporter.sh as root
-  command: "sudo {{ install_node_exporter_dest }}/install-node_exporter.sh"
-  become: yes
-
-- name: Enable node_exporter.service
+handlers:
+- name: Restart node_exporter service
   systemd:
-    name: node_exporter.service
-    state: started
+    name: node_exporter
+    state: restarted
     enabled: true
 
+- name: Reload systemd daemons
+  systemd:
+    daemon_reload: yes
