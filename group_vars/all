@@ -47,7 +47,7 @@
   sda3: "mountpoint=/:dev=sda3:type=ext3:size=fill"
 
 # GPU Node Vars
-# download the nvidia cuda installer, and run with only --extract=$path_to_CRI_XCBC/roles/gpu_build_vnfs/files to get these three installers
+# download the nvidia cuda installer, and run with only --extract=$path_to_Basic_Cluster/roles/gpu_build_vnfs/files to get these three installers
   nvidia_driver_installer: "NVIDIA-Linux-x86_64-387.26.run"
   cuda_toolkit_installer: "cuda-linux.9.1.85-23083092.run"
   cuda_samples_installer: "cuda-samples.9.1.85-23083092-linux.run"

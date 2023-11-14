@@ -191,11 +191,11 @@ Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
 
-1\. `git clone https://github.com/access-ci-org/CRI_XCBC/ `
+1\. `git clone https://github.com/access-ci-org/Basic_Cluster/ `
 
   Get the actual playbooks.
 
-This creates a directory named `CRI_XCBC` in your current directory, which
+This creates a directory named `Basic_Cluster` in your current directory, which
 contains the BC Ansible playbooks.
 
 2\. On the headnode, from your ${HOME} directory, 
@@ -204,12 +204,12 @@ run `ssh-keygen`, to create a local set of ssh keys, followed by
 `cat .ssh/id_rsa.pub >> .ssh/authorized_keys`
 
 
-3\. ```cd ./CRI_XCBC``` and then run the ```install_ansible.sh``` script.
+3\. ```cd ./Basic_Cluster``` and then run the ```install_ansible.sh``` script.
 
 Defining Cluster Parameters
 ---------------------------
 
-Inside the ```CRI_XCBC``` directory, examine the file ```group_vars/all```. 
+Inside the ```Basic_Cluster``` directory, examine the file ```group_vars/all```. 
 This file contains
 several important parameters for the cluster installation. The current
 defaults should work with the Virtualbox configuration suggested
@@ -283,7 +283,7 @@ These are added to the SLURM configuration file as needed
     (if any GPU nodes exist) - any types of consumable
     resources that exist on your cluster. 
     COMMENTED OUT BY DEFAULT - IF YOU ARE BUILDING ON A PHYSICAL SYSTEM
-    WITH GPU NODES, UNCOMMENT THIS LINE in ```${HOME}/CRI_XCBC/group_vars/all```!
+    WITH GPU NODES, UNCOMMENT THIS LINE in ```${HOME}/Basic_Cluster/group_vars/all```!
 
 #### Stateful Node controls
 -   ```stateful_nodes: false```
@@ -307,7 +307,7 @@ These are added to the SLURM configuration file as needed
 
     Contains the full name of
     the NVIDIA driver installer. This should be downloaded and placed
-    in `CRI_XCBC/roles/gpu_build_vnfs/files/`.
+    in `Basic_Cluster/roles/gpu_build_vnfs/files/`.
     COMMENTED OUT BY DEFAULT - ONLY NECESSARY FOR CLUSTERS WITH GPU
     NODES.
 
@@ -340,7 +340,7 @@ be wasted making unnecessary images.
 -   ```node_inventory_auto: true```
 
    Allows one to switch between ’manually’ adding compute node information
-   here (in `${HOME}/CRI_XCBC/group_vars/all`) or by running wwnodescan.
+   here (in `${HOME}/Basic_Cluster/group_vars/all`) or by running wwnodescan.
    The default is to use wwnodescan to automatically search for nodes in
    the 10.0.0.0/24 network. In some situations, such as migrating an 
    existing cluster to a new framework, one may already have a list of
@@ -380,7 +380,7 @@ Ansible Inventory
 -----------------
 
 Note the inventory file in
-```CRI_XCBC/inventory```:
+```Basic_Cluster/inventory```:
 ```
 [headnode]
 headnode ansible_host="{{ headnode_private_ip }}" ansible_connection=ssh ansible_ssh_user=root
@@ -400,10 +400,10 @@ step. Each step can be run with the ’-t’ flag, which asks
 ansible-playbook to exectute only tasks with the given name.
 
 When running these scripts, be sure to either cd to the playbook 
-directory (`cd ${HOME}/CRI_XCBC/`) or provide the complete path
+directory (`cd ${HOME}/Basic_Cluster/`) or provide the complete path
 before each file - like
-`ansible-playbook -i ${HOME}/CRI_XCBC/inventory/headnode 
--t pre_ohpc ${HOME}/CRI_XCBC/headnode.yml`.
+`ansible-playbook -i ${HOME}/Basic_Cluster/inventory/headnode 
+-t pre_ohpc ${HOME}/Basic_Cluster/headnode.yml`.
 
 1\. 
 This first role installs necessary dependencies for the OpenHPC rpms,
