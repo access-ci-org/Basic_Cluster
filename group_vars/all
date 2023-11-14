@@ -35,7 +35,7 @@
   mount_ip: "{{ headnode_ib_ip }}"
 
 #slurm.conf variables
-  cluster_name: "xcbc-example"
+  cluster_name: "bc-example"
 #  gres_types: "gpu"
 
 #Stateful compute or not?

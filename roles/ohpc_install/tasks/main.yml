@@ -25,7 +25,7 @@
      template: src=slurmdbd_conf.j2 dest=/etc/slurm/slurmdbd.conf
 
    - name: put the sacctmgr config in /etc/slurm
-     copy: src=xcbc-example.cfg dest=/etc/slurm/sacctmgr-heirarchy.cfg
+     copy: src=bc-example.cfg dest=/etc/slurm/sacctmgr-heirarchy.cfg
 
    - name: set the gres.conf on the master
      copy: src=gres.conf dest=/etc/slurm/gres.conf
@@ -33,8 +33,8 @@
    - name: create the slurmdbd log file
      file: path=/var/log/slurmdbd.log state=touch owner=slurm group=slurm
 
-   - name: insert rhel-xcbc WW template
-     copy: src=include-rhel-xcbc dest="{{ template_path }}include-rhel-xcbc"
+   - name: insert rhel-bc WW template
+     copy: src=include-rhel-bc dest="{{ template_path }}include-rhel-bc"
  
    - name: fix the warewulf wwsh script... ARGH (line 29)
      lineinfile: 
