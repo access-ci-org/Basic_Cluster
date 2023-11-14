@@ -1,8 +1,7 @@
 Introduction
 ============
 
-This is a basic quickstart guide for the CentOS 7 version of the XSEDE
-Compatible Basic Cluster, based on the OpenHPC Project.
+This is a basic quickstart guide for the CentOS 7 version of the Basic Cluster, based on the OpenHPC Project.
 (https://openhpc.community). It covers initial setup of your hardware
 (or virtual machines), configuration options for the ansible scripts,
 and a brief walkthrough of how to use the scripts.
@@ -13,15 +12,11 @@ nodes: basic compute nodes, login nodes, and GPU nodes.
 By the end of the guide, you should have a working cluster with running
 Slurmctld, which can accept and run jobs on all nodes.
 
-If you encounter errors, have questions, suggestions, or comments,
-please contact the XCRI Team by emailing help@xsede.org. Be sure to ask
-for the XCRI team!
+BC Overview
+===========
 
-XCBC Overview
-=============
-
-The XCBC project is designed to provide the basic software necessary to create
-and HPC environment similar to that found on XSEDE resources, with open-source 
+The BC project is designed to provide the basic software necessary to create
+and HPC environment similar to that found on ACCESS resources, with open-source 
 software and a minimum of fuss. 
 
 We use the OpenHPC repositories (link) for setup of the cluster management
@@ -43,22 +38,20 @@ file, which is described in more detail below (Section 3: Defining Cluster Param
 The installation process, at a high level, takes place in six phases:
 (ignoring hardware/VM setup)
 1\. Installation of the bare OS on the headnode
-2\. Installation of the XCBC toolkit scripts and dependencies
+2\. Installation of the BC toolkit scripts and dependencies
 3\. Defining cluster parameters
 4\. Configuration of the headnode via Ansible
 5\. Installation of the compute nodes
 6\. Testing the scheduler 
 
-This guide in particular will walk through the steps of building an XCBC using
+This guide in particular will walk through the steps of building a BC using
 VMs defined in VirtualBox, though this generalizes very well to a bare-metal
 deployment as well.
 
 Common Acronyms and Abbreviations
 =================================
 
-XCBC = XSEDE Compatible Basic Cluster
-
-XNIT = XSEDE National Integration Toolkit
+BC = Basic Cluster
 
 WW = Warewulf - the cluster management software preferred in the OpenHPC
  project.
@@ -187,7 +180,7 @@ is also quite useful, if you're on a Linux host machine.).
 Follow the guide below from your local terminal, rather than the VirtualBox terminal.
 (primarily for ease of use)
 
-Installation of the XCBC Tools and Dependencies
+Installation of the BC Tools and Dependencies
 -----------------------------------------------
 
 ####Please note - this is meant to be run as the root user!
@@ -198,12 +191,12 @@ Git is necessary for getting the
 playbooks; vim and bash-completion are just nice add-ons. Install your
 editor of choice!
 
-1\. `git clone https://github.com/XSEDE/CRI_XCBC/ `
+1\. `git clone https://github.com/access-ci-org/CRI_XCBC/ `
 
   Get the actual playbooks.
 
 This creates a directory named `CRI_XCBC` in your current directory, which
-contains the XCBC Ansible playbooks.
+contains the BC Ansible playbooks.
 
 2\. On the headnode, from your ${HOME} directory, 
 run `ssh-keygen`, to create a local set of ssh keys, followed by 
@@ -280,7 +273,7 @@ and the compute_ip limits must fall within the same subnet.
 #### slurm.conf variables
 These are added to the SLURM configuration file as needed
 
--   ```cluster_name: "xcbc-example"```
+-   ```cluster_name: "bc-example"```
 
     The name you’d like to give your cluster. This will
     be inserted into the slurm.conf file.
@@ -518,8 +511,6 @@ on the headnode, or in /var/log/slurmd on the compute nodes.
 Conclusion
 ==========
 
-At this point, you have a basic working cluster with scheduler. The addition of scientific
-software and utilities available through XSEDE will be covered in this guide soon.
+At this point, you have a basic working cluster with scheduler.
 
-Thanks for trying this out! Please get in touch with any problems, questions, or comments
-at help@xsede.org, with 'XCRI XCBC Tutorial" in the subject line.
+Thanks for trying this out!
